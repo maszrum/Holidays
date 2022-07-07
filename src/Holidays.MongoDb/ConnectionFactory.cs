@@ -15,6 +15,9 @@ public class ConnectionFactory
         _settings = settings;
     }
 
+    public Task<IClientSessionHandle> StartSession() => 
+        OpenConnectionOrGetExising().StartSessionAsync();
+
     public IMongoCollection<BsonDocument> GetOffersCollection() => 
         GetDocument(CollectionNames.Offers);
 

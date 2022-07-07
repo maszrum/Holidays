@@ -1,8 +1,5 @@
 ﻿using Holidays.Core.Eventing;
 using Holidays.Core.OfferModel;
-using Holidays.MongoDb.Converters;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace Holidays.MongoDb.EventHandlers;
 
@@ -17,25 +14,23 @@ public class OfferRemovedMongoDbEventHandler : IEventHandler<OfferRemoved>
 
     public async Task Handle(OfferRemoved @event, CancellationToken cancellationToken)
     {
-        await RemoveFromOffers(@event.OfferId, cancellationToken);
-        await InsertIntoOfferEventLog(@event, cancellationToken);
-    }
+        var session = await _connectionFactory.StartSession();
 
-    private async Task RemoveFromOffers(Guid offerId, CancellationToken cancellationToken)
-    {
-        var collection = _connectionFactory.GetOffersCollection();
+        using var offersRepository = new OffersMongoRepository(_connectionFactory, session);
+        using var offerChangesRepository = new OfferChangesMongoRepository(_connectionFactory, session);
         
-        await collection.DeleteOneAsync(
-            Builders<BsonDocument>.Filter.Eq("id", offerId.ToString()), 
-            cancellationToken);
-    }
+        session.StartTransaction();
 
-    private async Task InsertIntoOfferEventLog(OfferRemoved @event, CancellationToken cancellationToken)
-    {
-        var converter = new OfferRemovedBsonConverter();
-        var bson = converter.ConvertToBson(@event);
-        
-        var collection = _connectionFactory.GetOfferEventLogDocument();
-        await collection.InsertOneAsync(bson, default, cancellationToken);
+        try
+        {
+            await offersRepository.Remove(@event.OfferId, cancellationToken);
+            await offerChangesRepository.Add(@event, cancellationToken);
+
+            await session.CommitTransactionAsync(cancellationToken);
+        }
+        catch
+        {
+            await session.AbortTransactionAsync(CancellationToken.None);
+        }
     }
 }
