@@ -1,0 +1,6 @@
+﻿{
+  "MongoDb": {
+    "ConnectionString": "mongodb://holidays:payAlot@localhost:27017",
+    "Database": "holidays-mongodb-tests"
+  }
+}

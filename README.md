@@ -1,0 +1,11 @@
+ - Do not emit event OfferAdded when new day
+ - Add switch that enables use of local selenium instead of docker
+ - Fix issue when offers not load (detection)
+ - Add event handlers as chain of responsibility
+ - Add database transactions
+ - Add mongodb tests
+ - Add Blazor UI
+ - Add RabbitMQ
+ - Add TUI and Itaka web scraper
+ - Improve EventBus performance
+ - Create docker container from Cli application

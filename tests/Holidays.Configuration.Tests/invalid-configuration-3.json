@@ -1,0 +1,7 @@
+﻿{
+  "TestSectio": {
+    "StringSetting": "Hello",
+    "IntSetting": 33,
+    "BoolSetting": true
+  }
+}

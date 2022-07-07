@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  mongodb:
+    build:
+      context: .
+      dockerfile: ./mongodb/Dockerfile
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=holidays
+      - MONGO_INITDB_ROOT_PASSWORD=payAlot
+  mongo-express:
+    build:
+      context: .
+      dockerfile: ./mongo-express/Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    restart: on-failure
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=holidays
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=payAlot
+  selenium:
+    build:
+      context: .
+      dockerfile: ./selenium/Dockerfile
+    ports:
+      - "4444:4444"
+    shm_size: '2gb'
+
+volumes:
+  mongodata: {}

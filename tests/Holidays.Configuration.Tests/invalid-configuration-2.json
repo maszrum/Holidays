@@ -1,0 +1,6 @@
+﻿{
+  "TestSection": {
+    "StringSetting": "Hello",
+    "BoolSetting": true
+  }
+}
