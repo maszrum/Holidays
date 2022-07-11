@@ -64,4 +64,51 @@ public class EventBusTests
         Assert.ThrowsAsync<InvalidOperationException>(
             () => eventBus.Publish(new TestEvent()));
     }
+
+    [Test]
+    public void second_handler_should_throw_so_first_one_should_roll_back()
+    {
+        var eventBusBuilder = new EventBusBuilder();
+
+        var firstHandler = new TestEventFirstHandler(_ => { });
+        var secondHandler = new TestEventFirstHandler(_ => throw new InvalidOperationException());
+
+        eventBusBuilder
+            .ForEventType<TestEvent>()
+            .RegisterHandler(() => firstHandler)
+            .RegisterHandler(() => secondHandler);
+
+        var eventBus = eventBusBuilder.Build();
+
+        Assert.ThrowsAsync<InvalidOperationException>(
+            () => eventBus.Publish(new TestEvent()));
+        
+        Assert.That(firstHandler.RolledBack, Is.True);
+        Assert.That(firstHandler.Committed, Is.False);
+        Assert.That(secondHandler.RolledBack, Is.True);
+        Assert.That(secondHandler.Committed, Is.False);
+    }
+
+    [Test]
+    public async Task none_of_handlers_throw_so_every_should_have_committed_property_true()
+    {
+        var eventBusBuilder = new EventBusBuilder();
+
+        var firstHandler = new TestEventFirstHandler(_ => { });
+        var secondHandler = new TestEventFirstHandler(_ => { });
+
+        eventBusBuilder
+            .ForEventType<TestEvent>()
+            .RegisterHandler(() => firstHandler)
+            .RegisterHandler(() => secondHandler);
+
+        var eventBus = eventBusBuilder.Build();
+
+        await eventBus.Publish(new TestEvent());
+        
+        Assert.That(firstHandler.RolledBack, Is.False);
+        Assert.That(firstHandler.Committed, Is.True);
+        Assert.That(secondHandler.RolledBack, Is.False);
+        Assert.That(secondHandler.Committed, Is.True);
+    }
 }

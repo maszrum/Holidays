@@ -12,7 +12,7 @@ public class OfferPriceChangedPostgresEventHandler : IEventHandler<OfferPriceCha
         _connectionFactory = connectionFactory;
     }
 
-    public async Task Handle(OfferPriceChanged @event, CancellationToken cancellationToken)
+    public async Task Handle(OfferPriceChanged @event, Func<Task> next, CancellationToken cancellationToken)
     {
         await using var connection = await _connectionFactory.CreateConnection(cancellationToken);
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
@@ -26,6 +26,8 @@ public class OfferPriceChangedPostgresEventHandler : IEventHandler<OfferPriceCha
             await offersRepository.ModifyPrice(@event.OfferId, @event.CurrentPrice);
             await offerChangesRepository.Add(@event);
             await priceHistoryRepository.Add(@event.OfferId, @event.Timestamp, @event.CurrentPrice);
+
+            await next();
 
             await transaction.CommitAsync(cancellationToken);
         }

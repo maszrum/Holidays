@@ -12,12 +12,12 @@ public class OfferRemovedInMemoryStoreEventHandler : IEventHandler<OfferRemoved>
         _store = store;
     }
 
-    public Task Handle(OfferRemoved @event, CancellationToken cancellationToken)
+    public Task Handle(OfferRemoved @event, Func<Task> next, CancellationToken cancellationToken)
     {
         var repository = new OffersInMemoryRepository(_store);
 
         repository.Remove(@event.OfferId);
 
-        return Task.CompletedTask;
+        return next();
     }
 }

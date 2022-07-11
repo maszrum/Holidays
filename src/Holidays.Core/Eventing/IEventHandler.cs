@@ -3,5 +3,5 @@
 public interface IEventHandler<in TEvent> 
     where TEvent : IEvent
 {
-    Task Handle(TEvent @event, CancellationToken cancellationToken);
+    Task Handle(TEvent @event, Func<Task> next, CancellationToken cancellationToken);
 }

@@ -12,7 +12,7 @@ public class OfferAddedInMemoryStoreEventHandler : IEventHandler<OfferAdded>
         _store = store;
     }
 
-    public Task Handle(OfferAdded @event, CancellationToken cancellationToken)
+    public Task Handle(OfferAdded @event, Func<Task> next, CancellationToken cancellationToken)
     {
         if (!@event.Offer.TryGetData(out var offer))
         {
@@ -24,6 +24,6 @@ public class OfferAddedInMemoryStoreEventHandler : IEventHandler<OfferAdded>
         
         repository.Add(offer);
 
-        return Task.CompletedTask;
+        return next();
     }
 }

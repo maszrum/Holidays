@@ -12,7 +12,7 @@ public class OfferPriceChangedInMemoryStoreEventHandler : IEventHandler<OfferPri
         _inMemoryStore = inMemoryStore;
     }
 
-    public Task Handle(OfferPriceChanged @event, CancellationToken cancellationToken)
+    public Task Handle(OfferPriceChanged @event, Func<Task> next, CancellationToken cancellationToken)
     {
         if (!@event.Offer.TryGetData(out var offer))
         {
@@ -24,6 +24,6 @@ public class OfferPriceChangedInMemoryStoreEventHandler : IEventHandler<OfferPri
         
         repository.Modify(offer);
 
-        return Task.CompletedTask;
+        return next();
     }
 }
