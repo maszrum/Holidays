@@ -55,7 +55,7 @@ public sealed class OfferEventLogPostgresRepository : PostgresRepositoryBase, IO
     public async Task<IReadOnlyList<IEvent>> GetByOfferId(Guid offerId)
     {
         var records = await Connection.QueryAsync<OfferEventLogRecord>(
-            sql: "SELECT * FROM holidays.offer_event_log WHERE offer_id = @Id",
+            sql: "SELECT * FROM holidays.offer_event_log WHERE offer_id = @Id ORDER BY event_timestamp",
             param: new { Id = offerId },
             transaction: Transaction);
 
@@ -70,9 +70,9 @@ public sealed class OfferEventLogPostgresRepository : PostgresRepositoryBase, IO
     {
         var sql = 
             "INSERT INTO holidays.offer_event_log " +
-            "(id, offer_id, event_type, params) " +
+            "(id, event_timestamp, offer_id, event_type, params) " +
             "VALUES " +
-            "(@Id, @OfferId, @EventType, @Params)";
+            "(@Id, @EventTimestamp, @OfferId, @EventType, @Params)";
 
         var rowsAffected = await Connection.ExecuteAsync(
             sql: sql,

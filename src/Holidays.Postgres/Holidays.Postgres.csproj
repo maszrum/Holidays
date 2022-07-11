@@ -17,8 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include=".postgresql-tables\1_offer.sql" />
-    <EmbeddedResource Include=".postgresql-tables\2_offer_event_log.sql" />
+    <EmbeddedResource Include=".postgresql-tables\*.sql" />
   </ItemGroup>
 
 </Project>

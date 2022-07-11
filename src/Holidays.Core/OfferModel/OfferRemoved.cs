@@ -2,4 +2,6 @@
 
 namespace Holidays.Core.OfferModel;
 
-public record OfferRemoved(Guid OfferId) : IEvent;
+public record OfferRemoved(
+    Guid OfferId, 
+    DateTime Timestamp) : IEvent;

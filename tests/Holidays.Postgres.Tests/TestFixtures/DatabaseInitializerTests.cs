@@ -73,7 +73,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     public async Task initialize_forcefully_should_remove_offer_event_log_table_and_create_again()
     {
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url");
-        var @event = new OfferAdded(offer);
+        var @event = OfferAdded.ForNewOffer(offer);
 
         int offerEventLogCountBeforeInitialization, offerEventLogCountAfterInitialization;
         
@@ -107,7 +107,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     public async Task initialize_if_need_should_not_remove_offer_event_log_table()
     {
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url");
-        var @event = new OfferAdded(offer);
+        var @event = OfferAdded.ForNewOffer(offer);
 
         int offerEventLogCountBeforeInitialization, offerEventLogCountAfterInitialization;
         

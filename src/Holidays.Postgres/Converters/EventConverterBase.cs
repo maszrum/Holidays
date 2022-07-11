@@ -7,15 +7,6 @@ namespace Holidays.Postgres.Converters;
 internal abstract class EventConverterBase<TEvent> : IEventConverter
     where TEvent : IEvent
 {
-    public OfferEventLogRecord ConvertToRecord(TEvent @event)
-    {
-        return new OfferEventLogRecord(
-            Guid.NewGuid(),
-            GetOfferId(@event),
-            @event.GetType().Name,
-            GetEventParams(@event));
-    }
-    
     public bool TryConvertToRecord(IEvent @event, [NotNullWhen(true)] out OfferEventLogRecord? record)
     {
         if (@event is TEvent eventTyped)
@@ -35,4 +26,14 @@ internal abstract class EventConverterBase<TEvent> : IEventConverter
     protected abstract string GetEventParams(TEvent @event);
 
     protected abstract TEvent ToObject(OfferEventLogRecord record);
+    
+    private OfferEventLogRecord ConvertToRecord(TEvent @event)
+    {
+        return new OfferEventLogRecord(
+            Guid.NewGuid(),
+            @event.Timestamp,
+            GetOfferId(@event),
+            @event.GetType().Name,
+            GetEventParams(@event));
+    }
 }

@@ -66,9 +66,9 @@ internal class ChangesDetectionJob
     {
         return change.ChangeType switch
         {
-            OfferChangeType.PriceChanged => new OfferPriceChanged(change.Offer, change.OfferBeforeChange.Price),
-            OfferChangeType.OfferAdded => new OfferAdded(change.Offer),
-            OfferChangeType.OfferRemoved => new OfferRemoved(change.Offer.Id),
+            OfferChangeType.PriceChanged => new OfferPriceChanged(change.Offer, change.OfferBeforeChange.Price, DateTime.UtcNow),
+            OfferChangeType.OfferAdded => OfferAdded.ForNewOffer(change.Offer),
+            OfferChangeType.OfferRemoved => new OfferRemoved(change.Offer.Id, DateTime.UtcNow),
             _ => throw new ArgumentOutOfRangeException(nameof(change.ChangeType), change.ChangeType.ToString())
         };
     }

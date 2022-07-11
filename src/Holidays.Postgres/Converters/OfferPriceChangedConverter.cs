@@ -24,6 +24,6 @@ internal class OfferPriceChangedConverter : EventConverterBase<OfferPriceChanged
         var previousPrice = int.Parse(paramsParts[0]);
         var currentPrice = int.Parse(paramsParts[1]);
 
-        return new OfferPriceChanged(record.OfferId, currentPrice, previousPrice);
+        return new OfferPriceChanged(record.OfferId, currentPrice, previousPrice, record.EventTimestamp);
     }
 }

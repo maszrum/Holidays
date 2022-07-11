@@ -1,4 +1,3 @@
- - Add timestamp to events (and persistence)
  - Add price-history table in database
  - Do not emit event OfferAdded when new day
  - Add switch that enables use of local selenium instead of docker

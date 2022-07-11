@@ -1,6 +1,7 @@
 ﻿CREATE TABLE holidays.offer_event_log
 (
     id uuid NOT NULL,
+    event_timestamp timestamp NOT NULL,
     offer_id uuid NOT NULL,
     event_type character varying(64),
     params character varying(256),

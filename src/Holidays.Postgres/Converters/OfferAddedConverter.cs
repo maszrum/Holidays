@@ -8,6 +8,7 @@ internal class OfferAddedConverter : EventConverterBase<OfferAdded>
     protected override Guid GetOfferId(OfferAdded @event) => @event.OfferId;
 
     protected override string GetEventParams(OfferAdded @event) => string.Empty;
-    
-    protected override OfferAdded ToObject(OfferEventLogRecord record) => new(record.OfferId);
+
+    protected override OfferAdded ToObject(OfferEventLogRecord record) => 
+        new(record.OfferId, record.EventTimestamp);
 }
