@@ -18,7 +18,7 @@
     <ProjectReference Include="..\Holidays.DataSource.Rainbow\Holidays.DataSource.Rainbow.csproj" />
     <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
     <ProjectReference Include="..\Holidays.InMemoryStore\Holidays.InMemoryStore.csproj" />
-    <ProjectReference Include="..\Holidays.MongoDb\Holidays.MongoDb.csproj" />
+    <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />
   </ItemGroup>
 
   <ItemGroup>

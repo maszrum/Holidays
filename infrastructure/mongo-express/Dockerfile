@@ -1,1 +1,0 @@
-FROM mongo-express:1.0.0-alpha

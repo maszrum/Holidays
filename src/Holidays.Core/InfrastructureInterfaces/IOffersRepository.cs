@@ -7,6 +7,6 @@ public interface IOffersRepository
     Task<Offers> GetAll();
 
     Task<Offers> GetAllRemoved();
-
-    Task<Maybe<Offer>> TryGetRemoved(Guid offerId);
+    
+    Task<Maybe<Offer>> Get(Guid offerId);
 }

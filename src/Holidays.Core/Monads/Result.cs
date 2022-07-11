@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Holidays.Core.Monads;
+﻿namespace Holidays.Core.Monads;
 
 public class Result<TData> where TData : notnull
 {

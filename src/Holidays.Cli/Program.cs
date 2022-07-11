@@ -5,8 +5,9 @@ using Holidays.DataSource.Rainbow;
 using Holidays.Eventing;
 using Holidays.InMemoryStore;
 using Holidays.InMemoryStore.EventHandlers;
-using Holidays.MongoDb;
-using Holidays.MongoDb.EventHandlers;
+using Holidays.Postgres;
+using Holidays.Postgres.EventHandlers;
+using Holidays.Postgres.Initialization;
 using Holidays.Selenium;
 using Serilog;
 
@@ -18,10 +19,19 @@ var configuration = new ApplicationConfiguration(
     "appsettings.json", 
     overrideWithEnvironmentVariables: false);
 
-var mongoDbConnectionFactory = new ConnectionFactory(configuration.Get<MongoDbSettings>());
-var offersMongoRepository = new OffersMongoRepository(mongoDbConnectionFactory);
-var persistedActiveOffers = await offersMongoRepository.GetAll();
-var persistedRemovedOffers = await offersMongoRepository.GetAllRemoved();
+var postgresConnectionFactory = new PostgresConnectionFactory(configuration.Get<PostgresSettings>());
+
+var databaseInitializer = new DatabaseInitializer(postgresConnectionFactory);
+await databaseInitializer.InitializeIfNeed();
+
+Offers persistedActiveOffers, persistedRemovedOffers;
+
+await using(var connection = await postgresConnectionFactory.CreateConnection())
+await using (var postgresOffersRepository = new OffersPostgresRepository(connection))
+{
+    persistedActiveOffers = await postgresOffersRepository.GetAll();
+    persistedRemovedOffers = await postgresOffersRepository.GetAllRemoved();
+}
 
 var inMemoryStore = InMemoryStore.CreateWithInitialState(persistedActiveOffers, persistedRemovedOffers);
 
@@ -30,17 +40,17 @@ var eventBusBuilder = new EventBusBuilder();
 eventBusBuilder
     .ForEventType<OfferAdded>()
     .RegisterHandler(() => new OfferAddedInMemoryStoreEventHandler(inMemoryStore))
-    .RegisterHandler(() => new OfferAddedMongoDbEventHandler(mongoDbConnectionFactory));
+    .RegisterHandler(() => new OfferAddedPostgresEventHandler(postgresConnectionFactory));
 
 eventBusBuilder
     .ForEventType<OfferRemoved>()
     .RegisterHandler(() => new OfferRemovedInMemoryStoreEventHandler(inMemoryStore))
-    .RegisterHandler(() => new OfferRemovedMongoDbEventHandler(mongoDbConnectionFactory));
+    .RegisterHandler(() => new OfferRemovedPostgresEventHandler(postgresConnectionFactory));
 
 eventBusBuilder
     .ForEventType<OfferPriceChanged>()
     .RegisterHandler(() => new OfferPriceChangedInMemoryStoreEventHandler(inMemoryStore))
-    .RegisterHandler(() => new OfferPriceChangedMongoDbEventHandler(mongoDbConnectionFactory));
+    .RegisterHandler(() => new OfferPriceChangedPostgresEventHandler(postgresConnectionFactory));
 
 var eventBus = eventBusBuilder.Build();
 

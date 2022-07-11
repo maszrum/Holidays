@@ -14,9 +14,15 @@ public class OfferAddedInMemoryStoreEventHandler : IEventHandler<OfferAdded>
 
     public Task Handle(OfferAdded @event, CancellationToken cancellationToken)
     {
+        if (!@event.Offer.TryGetData(out var offer))
+        {
+            throw new InvalidOperationException(
+                "Received event without data.");
+        }
+        
         var repository = new OffersInMemoryRepository(_store);
         
-        repository.Add(@event.Offer);
+        repository.Add(offer);
 
         return Task.CompletedTask;
     }

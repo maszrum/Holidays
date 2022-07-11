@@ -17,8 +17,20 @@ public class OffersInMemoryRepository : IOffersRepository
     public Task<Offers> GetAll() => GetAll(getRemovedOffers: false);
 
     public Task<Offers> GetAllRemoved() => GetAll(getRemovedOffers: true);
+    
+    public Task<Maybe<Offer>> Get(Guid offerId)
+    {
+        if (!_store.Offers.TryGetValue(offerId, out var record) || record.IsRemoved)
+        {
+            return Task.FromResult(Maybe.Null<Offer>());
+        }
 
-    public Task<Maybe<Offer>> TryGetRemoved(Guid offerId)
+        var offer = _offerConverter.ConvertToObject(record);
+
+        return Task.FromResult(Maybe.Data(offer));
+    }
+
+    public Task<Maybe<Offer>> RemovedExists(Guid offerId)
     {
         if (!_store.Offers.TryGetValue(offerId, out var record) || record.IsRemoved)
         {
