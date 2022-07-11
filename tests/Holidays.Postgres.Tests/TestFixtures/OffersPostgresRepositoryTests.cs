@@ -252,17 +252,17 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             await repository.Add(offer);
 
             var getOffer = await repository.Get(offer.Id);
-            getOffer.IfNotNull(o => pricesList.Add(o.Price));
+            getOffer.IfSome(o => pricesList.Add(o.Price));
 
             await repository.ModifyPrice(offer.Id, 1400);
 
             getOffer = await repository.Get(offer.Id);
-            getOffer.IfNotNull(o => pricesList.Add(o.Price));
+            getOffer.IfSome(o => pricesList.Add(o.Price));
 
             await repository.ModifyPrice(offer.Id, 1100);
 
             getOffer = await repository.Get(offer.Id);
-            getOffer.IfNotNull(o => pricesList.Add(o.Price));
+            getOffer.IfSome(o => pricesList.Add(o.Price));
 
             return pricesList;
         });
@@ -292,5 +292,41 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
                 var repository = new OffersPostgresRepository(connection, transaction);
                 await repository.Remove(Guid.NewGuid());
             }));
+    }
+
+    [Test]
+    public async Task last_departure_date_should_be_none_value()
+    {
+        var departureDate = await DoWithTransactionAndRollback(async (connection, transaction) =>
+        {
+            var repository = new OffersPostgresRepository(connection, transaction);
+            var date = await repository.GetLastDepartureDate();
+            return date;
+        });
+        
+        Assert.That(departureDate.IsNone, Is.True);
+    }
+    
+    [Test]
+    public async Task last_departure_date_should_be_the_latest_day()
+    {
+        var offerOne = new Offer("hotel", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url");
+        var offerTwo = new Offer("hotel", "destination", DateOnly.FromDayNumber(6), 4, "city", 1200, "url");
+        var offerThree = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 4, "city", 1200, "url");
+        
+        var departureDate = await DoWithTransactionAndRollback(async (connection, transaction) =>
+        {
+            var repository = new OffersPostgresRepository(connection, transaction);
+
+            await repository.Add(offerOne);
+            await repository.Add(offerTwo);
+            await repository.Add(offerThree);
+            
+            var date = await repository.GetLastDepartureDate();
+            return date;
+        });
+        
+        Assert.That(departureDate.IsNone, Is.False);
+        Assert.That(departureDate.Data.DayNumber, Is.EqualTo(6));
     }
 }

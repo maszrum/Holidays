@@ -11,7 +11,8 @@ internal class EventRecordConverter
         {
             [nameof(OfferAdded)] = new OfferAddedConverter(),
             [nameof(OfferRemoved)] = new OfferRemovedConverter(),
-            [nameof(OfferPriceChanged)] = new OfferPriceChangedConverter()
+            [nameof(OfferPriceChanged)] = new OfferPriceChangedConverter(),
+            [nameof(OfferStartedTracking)] = new OfferStartedTrackingConverter()
         };
 
     public OfferEventLogRecord ConvertToRecord(IEvent @event)

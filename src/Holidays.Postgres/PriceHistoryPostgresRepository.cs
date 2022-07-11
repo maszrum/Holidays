@@ -41,10 +41,11 @@ public class PriceHistoryPostgresRepository : PostgresRepositoryBase, IPriceHist
             offerId: offerId, 
             price: price);
 
-        const string sql = "INSERT INTO holidays.price_history " +
-                           "(id, offer_id, price_timestamp, price) " +
-                           "VALUES " +
-                           "(@Id, @OfferId, @PriceTimestamp, @Price)";
+        const string sql = 
+            "INSERT INTO holidays.price_history " +
+            "(id, offer_id, price_timestamp, price) " +
+            "VALUES " +
+            "(@Id, @OfferId, @PriceTimestamp, @Price)";
 
         var rowsAffected = await Connection.ExecuteAsync(
             sql: sql, 

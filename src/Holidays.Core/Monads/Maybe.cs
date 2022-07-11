@@ -9,61 +9,78 @@ public class Maybe<TData> where TData : notnull
     private Maybe()
     {
         _data = default;
+        IsNone = true;
     }
 
     private Maybe(TData data)
     {
         _data = data;
+        IsNone = false;
     }
 
-    public TData Data => _data ?? throw new InvalidOperationException("Data is null");
+    public TData Data
+    {
+        get
+        {
+            if (IsNone)
+            {
+                throw new InvalidOperationException("Data is none.");
+            }
 
-    public bool IsNull => _data is not null;
+            return _data!;
+        }
+    }
+
+    public bool IsNone { get; }
 
     public bool TryGetData([NotNullWhen(true)] out TData? data)
     {
-        if (_data is null)
+        if (IsNone)
         {
             data = default;
             return false;
         }
 
-        data = _data;
+        data = _data!;
         return true;
     }
     
-    public T Match<T>(Func<T> onNull, Func<TData, T> onData)
+    public T Match<T>(Func<T> onNone, Func<TData, T> onData)
     {
-        return _data is null
-            ? onNull()
-            : onData(_data);
-    }
-    
-    public void IfNotNull(Action<TData> onData)
-    {
-        if (_data is not null)
-        {
-            onData(_data);
-        }
+        return IsNone
+            ? onNone()
+            : onData(_data!);
     }
 
-    public static implicit operator Maybe<TData>(TData? data)
+    public TData WithDefaultValue(TData defaultValue)
     {
-        return data is null 
-            ? new Maybe<TData>() 
-            : new Maybe<TData>(data);
+        return IsNone
+            ? defaultValue
+            : _data!;
     }
+    
+    public void IfSome(Action<TData> onData)
+    {
+        if (!IsNone)
+        {
+            onData(_data!);
+        }
+    }
+    
+    public static Maybe<TData> None() => new();
+
+    public static Maybe<TData> Some(TData data) => new(data);
 }
 
 public static class Maybe
 {
-    public static Maybe<TData> Null<TData>() where TData : notnull
+    public static Maybe<TData> None<TData>() where TData : notnull
     {
-        return default(TData);
+        return Maybe<TData>.None();
     }
 
-    public static Maybe<TData> Data<TData>(TData data) where TData : notnull
+    public static Maybe<TData> Some<TData>(TData data) where TData : notnull
     {
-        return data;
+        return Maybe<TData>.Some(data);
     }
 }

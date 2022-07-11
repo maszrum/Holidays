@@ -9,4 +9,6 @@ public interface IOffersRepository
     Task<Offers> GetAllRemoved();
     
     Task<Maybe<Offer>> Get(Guid offerId);
+
+    Task<Maybe<DateOnly>> GetLastDepartureDate();
 }

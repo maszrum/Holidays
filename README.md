@@ -1,4 +1,3 @@
- - Do not emit event OfferAdded when new day
  - Add switch that enables use of local selenium instead of docker
  - Add in-memory database transactions
  - Add Blazor UI

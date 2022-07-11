@@ -35,14 +35,31 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
 
         if (record is null)
         {
-            return Maybe.Null<Offer>();
+            return Maybe.None<Offer>();
         }
 
         var offer = _converter.ConvertToObject(record);
 
-        return offer;
+        return Maybe.Some(offer);
     }
-    
+
+    public async Task<Maybe<DateOnly>> GetLastDepartureDate()
+    {
+        const string sql = 
+            "SELECT departure_date " +
+            "FROM holidays.offer " +
+            "ORDER BY departure_date DESC " +
+            "LIMIT 1";
+
+        var departureDateDay = await Connection.QuerySingleOrDefaultAsync<int?>(
+            sql: sql, 
+            transaction: Transaction);
+
+        return departureDateDay.HasValue 
+            ? Maybe.Some(DateOnly.FromDayNumber(departureDateDay.Value))
+            : Maybe.None<DateOnly>();
+    }
+
     public async Task Add(Offer offer)
     {
         var (alreadyExists, isRemoved) = await OfferExists(offer.Id);

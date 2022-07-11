@@ -52,6 +52,11 @@ eventBusBuilder
     .RegisterHandler(() => new OfferPriceChangedInMemoryStoreEventHandler(inMemoryStore))
     .RegisterHandler(() => new OfferPriceChangedPostgresEventHandler(postgresConnectionFactory));
 
+eventBusBuilder
+    .ForEventType<OfferStartedTracking>()
+    .RegisterHandler(() => new OfferStartedTrackingInMemoryStoreEventHandler(inMemoryStore))
+    .RegisterHandler(() => new OfferStartedTrackingPostgresEventHandler(postgresConnectionFactory));
+
 var eventBus = eventBusBuilder.Build();
 
 var cts = new CancellationTokenSource();

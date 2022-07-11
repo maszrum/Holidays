@@ -22,24 +22,36 @@ public class OffersInMemoryRepository : IOffersRepository
     {
         if (!_store.Offers.TryGetValue(offerId, out var record) || record.IsRemoved)
         {
-            return Task.FromResult(Maybe.Null<Offer>());
+            return Task.FromResult(Maybe<Offer>.None());
         }
 
         var offer = _offerConverter.ConvertToObject(record);
 
-        return Task.FromResult(Maybe.Data(offer));
+        return Task.FromResult(Maybe.Some(offer));
+    }
+
+    public Task<Maybe<DateOnly>> GetLastDepartureDate()
+    {
+        if (_store.Offers.IsEmpty)
+        {
+            return Task.FromResult(Maybe.None<DateOnly>());
+        }
+
+        var result = _store.Offers.Values.MaxBy(o => o.DepartureDate.DayNumber);
+
+        return Task.FromResult(Maybe.Some(result!.DepartureDate));
     }
 
     public Task<Maybe<Offer>> RemovedExists(Guid offerId)
     {
         if (!_store.Offers.TryGetValue(offerId, out var record) || record.IsRemoved)
         {
-            return Task.FromResult(Maybe.Null<Offer>());
+            return Task.FromResult(Maybe.None<Offer>());
         }
 
         var offer = _offerConverter.ConvertToObject(record);
 
-        return Task.FromResult(Maybe.Data(offer));
+        return Task.FromResult(Maybe.Some(offer));
     }
 
     public void Add(Offer offer)

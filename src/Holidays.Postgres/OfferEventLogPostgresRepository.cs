@@ -43,6 +43,13 @@ public sealed class OfferEventLogPostgresRepository : PostgresRepositoryBase, IO
         return AddEventLogRecord(record);
     }
 
+    public Task Add(OfferStartedTracking @event)
+    {
+        var record = _converter.ConvertToRecord(@event);
+
+        return AddEventLogRecord(record);
+    }
+
     public async Task<int> Count()
     {
         var count = await Connection.ExecuteScalarAsync<int>(
@@ -68,7 +75,7 @@ public sealed class OfferEventLogPostgresRepository : PostgresRepositoryBase, IO
 
     private async Task AddEventLogRecord(OfferEventLogRecord record)
     {
-        var sql = 
+        const string sql = 
             "INSERT INTO holidays.offer_event_log " +
             "(id, event_timestamp, offer_id, event_type, params) " +
             "VALUES " +

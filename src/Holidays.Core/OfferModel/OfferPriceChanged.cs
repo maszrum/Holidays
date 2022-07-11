@@ -10,7 +10,7 @@ public record OfferPriceChanged : IEvent
         int previousPrice, 
         DateTime timestamp)
     {
-        Offer = Maybe.Null<Offer>();
+        Offer = Maybe<Offer>.None();
         OfferId = offerId;
         CurrentPrice = currentPrice;
         PreviousPrice = previousPrice;
@@ -22,7 +22,7 @@ public record OfferPriceChanged : IEvent
         int previousPrice, 
         DateTime timestamp)
     {
-        Offer = offer;
+        Offer = Maybe.Some(offer);
         OfferId = offer.Id;
         CurrentPrice = offer.Price;
         PreviousPrice = previousPrice;

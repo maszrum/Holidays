@@ -28,6 +28,8 @@ internal class ChangesDetectionJob
         while (!cancellationToken.IsCancellationRequested)
         {
             var previousState = await _offersRepository.GetAll();
+            var lastDepartureDay = (await _offersRepository.GetLastDepartureDate())
+                .WithDefaultValue(DateOnly.FromDayNumber(0));
 
             _logger.Debug(
                 "Starting scraping with data source: {ScraperType}", 
@@ -42,7 +44,7 @@ internal class ChangesDetectionJob
                 _logger.Error(currentState.Error);
                 continue;
             }
-
+            
             var changes = new OfferChangesDetector()
                 .DetectChanges(previousState, currentState.Data);
             
@@ -51,7 +53,7 @@ internal class ChangesDetectionJob
                 currentState.Data.Elements.Count, 
                 changes.Count);
 
-            var events = changes.Select(GetEventBasedOnChange);
+            var events = changes.Select(change => GetEventBasedOnChange(change, lastDepartureDay));
 
             foreach (var @event in events)
             {
@@ -62,13 +64,16 @@ internal class ChangesDetectionJob
         }
     }
 
-    private static IEvent GetEventBasedOnChange(DetectedChange change)
+    private static IEvent GetEventBasedOnChange(DetectedChange change, DateOnly lastDepartureDay)
     {
-        return change.ChangeType switch
+        var startedTracking = change.Offer.DepartureDate > lastDepartureDay;
+        
+        return (change.ChangeType, startedTracking) switch
         {
-            OfferChangeType.PriceChanged => new OfferPriceChanged(change.Offer, change.OfferBeforeChange.Price, DateTime.UtcNow),
-            OfferChangeType.OfferAdded => OfferAdded.ForNewOffer(change.Offer),
-            OfferChangeType.OfferRemoved => new OfferRemoved(change.Offer.Id, DateTime.UtcNow),
+            (OfferChangeType.OfferAdded, true) => OfferStartedTracking.ForNewOffer(change.Offer),
+            (OfferChangeType.OfferAdded, false) => OfferAdded.ForNewOffer(change.Offer),
+            (OfferChangeType.PriceChanged, _) => new OfferPriceChanged(change.Offer, change.OfferBeforeChange.Price, DateTime.UtcNow),
+            (OfferChangeType.OfferRemoved, _) => new OfferRemoved(change.Offer.Id, DateTime.UtcNow),
             _ => throw new ArgumentOutOfRangeException(nameof(change.ChangeType), change.ChangeType.ToString())
         };
     }
