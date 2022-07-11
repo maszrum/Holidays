@@ -19,11 +19,13 @@ public class OfferRemovedPostgresEventHandler : IEventHandler<OfferRemoved>
         
         await using var offersRepository = new OffersPostgresRepository(connection, transaction);
         await using var offerChangesRepository = new OfferEventLogPostgresRepository(connection, transaction);
+        await using var priceHistoryRepository = new PriceHistoryPostgresRepository(connection, transaction);
 
         try
         {
             await offersRepository.Remove(@event.OfferId);
             await offerChangesRepository.Add(@event);
+            await priceHistoryRepository.Add(@event.OfferId, @event.Timestamp, 0);
 
             await transaction.CommitAsync(cancellationToken);
         }

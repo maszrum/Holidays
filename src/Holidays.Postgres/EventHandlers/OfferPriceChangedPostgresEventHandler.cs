@@ -19,11 +19,13 @@ public class OfferPriceChangedPostgresEventHandler : IEventHandler<OfferPriceCha
         
         await using var offersRepository = new OffersPostgresRepository(connection, transaction);
         await using var offerChangesRepository = new OfferEventLogPostgresRepository(connection, transaction);
+        await using var priceHistoryRepository = new PriceHistoryPostgresRepository(connection, transaction);
 
         try
         {
             await offersRepository.ModifyPrice(@event.OfferId, @event.CurrentPrice);
             await offerChangesRepository.Add(@event);
+            await priceHistoryRepository.Add(@event.OfferId, @event.Timestamp, @event.CurrentPrice);
 
             await transaction.CommitAsync(cancellationToken);
         }
