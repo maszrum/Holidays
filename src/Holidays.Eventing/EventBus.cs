@@ -1,10 +1,13 @@
-﻿using Holidays.Core.Eventing;
+﻿using System.Collections.Immutable;
+using System.Reflection;
+using Holidays.Core.Eventing;
 
 namespace Holidays.Eventing;
 
 public class EventBus
 {
     private readonly IReadOnlyDictionary<Type, List<Func<object>>> _handlerFactories;
+    private readonly ImmutableDictionary<Type, MethodInfo> _methodInfos;
 
     internal EventBus(IReadOnlyDictionary<Type, List<Func<object>>> handlerFactories)
     {
@@ -14,6 +17,8 @@ public class EventBus
         {
             handlerFactory.Reverse();
         }
+
+        _methodInfos = GetMethodInfos(handlerFactories.Values.SelectMany(h => h));
     }
 
     public async Task Publish(IEvent @event, CancellationToken cancellationToken = default)
@@ -38,24 +43,14 @@ public class EventBus
         await next();
     }
 
-    private static async Task InvokeHandleMethod(
+    private async Task InvokeHandleMethod(
         Func<object> handlerFactory, 
         IEvent @event, 
         Func<Task> next,
         CancellationToken cancellationToken = default)
     {
         var handlerInstance = handlerFactory();
-
-        var handleMethodInfo = handlerInstance
-            .GetType()
-            .GetMethod(nameof(IEventHandler<IEvent>.Handle));
-
-        if (handleMethodInfo is null)
-        {
-            throw new InvalidOperationException(
-                $"Cannot find {nameof(IEventHandler<IEvent>.Handle)} method " +
-                $"in type {handlerInstance.GetType().Name}");
-        }
+        var handleMethodInfo = _methodInfos[handlerInstance.GetType()];
         
         var result = handleMethodInfo.Invoke(
             handlerInstance, 
@@ -66,9 +61,40 @@ public class EventBus
             throw new InvalidOperationException(
                 $"Method {nameof(IEventHandler<IEvent>.Handle)} returned null value");
         }
-            
+
         var resultTyped = (Task) result;
 
         await resultTyped;
+    }
+
+    private static ImmutableDictionary<Type, MethodInfo> GetMethodInfos(IEnumerable<Func<object>> handlerFactories)
+    {
+        var result = ImmutableDictionary.CreateBuilder<Type, MethodInfo>();
+
+        foreach (var handlerFactory in handlerFactories)
+        {
+            var handlerInstance = handlerFactory();
+            var handlerType = handlerInstance.GetType();
+
+            if (result.ContainsKey(handlerType))
+            {
+                continue;
+            }
+
+            var handleMethodInfo = handlerInstance
+                .GetType()
+                .GetMethod(nameof(IEventHandler<IEvent>.Handle));
+
+            if (handleMethodInfo is null)
+            {
+                throw new InvalidOperationException(
+                    $"Cannot find {nameof(IEventHandler<IEvent>.Handle)} method " +
+                    $"in type {handlerInstance.GetType().Name}");
+            }
+            
+            result.Add(handlerType, handleMethodInfo);
+        }
+
+        return result.ToImmutable();
     }
 }

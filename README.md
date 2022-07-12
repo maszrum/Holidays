@@ -2,5 +2,4 @@
  - Add Blazor UI
  - Add RabbitMQ
  - Add TUI and Itaka web scraper
- - Improve EventBus performance
  - Create docker container from Cli application
