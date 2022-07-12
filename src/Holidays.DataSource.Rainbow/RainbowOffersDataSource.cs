@@ -9,14 +9,14 @@ namespace Holidays.DataSource.Rainbow;
 
 public class RainbowOffersDataSource : IOffersDataSource
 {
-    private const string WebsiteName = "Rainbow";
-    
     private readonly WebDriverFactory _webDriverFactory;
 
     public RainbowOffersDataSource(WebDriverFactory webDriverFactory)
     {
         _webDriverFactory = webDriverFactory;
     }
+
+    public string WebsiteName => Constants.WebsiteName;
 
     public async Task<Result<Offers>> GetOffers(Predicate<Offer> predicate)
     {
@@ -27,11 +27,11 @@ public class RainbowOffersDataSource : IOffersDataSource
         }
         catch (WebDriverException webDriverException)
         {
-            return new WebScrapingError(webDriverException, WebsiteName);
+            return new WebScrapingError(webDriverException, Constants.WebsiteName);
         }
         catch (TimeoutException)
         {
-            return new TimeoutError(WebsiteName);
+            return new TimeoutError(Constants.WebsiteName);
         }
     }
     

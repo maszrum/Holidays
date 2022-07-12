@@ -8,6 +8,7 @@
     city_of_departure character varying(64) NOT NULL,
     price integer NOT NULL,
     details_url character varying(1024) NOT NULL,
+    website_name character varying(64) NOT NULL,
     is_removed boolean NOT NULL,
     PRIMARY KEY (id)
 );

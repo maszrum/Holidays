@@ -22,14 +22,14 @@ public class OfferChangesDetectorTests
     public void given_three_offers_and_then_there_should_be_no_changes_detected()
     {
         var previousState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
         
         var currentState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
 
         var changes = new OfferChangesDetector().DetectChanges(previousState, currentState);
         
@@ -40,14 +40,14 @@ public class OfferChangesDetectorTests
     public void given_three_offers_and_then_there_should_be_one_price_change_detected()
     {
         var previousState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
         
         var currentState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2000, "url b"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2000, "url b", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
 
         var changes = new OfferChangesDetector().DetectChanges(previousState, currentState);
         
@@ -62,13 +62,13 @@ public class OfferChangesDetectorTests
     public void given_three_offers_and_then_there_should_be_one_offer_removed_detected()
     {
         var previousState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
         
         var currentState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
 
         var changes = new OfferChangesDetector().DetectChanges(previousState, currentState);
         
@@ -92,13 +92,13 @@ public class OfferChangesDetectorTests
     public void given_three_offers_and_then_there_should_be_one_offer_added_detected()
     {
         var previousState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
         
         var currentState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a"),
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 1, "url a", "website"),
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"));
 
         var changes = new OfferChangesDetector().DetectChanges(previousState, currentState);
         
@@ -122,14 +122,14 @@ public class OfferChangesDetectorTests
     public void given_three_offers_and_then_there_should_be_one_offer_added_one_offer_removed_and_one_price_changed_detected()
     {
         var previousState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 2, "url a"),
-            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c"),
-            new Offer("hotel c", "destination c", DateOnly.FromDayNumber(1), 8, "city a", 3, "url b"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 2, "url a", "website"),
+            new Offer("hotel b", "destination b", DateOnly.FromDayNumber(1), 8, "city a", 1, "url c", "website"),
+            new Offer("hotel c", "destination c", DateOnly.FromDayNumber(1), 8, "city a", 3, "url b", "website"));
         
         var currentState = Create.Offers(
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 2000, "url a"),
-            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b"),
-            new Offer("hotel c", "destination c", DateOnly.FromDayNumber(1), 8, "city a", 3, "url b"));
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(1), 8, "city a", 2000, "url a", "website"),
+            new Offer("hotel a", "destination a", DateOnly.FromDayNumber(2), 8, "city a", 2, "url b", "website"),
+            new Offer("hotel c", "destination c", DateOnly.FromDayNumber(1), 8, "city a", 3, "url b", "website"));
 
         var changes = new OfferChangesDetector().DetectChanges(previousState, currentState);
         

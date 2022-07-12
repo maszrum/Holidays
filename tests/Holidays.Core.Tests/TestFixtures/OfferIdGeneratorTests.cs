@@ -16,7 +16,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerId = offer.Id;
         
@@ -27,7 +28,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var sameOfferId = sameOffer.Id;
         
@@ -44,7 +46,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerId = offer.Id;
 
@@ -55,7 +58,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1400, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerIdWithDifferentPrice = offerWithDifferentPrice.Id;
         
@@ -72,7 +76,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerId = offer.Id;
 
@@ -83,7 +88,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerIdWithDifferentHotel = offerWithDifferentHotel.Id;
         
@@ -100,7 +106,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerId = offer.Id;
 
@@ -111,7 +118,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerIdWithDifferentDestination = offerWithDifferentDestination.Id;
         
@@ -128,7 +136,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerId = offer.Id;
 
@@ -139,7 +148,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerIdWithDifferentDepartureDate = offerWithDifferentDepartureDate.Id;
         
@@ -156,7 +166,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerId = offer.Id;
 
@@ -167,7 +178,8 @@ public class OfferIdGeneratorTests
             days: 4, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerIdWithDifferentDays = offerWithDifferentDays.Id;
         
@@ -184,7 +196,8 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerId = offer.Id;
 
@@ -195,10 +208,41 @@ public class OfferIdGeneratorTests
             days: 3, 
             cityOfDeparture: "different city", 
             price: 1200, 
-            detailsUrl: "url");
+            detailsUrl: "url",
+            websiteName: "website");
 
         var offerIdWithDifferentCityOfDeparture = offerWithDifferentCityOfDeparture.Id;
         
         Assert.That(offerIdWithDifferentCityOfDeparture, Is.Not.EqualTo(offerId));
+    }
+    
+    [Test]
+    public void same_offers_with_different_website_names_should_have_different_id()
+    {
+        var offer = new Offer(
+            hotel: "hotel", 
+            destination: "destination", 
+            departureDate: DateOnly.FromDayNumber(2), 
+            days: 3, 
+            cityOfDeparture: "city", 
+            price: 1200, 
+            detailsUrl: "url",
+            websiteName: "website");
+
+        var offerId = offer.Id;
+
+        var offerWithDifferentCityOfDeparture = new Offer(
+            hotel: "hotel", 
+            destination: "destination", 
+            departureDate: DateOnly.FromDayNumber(2), 
+            days: 3, 
+            cityOfDeparture: "city", 
+            price: 1200, 
+            detailsUrl: "url",
+            websiteName: "different website");
+
+        var offerIdWithDifferentWebsiteName = offerWithDifferentCityOfDeparture.Id;
+        
+        Assert.That(offerIdWithDifferentWebsiteName, Is.Not.EqualTo(offerId));
     }
 }

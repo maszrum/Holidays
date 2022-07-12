@@ -16,7 +16,8 @@ public class Offer
         int days, 
         string cityOfDeparture, 
         int price, 
-        string detailsUrl)
+        string detailsUrl,
+        string websiteName)
     {
         Hotel = hotel;
         Destination = destination;
@@ -25,6 +26,7 @@ public class Offer
         CityOfDeparture = cityOfDeparture;
         Price = price;
         DetailsUrl = detailsUrl;
+        WebsiteName = websiteName;
         
         _guid = new Lazy<Guid>(() => IdGenerator.Generate(this));
     }
@@ -44,4 +46,6 @@ public class Offer
     public int Price { get; init; }
     
     public string DetailsUrl { get; init; }
+    
+    public string WebsiteName { get; init; }
 }

@@ -19,6 +19,9 @@ var configuration = new ApplicationConfiguration(
     "appsettings.json", 
     overrideWithEnvironmentVariables: false);
 
+var webDriverFactory = new WebDriverFactory(configuration.Get<SeleniumSettings>());
+var offersDataSource = new RainbowOffersDataSource(webDriverFactory);
+
 var postgresConnectionFactory = new PostgresConnectionFactory(configuration.Get<PostgresSettings>());
 
 var databaseInitializer = new DatabaseInitializer(postgresConnectionFactory);
@@ -29,8 +32,8 @@ Offers persistedActiveOffers, persistedRemovedOffers;
 await using(var connection = await postgresConnectionFactory.CreateConnection())
 await using (var postgresOffersRepository = new OffersPostgresRepository(connection))
 {
-    persistedActiveOffers = await postgresOffersRepository.GetAll();
-    persistedRemovedOffers = await postgresOffersRepository.GetAllRemoved();
+    persistedActiveOffers = await postgresOffersRepository.GetAllByWebsiteName(offersDataSource.WebsiteName);
+    persistedRemovedOffers = await postgresOffersRepository.GetAllRemovedByWebsiteName(offersDataSource.WebsiteName);
 }
 
 var inMemoryStore = InMemoryDatabase.CreateWithInitialState(persistedActiveOffers, persistedRemovedOffers);
@@ -65,9 +68,6 @@ Console.CancelKeyPress += (_, _) => cts.Cancel();
 
 var offersInMemoryRepository = new OffersInMemoryRepository(inMemoryStore);
 var job = new ChangesDetectionJob(eventBus, offersInMemoryRepository, logger.ForContext<ChangesDetectionJob>());
-
-var webDriverFactory = new WebDriverFactory(configuration.Get<SeleniumSettings>());
-var offersDataSource = new RainbowOffersDataSource(webDriverFactory);
 
 await job.Run(offersDataSource, cts.Token);
 

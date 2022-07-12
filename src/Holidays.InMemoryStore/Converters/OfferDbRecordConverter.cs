@@ -14,7 +14,8 @@ internal class OfferDbRecordConverter
             record.Days,
             record.CityOfDeparture,
             record.Price,
-            record.DetailsUrl);
+            record.DetailsUrl,
+            record.WebsiteName);
     }
 
     public OfferDbRecord ConvertToRecord(Offer offer, bool isRemoved)
@@ -28,6 +29,7 @@ internal class OfferDbRecordConverter
             offer.CityOfDeparture,
             offer.Price,
             offer.DetailsUrl,
+            offer.WebsiteName,
             isRemoved);
     }
 }

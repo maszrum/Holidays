@@ -10,7 +10,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_forcefully_should_remove_offer_table_and_create_again()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
 
         int offersCountBeforeInitialization, offersCountAfterInitialization;
         
@@ -40,7 +40,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_if_need_should_not_remove_offer_table()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
 
         int offersCountBeforeInitialization, offersCountAfterInitialization;
         
@@ -72,7 +72,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_forcefully_should_remove_offer_event_log_table_and_create_again()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
         var @event = OfferAdded.ForNewOffer(offer);
 
         int offerEventLogCountBeforeInitialization, offerEventLogCountAfterInitialization;
@@ -106,7 +106,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_if_need_should_not_remove_offer_event_log_table()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
         var @event = OfferAdded.ForNewOffer(offer);
 
         int offerEventLogCountBeforeInitialization, offerEventLogCountAfterInitialization;

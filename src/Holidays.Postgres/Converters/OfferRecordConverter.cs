@@ -16,6 +16,7 @@ internal class OfferRecordConverter
             offer.CityOfDeparture,
             offer.Price,
             offer.DetailsUrl,
+            offer.WebsiteName,
             isRemoved);
     }
 
@@ -28,7 +29,8 @@ internal class OfferRecordConverter
             record.Days,
             record.CityOfDeparture,
             record.Price,
-            record.DetailsUrl);
+            record.DetailsUrl,
+            record.WebsiteName);
         
         if (offer.Id != record.Id)
         {

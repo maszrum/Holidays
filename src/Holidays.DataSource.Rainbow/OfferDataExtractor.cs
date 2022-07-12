@@ -27,7 +27,8 @@ internal class OfferDataExtractor
             days: days,
             cityOfDeparture: cityOfDepartureElement.Text,
             price: int.Parse(priceElement.Text.Replace(" ", string.Empty)),
-            detailsUrl: detailsLinkElement.GetAttribute("href"));
+            detailsUrl: detailsLinkElement.GetAttribute("href"),
+            Constants.WebsiteName);
     }
 
     private static (DateOnly, int) ExtractDepartureDateAndDays(string input)

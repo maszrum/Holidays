@@ -22,9 +22,14 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
     {
     }
 
-    public Task<Offers> GetAll() => GetAllOffers(getRemoved: false);
+    public Task<Offers> GetAll() => 
+        GetAllOffers(getRemoved: false);
 
-    public Task<Offers> GetAllRemoved() => GetAllOffers(getRemoved: true);
+    public Task<Offers> GetAllByWebsiteName(string websiteName) => 
+        GetAllOffersByWebsiteName(websiteName, getRemoved: false);
+
+    public Task<Offers> GetAllRemovedByWebsiteName(string websiteName) => 
+        GetAllOffersByWebsiteName(websiteName, getRemoved: true);
 
     public async Task<Maybe<Offer>> Get(Guid offerId)
     {
@@ -43,16 +48,18 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         return Maybe.Some(offer);
     }
 
-    public async Task<Maybe<DateOnly>> GetLastDepartureDate()
+    public async Task<Maybe<DateOnly>> GetLastDepartureDate(string websiteName)
     {
         const string sql = 
             "SELECT departure_date " +
             "FROM holidays.offer " +
+            "WHERE website_name = @WebsiteName " +
             "ORDER BY departure_date DESC " +
             "LIMIT 1";
 
         var departureDateDay = await Connection.QuerySingleOrDefaultAsync<int?>(
             sql: sql, 
+            param: new { WebsiteName = websiteName },
             transaction: Transaction);
 
         return departureDateDay.HasValue 
@@ -84,9 +91,9 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         
             sql = 
                 "INSERT INTO holidays.offer " +
-                "(id, hotel, destination, departure_date, days, city_of_departure, price, details_url, is_removed) " +
+                "(id, hotel, destination, departure_date, days, city_of_departure, price, details_url, website_name, is_removed) " +
                 "VALUES " +
-                "(@Id, @Hotel, @Destination, @DepartureDate, @Days, @CityOfDeparture, @Price, @DetailsUrl, @IsRemoved)";
+                "(@Id, @Hotel, @Destination, @DepartureDate, @Days, @CityOfDeparture, @Price, @DetailsUrl, @WebsiteName, @IsRemoved)";
 
             param = record;
         }
@@ -137,10 +144,21 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
 
     private async Task<Offers> GetAllOffers(bool getRemoved)
     {
-        var trueFalse = getRemoved ? "TRUE" : "FALSE";
-        
         var records = await Connection.QueryAsync<OfferDbRecord>(
-            sql: $"SELECT * FROM holidays.offer WHERE is_removed = {trueFalse}",
+            sql: $"SELECT * FROM holidays.offer WHERE is_removed = @IsRemoved",
+            param: new { IsRemoved = getRemoved },
+            transaction: Transaction);
+
+        var offers = records.Select(_converter.ConvertToObject);
+
+        return new Offers(offers);
+    }
+
+    private async Task<Offers> GetAllOffersByWebsiteName(string websiteName, bool getRemoved)
+    {
+        var records = await Connection.QueryAsync<OfferDbRecord>(
+            sql: $"SELECT * FROM holidays.offer WHERE website_name = @WebsiteName AND is_removed = @IsRemoved",
+            param: new { WebsiteName = websiteName, IsRemoved = getRemoved },
             transaction: Transaction);
 
         var offers = records.Select(_converter.ConvertToObject);

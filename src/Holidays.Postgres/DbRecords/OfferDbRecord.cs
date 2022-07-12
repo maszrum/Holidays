@@ -16,6 +16,7 @@ internal class OfferDbRecord
         string cityOfDeparture, 
         int price, 
         string detailsUrl, 
+        string websiteName,
         bool isRemoved)
     {
         Id = id;
@@ -26,6 +27,7 @@ internal class OfferDbRecord
         CityOfDeparture = cityOfDeparture;
         Price = price;
         DetailsUrl = detailsUrl;
+        WebsiteName = websiteName;
         IsRemoved = isRemoved;
     }
 
@@ -44,6 +46,8 @@ internal class OfferDbRecord
     public int Price { get; init; }
 
     public string DetailsUrl { get; init; } = null!;
+
+    public string WebsiteName { get; init; } = null!;
     
     public bool IsRemoved { get; init; }
 }

@@ -28,7 +28,7 @@ internal class ChangesDetectionJob
         while (!cancellationToken.IsCancellationRequested)
         {
             var previousState = await _offersRepository.GetAll();
-            var lastDepartureDay = (await _offersRepository.GetLastDepartureDate())
+            var lastDepartureDay = (await _offersRepository.GetLastDepartureDate(dataSource.WebsiteName))
                 .WithDefaultValue(DateOnly.FromDayNumber(0));
 
             _logger.Debug(

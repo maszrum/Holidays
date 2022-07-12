@@ -1,9 +1,6 @@
-﻿using System.Transactions;
-using Holidays.Core.InfrastructureInterfaces;
+﻿using Holidays.Core.InfrastructureInterfaces;
 using Holidays.Core.OfferModel;
 using Holidays.InMemoryStore.Converters;
-using NMemory.Linq;
-using NMemory.Transactions;
 
 namespace Holidays.InMemoryStore;
 
@@ -17,9 +14,14 @@ public class OffersInMemoryRepository : IOffersRepository
         _database = database;
     }
 
-    public Task<Offers> GetAll() => GetAll(getRemovedOffers: false);
+    public Task<Offers> GetAll() => 
+        GetAllOffers(getRemovedOffers: false);
 
-    public Task<Offers> GetAllRemoved() => GetAll(getRemovedOffers: true);
+    public Task<Offers> GetAllByWebsiteName(string websiteName) => 
+        GetAllOffersByWebsiteName(websiteName, getRemovedOffers: false);
+
+    public Task<Offers> GetAllRemovedByWebsiteName(string websiteName) => 
+        GetAllOffersByWebsiteName(websiteName, getRemovedOffers: true);
     
     public Task<Maybe<Offer>> Get(Guid offerId)
     {
@@ -35,7 +37,7 @@ public class OffersInMemoryRepository : IOffersRepository
         return Task.FromResult(Maybe.Some(offer));
     }
 
-    public Task<Maybe<DateOnly>> GetLastDepartureDate()
+    public Task<Maybe<DateOnly>> GetLastDepartureDate(string websiteName)
     {
         var offersCount = _database.Offers.Count;
         
@@ -44,9 +46,13 @@ public class OffersInMemoryRepository : IOffersRepository
             return Task.FromResult(Maybe.None<DateOnly>());
         }
 
-        var result = _database.Offers.MaxBy(o => o.DepartureDate.DayNumber);
+        var result = _database.Offers
+            .Where(o => o.WebsiteName == websiteName)
+            .MaxBy(o => o.DepartureDate.DayNumber);
 
-        return Task.FromResult(Maybe.Some(result!.DepartureDate));
+        return Task.FromResult(result is null 
+            ? Maybe<DateOnly>.None() 
+            : Maybe.Some(result.DepartureDate));
     }
 
     public Task<Maybe<Offer>> RemovedExists(Guid offerId)
@@ -122,10 +128,20 @@ public class OffersInMemoryRepository : IOffersRepository
         _database.Offers.Update(newRecord);
     }
 
-    private Task<Offers> GetAll(bool getRemovedOffers)
+    private Task<Offers> GetAllOffers(bool getRemovedOffers)
     {
         var offers = _database.Offers
             .Where(r => r.IsRemoved == getRemovedOffers)
+            .AsEnumerable()
+            .Select(_offerConverter.ConvertToObject);
+
+        return Task.FromResult(new Offers(offers));
+    }
+
+    private Task<Offers> GetAllOffersByWebsiteName(string websiteName, bool getRemovedOffers)
+    {
+        var offers = _database.Offers
+            .Where(r => r.WebsiteName == websiteName && r.IsRemoved == getRemovedOffers)
             .AsEnumerable()
             .Select(_offerConverter.ConvertToObject);
 
