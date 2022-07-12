@@ -1,18 +1,19 @@
 ﻿using Holidays.Core.Eventing;
 using Holidays.Core.OfferModel;
+using NMemory.Transactions;
 
 namespace Holidays.InMemoryStore.EventHandlers;
 
 public class OfferStartedTrackingInMemoryStoreEventHandler : IEventHandler<OfferStartedTracking>
 {
-    private readonly InMemoryStore _store;
+    private readonly InMemoryDatabase _database;
 
-    public OfferStartedTrackingInMemoryStoreEventHandler(InMemoryStore store)
+    public OfferStartedTrackingInMemoryStoreEventHandler(InMemoryDatabase database)
     {
-        _store = store;
+        _database = database;
     }
 
-    public Task Handle(OfferStartedTracking @event, Func<Task> next, CancellationToken cancellationToken)
+    public async Task Handle(OfferStartedTracking @event, Func<Task> next, CancellationToken cancellationToken)
     {
         if (!@event.Offer.TryGetData(out var offer))
         {
@@ -20,10 +21,14 @@ public class OfferStartedTrackingInMemoryStoreEventHandler : IEventHandler<Offer
                 "Received event without data.");
         }
         
-        var repository = new OffersInMemoryRepository(_store);
+        using var transaction = new TransactionContext();
+        
+        var repository = new OffersInMemoryRepository(_database);
         
         repository.Add(offer);
 
-        return next();
+        await next();
+
+        transaction.Complete();
     }
 }

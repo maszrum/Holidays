@@ -33,7 +33,7 @@ await using (var postgresOffersRepository = new OffersPostgresRepository(connect
     persistedRemovedOffers = await postgresOffersRepository.GetAllRemoved();
 }
 
-var inMemoryStore = InMemoryStore.CreateWithInitialState(persistedActiveOffers, persistedRemovedOffers);
+var inMemoryStore = InMemoryDatabase.CreateWithInitialState(persistedActiveOffers, persistedRemovedOffers);
 
 var eventBusBuilder = new EventBusBuilder();
 

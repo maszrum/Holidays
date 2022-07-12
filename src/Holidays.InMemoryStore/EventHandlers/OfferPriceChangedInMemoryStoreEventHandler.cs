@@ -1,29 +1,27 @@
 ﻿using Holidays.Core.Eventing;
 using Holidays.Core.OfferModel;
+using NMemory.Transactions;
 
 namespace Holidays.InMemoryStore.EventHandlers;
 
 public class OfferPriceChangedInMemoryStoreEventHandler : IEventHandler<OfferPriceChanged>
 {
-    private readonly InMemoryStore _inMemoryStore;
+    private readonly InMemoryDatabase _database;
 
-    public OfferPriceChangedInMemoryStoreEventHandler(InMemoryStore inMemoryStore)
+    public OfferPriceChangedInMemoryStoreEventHandler(InMemoryDatabase database)
     {
-        _inMemoryStore = inMemoryStore;
+        _database = database;
     }
 
-    public Task Handle(OfferPriceChanged @event, Func<Task> next, CancellationToken cancellationToken)
+    public async Task Handle(OfferPriceChanged @event, Func<Task> next, CancellationToken cancellationToken)
     {
-        if (!@event.Offer.TryGetData(out var offer))
-        {
-            throw new InvalidOperationException(
-                "Received event without data.");
-        }
+        using var transaction = new TransactionContext();
         
-        var repository = new OffersInMemoryRepository(_inMemoryStore);
-        
-        repository.Modify(offer);
+        var repository = new OffersInMemoryRepository(_database);
+        repository.ModifyPrice(@event.OfferId, @event.CurrentPrice);
 
-        return next();
+        await next();
+            
+        transaction.Complete();
     }
 }

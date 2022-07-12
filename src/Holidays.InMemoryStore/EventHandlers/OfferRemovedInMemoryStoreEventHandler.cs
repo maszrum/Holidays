@@ -1,23 +1,27 @@
 ﻿using Holidays.Core.Eventing;
 using Holidays.Core.OfferModel;
+using NMemory.Transactions;
 
 namespace Holidays.InMemoryStore.EventHandlers;
 
 public class OfferRemovedInMemoryStoreEventHandler : IEventHandler<OfferRemoved>
 {
-    private readonly InMemoryStore _store;
+    private readonly InMemoryDatabase _database;
 
-    public OfferRemovedInMemoryStoreEventHandler(InMemoryStore store)
+    public OfferRemovedInMemoryStoreEventHandler(InMemoryDatabase database)
     {
-        _store = store;
+        _database = database;
     }
 
-    public Task Handle(OfferRemoved @event, Func<Task> next, CancellationToken cancellationToken)
+    public async Task Handle(OfferRemoved @event, Func<Task> next, CancellationToken cancellationToken)
     {
-        var repository = new OffersInMemoryRepository(_store);
-
+        using var transaction = new TransactionContext();
+        
+        var repository = new OffersInMemoryRepository(_database);
         repository.Remove(@event.OfferId);
 
-        return next();
+        await next();
+            
+        transaction.Complete();
     }
 }

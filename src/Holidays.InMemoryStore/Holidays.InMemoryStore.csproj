@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NMemory" Version="3.1.4" />
+  </ItemGroup>
+
 </Project>

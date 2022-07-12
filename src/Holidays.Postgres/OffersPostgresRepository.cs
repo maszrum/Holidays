@@ -75,8 +75,8 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         
         if (alreadyExists && isRemoved)
         {
-            sql = "UPDATE holidays.offer SET is_removed = FALSE WHERE id = @Id";
-            param = new { offer.Id };
+            sql = "UPDATE holidays.offer SET is_removed = FALSE, price = @Price WHERE id = @Id";
+            param = new { offer.Id, offer.Price };
         }
         else
         {

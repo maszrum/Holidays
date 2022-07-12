@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Postgres", "Holida
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Postgres.Tests", "..\tests\Holidays.Postgres.Tests\Holidays.Postgres.Tests.csproj", "{74809CBA-AD30-4F57-AA3F-D7951D4CE5EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.InMemoryStore.Tests", "..\tests\Holidays.InMemoryStore.Tests\Holidays.InMemoryStore.Tests.csproj", "{9DED9D08-667B-4D68-A275-02D1EED0590E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{74809CBA-AD30-4F57-AA3F-D7951D4CE5EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74809CBA-AD30-4F57-AA3F-D7951D4CE5EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74809CBA-AD30-4F57-AA3F-D7951D4CE5EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DED9D08-667B-4D68-A275-02D1EED0590E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DED9D08-667B-4D68-A275-02D1EED0590E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DED9D08-667B-4D68-A275-02D1EED0590E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DED9D08-667B-4D68-A275-02D1EED0590E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{44C68209-CF0F-45FB-A8E5-C9776BB924BA} = {01772BFC-28B1-49CB-A06D-7A6681E7FA3F}
@@ -132,5 +138,6 @@ Global
 		{D4B60B6B-2AF7-4F1A-B337-9D1686307BA6} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
 		{6489315C-03E7-4C36-A65D-1E23EDB618D2} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{74809CBA-AD30-4F57-AA3F-D7951D4CE5EC} = {01772BFC-28B1-49CB-A06D-7A6681E7FA3F}
+		{9DED9D08-667B-4D68-A275-02D1EED0590E} = {01772BFC-28B1-49CB-A06D-7A6681E7FA3F}
 	EndGlobalSection
 EndGlobal

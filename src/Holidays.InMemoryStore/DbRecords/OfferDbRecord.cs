@@ -1,12 +1,40 @@
 ﻿namespace Holidays.InMemoryStore.DbRecords;
 
-internal record OfferDbRecord(
-    Guid Id,
-    string Hotel,
-    string Destination,
-    DateOnly DepartureDate,
-    int Days,
-    string CityOfDeparture,
-    int Price,
-    string DetailsUrl,
-    bool IsRemoved);
+internal record OfferDbRecord
+{
+    // ReSharper disable once UnusedMember.Global
+    public OfferDbRecord()
+    {
+    }
+    
+    public OfferDbRecord(Guid id,
+        string hotel,
+        string destination,
+        DateOnly departureDate,
+        int days,
+        string cityOfDeparture,
+        int price,
+        string detailsUrl,
+        bool isRemoved)
+    {
+        Id = id;
+        Hotel = hotel;
+        Destination = destination;
+        DepartureDate = departureDate;
+        Days = days;
+        CityOfDeparture = cityOfDeparture;
+        Price = price;
+        DetailsUrl = detailsUrl;
+        IsRemoved = isRemoved;
+    }
+
+    public Guid Id { get; init; }
+    public string Hotel { get; init; } = null!;
+    public string Destination { get; init; } = null!;
+    public DateOnly DepartureDate { get; init; }
+    public int Days { get; init; }
+    public string CityOfDeparture { get; init; } = null!;
+    public int Price { get; init; }
+    public string DetailsUrl { get; init; } = null!;
+    public bool IsRemoved { get; init; }
+}

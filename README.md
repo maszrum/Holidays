@@ -1,4 +1,3 @@
- - Add in-memory database transactions
  - Add Blazor UI
  - Add RabbitMQ
  - Add TUI and Itaka web scraper
