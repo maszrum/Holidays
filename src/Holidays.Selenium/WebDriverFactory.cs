@@ -15,8 +15,26 @@ public class WebDriverFactory
 
     public IWebDriver Create()
     {
-        var chromeOptions = new ChromeOptions();
-        chromeOptions.AddArgument("--no-sandbox");
+        return _settings.UseRemoteWebDriver
+            ? CreateRemoteWebDriver()
+            : CreateLocalWebDriver();
+    }
+
+    private IWebDriver CreateLocalWebDriver()
+    {
+        var chromeOptions = GetChromeOptions();
+
+        var webDriver = new ChromeDriver(
+            ChromeDriverService.CreateDefaultService(), 
+            chromeOptions, 
+            TimeSpan.FromSeconds(_settings.CommandTimeoutSeconds));
+
+        return webDriver;
+    }
+
+    private IWebDriver CreateRemoteWebDriver()
+    {
+        var chromeOptions = GetChromeOptions();
 
         var webDriver = new RemoteWebDriver(
             new Uri(_settings.RemoteWebDriverUrl),
@@ -24,5 +42,12 @@ public class WebDriverFactory
             TimeSpan.FromSeconds(_settings.CommandTimeoutSeconds));
 
         return webDriver;
+    }
+
+    private static ChromeOptions GetChromeOptions()
+    {
+        var chromeOptions = new ChromeOptions();
+        chromeOptions.AddArgument("--no-sandbox");
+        return chromeOptions;
     }
 }
