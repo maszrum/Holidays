@@ -3,6 +3,7 @@ using Holidays.Configuration;
 using Holidays.Core.OfferModel;
 using Holidays.DataSource.Rainbow;
 using Holidays.Eventing;
+using Holidays.Eventing.RabbitMq;
 using Holidays.InMemoryStore;
 using Holidays.InMemoryStore.EventHandlers;
 using Holidays.Postgres;
@@ -40,27 +41,53 @@ var inMemoryStore = InMemoryDatabase.CreateWithInitialState(persistedActiveOffer
 
 var eventBusBuilder = new EventBusBuilder();
 
+var rabbitMqSettings = configuration.Get<RabbitMqSettings>();
+if (rabbitMqSettings.UseRabbitMq)
+{
+    eventBusBuilder.UseRabbitMq(rabbitMqSettings, options =>
+    {
+        options.AddEventTypesAssembly<OfferAdded>();
+        options.OnUnknownEventType(eventTypeName =>
+        {
+            logger.ForContext<RabbitMqProvider>().Error(
+                "Received event with unknown event type: {EventType}", 
+                eventTypeName);
+            
+            return Task.CompletedTask;
+        });
+        options.OnDeserializationError((exception, eventTypeName) =>
+        {
+            logger.ForContext<RabbitMqProvider>().Error(
+                exception, 
+                "An error occured on deserializing event data {EventType}", 
+                eventTypeName);
+            
+            return Task.CompletedTask;
+        });
+    });
+}
+
 eventBusBuilder
     .ForEventType<OfferAdded>()
-    .RegisterHandler(() => new OfferAddedInMemoryStoreEventHandler(inMemoryStore))
-    .RegisterHandler(() => new OfferAddedPostgresEventHandler(postgresConnectionFactory));
+    .RegisterHandlerForAllEvents(() => new OfferAddedInMemoryStoreEventHandler(inMemoryStore))
+    .RegisterHandlerForLocalEvents(() => new OfferAddedPostgresEventHandler(postgresConnectionFactory));
 
 eventBusBuilder
     .ForEventType<OfferRemoved>()
-    .RegisterHandler(() => new OfferRemovedInMemoryStoreEventHandler(inMemoryStore))
-    .RegisterHandler(() => new OfferRemovedPostgresEventHandler(postgresConnectionFactory));
+    .RegisterHandlerForAllEvents(() => new OfferRemovedInMemoryStoreEventHandler(inMemoryStore))
+    .RegisterHandlerForLocalEvents(() => new OfferRemovedPostgresEventHandler(postgresConnectionFactory));
 
 eventBusBuilder
     .ForEventType<OfferPriceChanged>()
-    .RegisterHandler(() => new OfferPriceChangedInMemoryStoreEventHandler(inMemoryStore))
-    .RegisterHandler(() => new OfferPriceChangedPostgresEventHandler(postgresConnectionFactory));
+    .RegisterHandlerForAllEvents(() => new OfferPriceChangedInMemoryStoreEventHandler(inMemoryStore))
+    .RegisterHandlerForLocalEvents(() => new OfferPriceChangedPostgresEventHandler(postgresConnectionFactory));
 
 eventBusBuilder
     .ForEventType<OfferStartedTracking>()
-    .RegisterHandler(() => new OfferStartedTrackingInMemoryStoreEventHandler(inMemoryStore))
-    .RegisterHandler(() => new OfferStartedTrackingPostgresEventHandler(postgresConnectionFactory));
+    .RegisterHandlerForAllEvents(() => new OfferStartedTrackingInMemoryStoreEventHandler(inMemoryStore))
+    .RegisterHandlerForLocalEvents(() => new OfferStartedTrackingPostgresEventHandler(postgresConnectionFactory));
 
-var eventBus = eventBusBuilder.Build();
+await using var eventBus = await eventBusBuilder.Build();
 
 var cts = new CancellationTokenSource();
 

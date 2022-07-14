@@ -5,17 +5,37 @@ namespace Holidays.Eventing;
 public class EventBusBuilderForEventType<TEvent> 
     where TEvent : IEvent
 {
-    private readonly Action<Func<object>> _onRegister;
+    private readonly Action<EventHandlerDescriptor> _onRegister;
 
-    public EventBusBuilderForEventType(Action<Func<object>> onRegister)
+    public EventBusBuilderForEventType(Action<EventHandlerDescriptor> onRegister)
     {
         _onRegister = onRegister;
     }
 
-    public EventBusBuilderForEventType<TEvent> RegisterHandler<TEventHandler>(Func<TEventHandler> handlerFactory)
+    public EventBusBuilderForEventType<TEvent> RegisterHandlerForAllEvents<TEventHandler>(Func<TEventHandler> handlerFactory)
         where TEventHandler : class, IEventHandler<TEvent>
     {
-        _onRegister(handlerFactory);
+        var descriptor = new EventHandlerDescriptor(handlerFactory, onlyForLocalEvents: false);
+        _onRegister(descriptor);
+        
         return this;
+    }
+
+    public EventBusBuilderForEventType<TEvent> RegisterHandlerForLocalEvents<TEventHandler>(Func<TEventHandler> handlerFactory)
+        where TEventHandler : class, IEventHandler<TEvent>
+    {
+        var descriptor = new EventHandlerDescriptor(handlerFactory, onlyForLocalEvents: true);
+        _onRegister(descriptor);
+        
+        return this;
+    }
+
+    public void NoLocalHandlers()
+    {
+        var descriptor = new EventHandlerDescriptor(
+            () => new IgnoreEventHandler(), 
+            onlyForLocalEvents: false);
+
+        _onRegister(descriptor);
     }
 }

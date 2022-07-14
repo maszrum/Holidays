@@ -35,6 +35,17 @@ services:
     ports:
       - "4444:4444"
     shm_size: '2gb'
+    
+  rabbit:
+    build:
+      context: .
+      dockerfile: ./rabbitmq/Dockerfile
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=payAlot
 
 volumes:
   pgdata: {}

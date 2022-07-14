@@ -4,43 +4,97 @@ using Holidays.Core.Eventing;
 
 namespace Holidays.Eventing;
 
-public class EventBus
+public sealed class EventBus : IEventBus
 {
-    private readonly IReadOnlyDictionary<Type, List<Func<object>>> _handlerFactories;
+    private readonly IReadOnlyDictionary<Type, List<EventHandlerDescriptor>> _handlerFactories;
     private readonly ImmutableDictionary<Type, MethodInfo> _methodInfos;
+    private readonly IReadOnlyList<IExternalProvider> _externalProviders;
 
-    internal EventBus(IReadOnlyDictionary<Type, List<Func<object>>> handlerFactories)
+    internal EventBus(
+        IReadOnlyDictionary<Type, List<EventHandlerDescriptor>> handlerFactories,
+        IReadOnlyList<IExternalProvider> externalProviders)
     {
         _handlerFactories = handlerFactories;
+        _externalProviders = externalProviders;
 
         foreach (var (_, handlerFactory) in handlerFactories)
         {
             handlerFactory.Reverse();
         }
 
-        _methodInfos = GetMethodInfos(handlerFactories.Values.SelectMany(h => h));
+        var factories = handlerFactories.Values
+            .SelectMany(hl => hl.Select(h => h.HandlerFactory));
+        _methodInfos = GetMethodInfos(factories);
     }
 
-    public async Task Publish(IEvent @event, CancellationToken cancellationToken = default)
+    public Task Publish(
+        IEvent @event,
+        CancellationToken cancellationToken = default)
+    {
+        return PublishEvent(
+            @event, 
+            asExternalProvider: false, 
+            cancellationToken);
+    }
+
+    public Task PublishAsExternalProvider(
+        IEvent @event,
+        CancellationToken cancellationToken = default)
+    {
+        return PublishEvent(
+            @event, 
+            asExternalProvider: true, 
+            cancellationToken);
+    }
+
+    public IEnumerable<Type> GetRegisteredEventTypes() => _handlerFactories.Keys;
+
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var externalProvider in _externalProviders)
+        {
+            await externalProvider.DisposeAsync();
+        }
+    }
+
+    private async Task PublishEvent(
+        IEvent @event,
+        bool asExternalProvider,
+        CancellationToken cancellationToken)
     {
         var eventType = @event.GetType();
         
-        if (!_handlerFactories.TryGetValue(eventType, out var factories))
+        if (!_handlerFactories.TryGetValue(eventType, out var descriptors))
         {
             throw new InvalidOperationException(
                 $"Specified event type has not been registered when building {nameof(EventBus)}.");
         }
 
+        var descriptorsToHandle = asExternalProvider
+            ? descriptors.Where(d => !d.OnlyForLocalEvents)
+            : descriptors;
+
         var next = () => Task.CompletedTask;
 
-        foreach (var handlerFactory in factories)
+        foreach (var descriptor in descriptorsToHandle)
         {
             var nextHandler = next;
-            var nextNext = () => InvokeHandleMethod(handlerFactory, @event, nextHandler, cancellationToken);
+            
+            var nextNext = () => 
+                InvokeHandleMethod(descriptor.HandlerFactory, @event, nextHandler, cancellationToken);
+            
             next = nextNext;
         }
 
         await next();
+
+        if (!asExternalProvider)
+        {
+            foreach (var externalProvider in _externalProviders)
+            {
+                await externalProvider.Sink.Publish(@event, cancellationToken);
+            }
+        }
     }
 
     private async Task InvokeHandleMethod(

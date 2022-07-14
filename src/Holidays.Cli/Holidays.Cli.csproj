@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
     <ProjectReference Include="..\Holidays.Configuration\Holidays.Configuration.csproj" />
     <ProjectReference Include="..\Holidays.DataSource.Rainbow\Holidays.DataSource.Rainbow.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing.RabbitMq\Holidays.Eventing.RabbitMq.csproj" />
     <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
     <ProjectReference Include="..\Holidays.InMemoryStore\Holidays.InMemoryStore.csproj" />
     <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />

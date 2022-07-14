@@ -1,0 +1,10 @@
+﻿{
+  "RabbitMq": {
+    "UseRabbitMq": true,
+    "HostName": "localhost",
+    "Port": 5672,
+    "VirtualHost": "tests",
+    "UserName": "holidays-test",
+    "Password": "payAlot"
+  }
+}

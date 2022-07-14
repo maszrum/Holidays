@@ -9,12 +9,12 @@ namespace Holidays.Cli;
 
 internal class ChangesDetectionJob
 {
-    private readonly EventBus _eventBus;
+    private readonly IEventBus _eventBus;
     private readonly IOffersRepository _offersRepository;
     private readonly ILogger _logger;
 
     public ChangesDetectionJob(
-        EventBus eventBus,
+        IEventBus eventBus,
         IOffersRepository offersRepository, 
         ILogger logger)
     {
@@ -42,6 +42,7 @@ internal class ChangesDetectionJob
             if (currentState.IsError)
             {
                 _logger.Error(currentState.Error);
+                await Task.Delay(5_000, cancellationToken);
                 continue;
             }
             

@@ -1,4 +1,3 @@
- - Add RabbitMQ
  - Add TUI web scraper
  - Add Itaka web scraper
  - Create docker container from Cli application
