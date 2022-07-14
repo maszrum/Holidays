@@ -2,40 +2,7 @@
 
 namespace Holidays.Core.OfferModel;
 
-public record OfferPriceChanged : IEvent
-{
-    public OfferPriceChanged(
-        Guid offerId, 
-        int currentPrice, 
-        int previousPrice, 
-        DateTime timestamp)
-    {
-        Offer = Maybe<Offer>.None();
-        OfferId = offerId;
-        CurrentPrice = currentPrice;
-        PreviousPrice = previousPrice;
-        Timestamp = timestamp;
-    }
-
-    public OfferPriceChanged(
-        Offer offer, 
-        int previousPrice, 
-        DateTime timestamp)
-    {
-        Offer = Maybe.Some(offer);
-        OfferId = offer.Id;
-        CurrentPrice = offer.Price;
-        PreviousPrice = previousPrice;
-        Timestamp = timestamp;
-    }
-    
-    public Maybe<Offer> Offer { get; }
-    
-    public Guid OfferId { get; }
-    
-    public int CurrentPrice { get; }
-    
-    public int PreviousPrice { get; }
-    
-    public DateTime Timestamp { get; }
-}
+public record OfferPriceChanged(Guid OfferId, 
+    int CurrentPrice, 
+    int PreviousPrice, 
+    DateTime Timestamp) : IEvent;

@@ -68,13 +68,14 @@ internal class ChangesDetectionJob
     private static IEvent GetEventBasedOnChange(DetectedChange change, DateOnly lastDepartureDay)
     {
         var startedTracking = change.Offer.DepartureDate > lastDepartureDay;
+        var offer = change.Offer;
         
         return (change.ChangeType, startedTracking) switch
         {
-            (OfferChangeType.OfferAdded, true) => OfferStartedTracking.ForNewOffer(change.Offer),
-            (OfferChangeType.OfferAdded, false) => OfferAdded.ForNewOffer(change.Offer),
-            (OfferChangeType.PriceChanged, _) => new OfferPriceChanged(change.Offer, change.OfferBeforeChange.Price, DateTime.UtcNow),
-            (OfferChangeType.OfferRemoved, _) => new OfferRemoved(change.Offer.Id, DateTime.UtcNow),
+            (OfferChangeType.OfferAdded, true) => OfferStartedTracking.ForNewOffer(offer),
+            (OfferChangeType.OfferAdded, false) => OfferAdded.ForNewOffer(offer),
+            (OfferChangeType.PriceChanged, _) => new OfferPriceChanged(offer.Id, offer.Price, change.OfferBeforeChange.Price, DateTime.UtcNow),
+            (OfferChangeType.OfferRemoved, _) => new OfferRemoved(offer.Id, DateTime.UtcNow),
             _ => throw new ArgumentOutOfRangeException(nameof(change.ChangeType), change.ChangeType.ToString())
         };
     }

@@ -17,9 +17,13 @@ var logger = new LoggerConfiguration()
 
 var configuration = new ApplicationConfiguration(
     "appsettings.json", 
-    overrideWithEnvironmentVariables: false);
+    overrideWithEnvironmentVariables: true);
 
 var offersDataSourceSettings = configuration.Get<OffersDatasourceSettings>();
+
+logger.Information(
+    "Starting application with {DataSourceType} data source", 
+    offersDataSourceSettings.Provider);
 
 var webDriverFactory = new WebDriverFactory(configuration.Get<SeleniumSettings>());
 var offersDataSource = new DataSourceFactory(webDriverFactory).Get(offersDataSourceSettings.Provider);
@@ -92,11 +96,21 @@ await using var eventBus = await eventBusBuilder.Build();
 
 var cts = new CancellationTokenSource();
 
-Console.CancelKeyPress += (_, _) => cts.Cancel();
+Console.CancelKeyPress += (_, e) =>
+{
+    logger.Information("Closing application due to cancel key pressed");
+    cts.Cancel();
+    e.Cancel = true;
+};
 
 var offersInMemoryRepository = new OffersInMemoryRepository(inMemoryStore);
 var job = new ChangesDetectionJob(eventBus, offersInMemoryRepository, logger.ForContext<ChangesDetectionJob>());
 
-await job.Run(offersDataSource, cts.Token);
-
-Console.WriteLine("Finished.");
+try
+{
+    await job.Run(offersDataSource, cts.Token);
+}
+finally
+{
+    logger.Information("Application closed");
+}
