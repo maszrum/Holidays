@@ -1,3 +1,5 @@
+ - Really remove offers from in-memory database
+ - Check TODOs
+ - Refactor program main
  - Add Itaka web scraper
- - Create docker container from Cli application
  - Add Blazor UI

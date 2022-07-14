@@ -11,13 +11,29 @@ using Holidays.Postgres.Initialization;
 using Holidays.Selenium;
 using Serilog;
 
-var logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
-
 var configuration = new ApplicationConfiguration(
     "appsettings.json", 
     overrideWithEnvironmentVariables: true);
+    
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration.ConfigurationRoot)
+    .WriteTo.Console()
+    .CreateLogger();
+
+AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+{
+    if (e.ExceptionObject is Exception exception)
+    {
+        logger.Fatal(
+            exception, 
+            "Unhandled exception occured");
+    }
+    else
+    {
+        logger.Fatal(
+            "Unhandled unknown exception occured");
+    }
+};
 
 var offersDataSourceSettings = configuration.Get<OffersDatasourceSettings>();
 
@@ -51,14 +67,11 @@ if (rabbitMqSettings.UseRabbitMq)
 {
     eventBusBuilder.UseRabbitMq(rabbitMqSettings, options =>
     {
-        options.AddEventTypesAssembly<OfferAdded>();
         options.OnUnknownEventType(eventTypeName =>
         {
             logger.ForContext<RabbitMqProvider>().Error(
                 "Received event with unknown event type: {EventType}", 
                 eventTypeName);
-            
-            return Task.CompletedTask;
         });
         options.OnDeserializationError((exception, eventTypeName) =>
         {
@@ -66,8 +79,18 @@ if (rabbitMqSettings.UseRabbitMq)
                 exception, 
                 "An error occured on deserializing event data {EventType}", 
                 eventTypeName);
-            
-            return Task.CompletedTask;
+        });
+        options.OnEventReceived(@event =>
+        {
+            logger.ForContext<RabbitMqProvider>().Debug(
+                "Received event from external broker: {EventType}", 
+                @event.GetType().Name);
+        });
+        options.OnEventSent(@event =>
+        {
+            logger.ForContext<RabbitMqProvider>().Debug(
+                "Sent event to external broker: {EventType}", 
+                @event.GetType().Name);
         });
     });
 }

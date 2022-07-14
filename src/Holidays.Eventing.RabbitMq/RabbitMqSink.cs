@@ -1,19 +1,21 @@
 ﻿using Holidays.Core.Eventing;
-using RabbitMQ.Client;
 
 namespace Holidays.Eventing.RabbitMq;
 
 internal class RabbitMqSink : IExternalEventSink
 {
+    private readonly RabbitMqProviderOptions _options;
     private readonly Guid _publisherId;
     private readonly ChannelFactory _channelFactory;
     private readonly EventConverter _eventConverter;
 
     public RabbitMqSink(
+        RabbitMqProviderOptions options,
         Guid publisherId, 
         ChannelFactory channelFactory, 
         EventConverter eventConverter)
     {
+        _options = options;
         _publisherId = publisherId;
         _channelFactory = channelFactory;
         _eventConverter = eventConverter;
@@ -38,6 +40,8 @@ internal class RabbitMqSink : IExternalEventSink
             mandatory: true, 
             basicProperties: properties, 
             body: eventBytes);
+        
+        _options.EventSentLogAction?.Invoke(@event);
 
         return Task.CompletedTask;
     }

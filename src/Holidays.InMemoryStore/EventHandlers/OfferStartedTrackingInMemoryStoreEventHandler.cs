@@ -15,7 +15,7 @@ public class OfferStartedTrackingInMemoryStoreEventHandler : IEventHandler<Offer
 
     public async Task Handle(OfferStartedTracking @event, Func<Task> next, CancellationToken cancellationToken)
     {
-        if (!@event.Offer.TryGetData(out var offer))
+        if (@event.Offer is null)
         {
             throw new InvalidOperationException(
                 "Received event without data.");
@@ -25,7 +25,7 @@ public class OfferStartedTrackingInMemoryStoreEventHandler : IEventHandler<Offer
         
         var repository = new OffersInMemoryRepository(_database);
         
-        repository.Add(offer);
+        repository.Add(@event.Offer);
 
         await next();
 

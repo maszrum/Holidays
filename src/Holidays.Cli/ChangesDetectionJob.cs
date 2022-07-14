@@ -27,7 +27,7 @@ internal class ChangesDetectionJob
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            var previousState = await _offersRepository.GetAll();
+            var previousState = await _offersRepository.GetAllByWebsiteName(dataSource.WebsiteName);
             var lastDepartureDay = (await _offersRepository.GetLastDepartureDate(dataSource.WebsiteName))
                 .WithDefaultValue(DateOnly.FromDayNumber(0));
 
@@ -72,8 +72,8 @@ internal class ChangesDetectionJob
         
         return (change.ChangeType, startedTracking) switch
         {
-            (OfferChangeType.OfferAdded, true) => OfferStartedTracking.ForNewOffer(offer),
-            (OfferChangeType.OfferAdded, false) => OfferAdded.ForNewOffer(offer),
+            (OfferChangeType.OfferAdded, true) => new OfferStartedTracking(offer, offer.Id, DateTime.UtcNow),
+            (OfferChangeType.OfferAdded, false) => new OfferAdded(offer, offer.Id, DateTime.UtcNow),
             (OfferChangeType.PriceChanged, _) => new OfferPriceChanged(offer.Id, offer.Price, change.OfferBeforeChange.Price, DateTime.UtcNow),
             (OfferChangeType.OfferRemoved, _) => new OfferRemoved(offer.Id, DateTime.UtcNow),
             _ => throw new ArgumentOutOfRangeException(nameof(change.ChangeType), change.ChangeType.ToString())

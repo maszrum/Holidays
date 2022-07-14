@@ -349,13 +349,7 @@ public class EventBusTests
     {
         var unknownTypes = new List<string>();
         
-        await using var consumerEventBus = await Create.EventBus(
-            _ => { }, 
-            unknownTypeName =>
-            {
-                unknownTypes.Add(unknownTypeName);
-                return Task.CompletedTask;
-            });
+        await using var consumerEventBus = await Create.EventBus(_ => { }, unknownTypes.Add);
 
         await using var producerEventBus = await Create.EventBus(
             builder => builder

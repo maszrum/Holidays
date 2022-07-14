@@ -75,6 +75,7 @@ services:
       - postgres
       - selenium-2
       - rabbit
+      - collecting-app-1
     environment:
       - OffersDataSource__Provider=Tui
       - Selenium__RemoteWebDriverUrl=http://selenium-2:4444/wd/hub

@@ -14,7 +14,7 @@ public class OfferStartedTrackingPostgresEventHandler : IEventHandler<OfferStart
 
     public async Task Handle(OfferStartedTracking @event, Func<Task> next, CancellationToken cancellationToken)
     {
-        if (!@event.Offer.TryGetData(out var offer))
+        if (@event.Offer is null)
         {
             throw new InvalidOperationException(
                 "Received event without offer data.");
@@ -29,9 +29,9 @@ public class OfferStartedTrackingPostgresEventHandler : IEventHandler<OfferStart
 
         try
         {
-            await offersRepository.Add(offer);
+            await offersRepository.Add(@event.Offer);
             await offerChangesRepository.Add(@event);
-            await priceHistoryRepository.Add(offer.Id, @event.Timestamp, offer.Price);
+            await priceHistoryRepository.Add(@event.Offer.Id, @event.Timestamp, @event.Offer.Price);
 
             await next();
 

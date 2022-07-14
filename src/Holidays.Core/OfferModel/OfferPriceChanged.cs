@@ -2,7 +2,8 @@
 
 namespace Holidays.Core.OfferModel;
 
-public record OfferPriceChanged(Guid OfferId, 
+public record OfferPriceChanged(
+    Guid OfferId, 
     int CurrentPrice, 
     int PreviousPrice, 
     DateTime Timestamp) : IEvent;

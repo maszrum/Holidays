@@ -51,7 +51,7 @@ public sealed class RabbitMqProvider : IExternalProvider
 
         var eventConverter = new EventConverter(eventBus.GetRegisteredEventTypes());
 
-        _sink = new RabbitMqSink(_clientId, _channelFactory, eventConverter);
+        _sink = new RabbitMqSink(_options, _clientId, _channelFactory, eventConverter);
         _source = new RabbitMqSource(_options, _clientId, _channelFactory, eventBus, eventConverter);
 
         await _source.Setup();

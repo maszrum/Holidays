@@ -6,16 +6,14 @@ internal static class Create
 {
     public static async Task<IEventBus> EventBus(
         Action<EventBusBuilder> builderAction, 
-        Func<string, Task>? onUnknownEventType = default, 
-        Func<Exception, string, Task>? onDeserializationError = default)
+        Action<string>? onUnknownEventType = default, 
+        Action<Exception, string>? onDeserializationError = default)
     {
         var rabbitMqSettings = ReadSettings();
 
         var eventBusBuilder = new EventBusBuilder()
             .UseRabbitMq(rabbitMqSettings, options =>
             {
-                options.AddEventTypesAssembly<TestEvent>();
-
                 if (onDeserializationError is not null)
                 {
                     options.OnDeserializationError(onDeserializationError);

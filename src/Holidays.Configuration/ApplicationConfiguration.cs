@@ -20,6 +20,8 @@ public class ApplicationConfiguration
 
         _configuration = new Lazy<IConfigurationRoot>(() => configurationBuilder.Build());
     }
+
+    public IConfigurationRoot ConfigurationRoot => _configuration.Value;
     
     public TSettings Get<TSettings>() where TSettings : ISettings
     {

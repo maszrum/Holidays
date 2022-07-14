@@ -77,7 +77,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         if (alreadyExists && !isRemoved)
         {
             throw new InvalidOperationException(
-                "An error occured on adding offer to database: already exists.");
+                $"An error occured on adding offer to database: '{offer.Id}' already exists.");
         }
         
         if (alreadyExists && isRemoved)
@@ -106,7 +106,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         if (rowsAffected != 1)
         {
             throw new InvalidOperationException(
-                "An error occured on adding offer to database.");
+                $"An error occured on adding offer to database: '{offer.Id}'.");
         }
     }
 
@@ -120,7 +120,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         if (rowsAffected != 1)
         {
             throw new InvalidOperationException(
-                "An error occured on updating offer price in database.");
+                $"An error occured on updating offer price in database: '{offerId}'.");
         }
     }
     
@@ -134,7 +134,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         if (rowsAffected != 1)
         {
             throw new InvalidOperationException(
-                "An error occured on deleting offer from database.");
+                $"An error occured on deleting offer from database: '{offerId}'.");
         }
     }
 

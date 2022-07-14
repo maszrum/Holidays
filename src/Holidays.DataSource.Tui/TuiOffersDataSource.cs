@@ -39,12 +39,14 @@ public class TuiOffersDataSource : IOffersDataSource
     {
         using var webDriver = _webDriverFactory.Create();
 
+        await Task.Delay(1_000);
+
         await OpenStartUrlAndCloseCookiePopup(webDriver);
         
         var collector = new OfferElementsCollector(webDriver);
         var extractor = new OfferDataExtractor();
         
-        Offer lastOffer;
+        Offer? lastOffer;
         var offers = Enumerable.Empty<Offer>();
 
         do
@@ -57,8 +59,8 @@ public class TuiOffersDataSource : IOffersDataSource
             
             offers = offers.Concat(collectedOffers.Where(offer => offer.DepartureDate <= maxDepartureDate));
     
-            lastOffer = collectedOffers.Last();
-        } while (lastOffer.DepartureDate < maxDepartureDate);
+            lastOffer = collectedOffers.LastOrDefault();
+        } while (lastOffer is not null && lastOffer.DepartureDate < maxDepartureDate);
 
         return new Offers(offers);
     }

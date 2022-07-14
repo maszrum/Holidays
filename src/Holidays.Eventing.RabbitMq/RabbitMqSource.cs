@@ -24,7 +24,6 @@ internal class RabbitMqSource : IExternalEventSource
         _channelFactory = channelFactory;
         _eventBus = eventBus;
         _eventConverter = eventConverter;
-        _options = options;
     }
 
     public Task Setup()
@@ -61,9 +60,8 @@ internal class RabbitMqSource : IExternalEventSource
 
         if (!_eventConverter.IsTypeRegistered(eventTypeName))
         {
-            return _options.UnknownEventTypeAction is null 
-                ? Task.CompletedTask 
-                : _options.UnknownEventTypeAction(eventTypeName);
+            _options.UnknownEventTypeAction?.Invoke(eventTypeName);
+            return Task.CompletedTask;
         }
 
         IEvent @event;
@@ -73,10 +71,11 @@ internal class RabbitMqSource : IExternalEventSource
         }
         catch (Exception exception)
         {
-            return _options.EventDeserializationError is null
-                ? Task.CompletedTask
-                : _options.EventDeserializationError(exception, eventTypeName);
+            _options.EventDeserializationError?.Invoke(exception, eventTypeName);
+            return Task.CompletedTask;
         }
+
+        _options.EventReceivedLogAction?.Invoke(@event);
 
         return _eventBus.PublishAsExternalProvider(@event, CancellationToken.None);
     }
