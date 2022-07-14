@@ -1,7 +1,6 @@
 ﻿using Holidays.Cli;
 using Holidays.Configuration;
 using Holidays.Core.OfferModel;
-using Holidays.DataSource.Tui;
 using Holidays.Eventing;
 using Holidays.Eventing.RabbitMq;
 using Holidays.InMemoryStore;
@@ -20,8 +19,10 @@ var configuration = new ApplicationConfiguration(
     "appsettings.json", 
     overrideWithEnvironmentVariables: false);
 
+var offersDataSourceSettings = configuration.Get<OffersDatasourceSettings>();
+
 var webDriverFactory = new WebDriverFactory(configuration.Get<SeleniumSettings>());
-var offersDataSource = new TuiOffersDataSource(webDriverFactory);
+var offersDataSource = new DataSourceFactory(webDriverFactory).Get(offersDataSourceSettings.Provider);
 
 var postgresConnectionFactory = new PostgresConnectionFactory(configuration.Get<PostgresSettings>());
 
