@@ -6,5 +6,5 @@ public interface IOffersDataSource
 {
     string WebsiteName { get; }
     
-    Task<Result<Offers>> GetOffers(Predicate<Offer> predicate);
+    Task<Result<Offers>> GetOffers(DateOnly maxDepartureDate);
 }

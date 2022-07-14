@@ -81,12 +81,9 @@ internal class ChangesDetectionJob
 
     private static async Task<Result<Offers>> GetOffers(IOffersDataSource dataSource)
     {
-        bool OffersFilter(Offer offer)
-        {
-            return DateOnly.FromDateTime(DateTime.Now.AddDays(1)) >= offer.DepartureDate;
-        }
-
-        var offers = await dataSource.GetOffers(OffersFilter);
+        var maxDepartureDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)); // TODO: to configuration file
+        
+        var offers = await dataSource.GetOffers(maxDepartureDate);
         return offers;
     }
 }

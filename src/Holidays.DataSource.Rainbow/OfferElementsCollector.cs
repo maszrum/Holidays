@@ -65,7 +65,7 @@ internal class OfferElementsCollector
         }
 
         return result;
-    } 
+    }
 
     private void ClickShowMoreIconIfExists()
     {
