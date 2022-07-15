@@ -33,7 +33,7 @@ public class EventBusBuilderForEventType<TEvent>
     public void NoLocalHandlers()
     {
         var descriptor = new EventHandlerDescriptor(
-            () => new IgnoreEventHandler(), 
+            () => new EmptyEventHandler(), 
             onlyForLocalEvents: false);
 
         _onRegister(descriptor);

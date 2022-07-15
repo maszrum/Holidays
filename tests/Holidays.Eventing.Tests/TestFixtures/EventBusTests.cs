@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Holidays.Core.Eventing;
+using Moq;
+using NUnit.Framework;
 
 namespace Holidays.Eventing.Tests.TestFixtures;
 
@@ -110,5 +112,53 @@ public class EventBusTests
         Assert.That(firstHandler.Committed, Is.True);
         Assert.That(secondHandler.RolledBack, Is.False);
         Assert.That(secondHandler.Committed, Is.True);
+    }
+
+    [Test]
+    public async Task when_external_provider_fails_on_publishing_event_it_should_rollback_every_handler()
+    {
+        var externalProvider = new Mock<IExternalProvider>();
+        var eventSink = new Mock<IExternalEventSink>();
+
+        eventSink
+            .Setup(m => m.Publish(It.IsAny<IEvent>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.FromException(new Exception()));
+
+        externalProvider
+            .SetupGet(m => m.Sink)
+            .Returns(eventSink.Object);
+
+        externalProvider
+            .Setup(m => m.Initialize(It.IsAny<EventBus>()))
+            .Returns(Task.CompletedTask);
+
+        var eventBusBuilder = new EventBusBuilder()
+            .UseExternalProvider(externalProvider.Object);
+
+        var firstHandler = new TestEventFirstHandler(_ => { });
+        var secondHandler = new TestEventSecondHandler(_ => { });
+
+        eventBusBuilder
+            .ForEventType<TestEvent>()
+            .RegisterHandlerForAllEvents(() => firstHandler)
+            .RegisterHandlerForLocalEvents(() => secondHandler);
+
+        var eventBus = await eventBusBuilder.Build();
+
+        var @event = new TestEvent();
+
+        try
+        {
+            await eventBus.Publish(@event, CancellationToken.None);
+        }
+        catch
+        {
+            // ignored
+        }
+        
+        Assert.That(firstHandler.Committed, Is.False);
+        Assert.That(firstHandler.RolledBack, Is.True);
+        Assert.That(secondHandler.Committed, Is.False);
+        Assert.That(secondHandler.RolledBack, Is.True);
     }
 }

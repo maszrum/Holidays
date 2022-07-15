@@ -2,10 +2,10 @@
 
 namespace Holidays.Eventing;
 
-internal class IgnoreEventHandler : IEventHandler<IEvent>
+internal class EmptyEventHandler : IEventHandler<IEvent>
 {
     public Task Handle(IEvent @event, Func<Task> next, CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        return next();
     }
 }

@@ -74,7 +74,9 @@ public sealed class EventBus : IEventBus
             ? descriptors.Where(d => !d.OnlyForLocalEvents)
             : descriptors;
 
-        var next = () => Task.CompletedTask;
+        Func<Task> next = asExternalProvider
+            ? () => Task.CompletedTask
+            : () => PublishToExternalProviders(@event, cancellationToken);
 
         foreach (var descriptor in descriptorsToHandle)
         {
@@ -87,14 +89,6 @@ public sealed class EventBus : IEventBus
         }
 
         await next();
-
-        if (!asExternalProvider)
-        {
-            foreach (var externalProvider in _externalProviders)
-            {
-                await externalProvider.Sink.Publish(@event, cancellationToken);
-            }
-        }
     }
 
     private async Task InvokeHandleMethod(
@@ -119,6 +113,14 @@ public sealed class EventBus : IEventBus
         var resultTyped = (Task) result;
 
         await resultTyped;
+    }
+
+    private async Task PublishToExternalProviders(IEvent @event, CancellationToken cancellationToken)
+    {
+        foreach (var externalProvider in _externalProviders)
+        {
+            await externalProvider.Sink.Publish(@event, cancellationToken);
+        }
     }
 
     private static ImmutableDictionary<Type, MethodInfo> GetMethodInfos(IEnumerable<Func<object>> handlerFactories)
