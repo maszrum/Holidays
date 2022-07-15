@@ -9,13 +9,13 @@ internal class OfferElementsCollector
 {
     private readonly IWebDriver _driver;
     private DateOnly? _lastCollectedDay;
-    
+
     public OfferElementsCollector(IWebDriver driver)
     {
         _driver = driver;
     }
-    
-    public Task<IReadOnlyList<IWebElement>> Collect(TimeSpan timeout) => 
+
+    public Task<IReadOnlyList<IWebElement>> Collect(TimeSpan timeout) =>
         WithTimeout.Do(timeout, SwitchPageIfNeedAndCollectOffers);
 
     private async Task<IReadOnlyList<IWebElement>> SwitchPageIfNeedAndCollectOffers(CancellationToken cancellationToken)
@@ -31,15 +31,15 @@ internal class OfferElementsCollector
             var nextDayElement = FindDayElement(nextDay);
             nextDayElement.Click();
         }
-        
+
         IWebElement currentDayElement;
         while (!TryGetCurrentDayElement(out currentDayElement!))
         {
             await Task.Delay(1_000, cancellationToken);
         }
-        
+
         _lastCollectedDay = GetDateOnlyFromDayElement(currentDayElement);
-        
+
         var elements = await CollectFromCurrentPage(CancellationToken.None);
 
         return elements;
@@ -52,7 +52,7 @@ internal class OfferElementsCollector
             ClickShowMoreIconIfExists();
             await Task.Delay(1_000, cancellationToken);
         }
-        
+
         var loadedOfferElements = GetLoadedOffers();
 
         return loadedOfferElements;
@@ -66,7 +66,7 @@ internal class OfferElementsCollector
         }
     }
 
-    private bool TryGetCurrentDayElement([NotNullWhen(true)] out IWebElement? element) => 
+    private bool TryGetCurrentDayElement([NotNullWhen(true)] out IWebElement? element) =>
         _driver.TryFindElement(By.CssSelector("div.upcoming-offers-tile--active span"), out element);
 
     private IWebElement FindDayElement(DateOnly date)
@@ -86,10 +86,10 @@ internal class OfferElementsCollector
             $"Cannot find day element for specified date: {date}");
     }
 
-    private bool IsNoMoreOffersTextDisplayed() => 
+    private bool IsNoMoreOffersTextDisplayed() =>
         _driver.TryFindElement(By.ClassName("results-container__no-more-text"), out _);
 
-    private ReadOnlyCollection<IWebElement> GetLoadedOffers() => 
+    private ReadOnlyCollection<IWebElement> GetLoadedOffers() =>
         _driver.FindElements(By.ClassName("offer-tile--listingOffer"));
 
     private static DateOnly GetDateOnlyFromDayElement(IWebElement element)
@@ -97,7 +97,7 @@ internal class OfferElementsCollector
         var dateText = element.Text;
 
         // i wish i could regex...
-        
+
         var indexOfSeparator = dateText.IndexOf(" - ", StringComparison.Ordinal);
 
         if (indexOfSeparator == -1)
@@ -119,8 +119,8 @@ internal class OfferElementsCollector
         var month = cutDateText.Substring(indexOfDot + 1);
 
         return new DateOnly(
-            DateTime.UtcNow.Year, 
-            int.Parse(month), 
+            DateTime.UtcNow.Year,
+            int.Parse(month),
             int.Parse(day));
     }
 }

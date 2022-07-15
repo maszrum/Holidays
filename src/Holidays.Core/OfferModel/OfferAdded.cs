@@ -3,6 +3,6 @@
 namespace Holidays.Core.OfferModel;
 
 public record OfferAdded(
-    Offer? Offer, 
-    Guid OfferId, 
+    Offer? Offer,
+    Guid OfferId,
     DateTime Timestamp) : IEvent;

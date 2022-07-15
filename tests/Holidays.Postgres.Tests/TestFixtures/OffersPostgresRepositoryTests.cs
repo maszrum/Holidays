@@ -10,7 +10,7 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
     public async Task add_one_offer_and_check_if_added_and_if_valid_data_returned()
     {
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
-        
+
         var getOffers = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var repository = new OffersPostgresRepository(connection, transaction);
@@ -20,11 +20,11 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAll();
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(1));
 
         var getOffer = getOffers.First();
-        
+
         Assert.That(getOffer.Id, Is.EqualTo(offer.Id));
         Assert.That(getOffer.Hotel, Is.EqualTo("hotel"));
         Assert.That(getOffer.Destination, Is.EqualTo("destination"));
@@ -44,7 +44,7 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             .Select(i =>
                 new Offer($"hotel-{i}", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website"))
             .ToArray();
-        
+
         var getOffers = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var repository = new OffersPostgresRepository(connection, transaction);
@@ -88,7 +88,7 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAll();
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(2));
 
         CollectionAssert.AreEquivalent(
@@ -119,7 +119,7 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAllRemovedByWebsiteName("website");
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(1));
 
         Assert.That(getOffers.Elements.First().Hotel, Is.EqualTo("hotel-2"));
@@ -151,11 +151,11 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAllRemovedByWebsiteName("website");
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(23));
 
         CollectionAssert.AreEquivalent(
-            Enumerable.Range(1, 23).Select(i => $"hotel-{i}"), 
+            Enumerable.Range(1, 23).Select(i => $"hotel-{i}"),
             getOffers.Select(o => o.Hotel));
     }
 
@@ -168,7 +168,7 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAll();
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(0));
     }
 
@@ -181,27 +181,27 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAllRemovedByWebsiteName("website");
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(0));
     }
 
     [Test]
     public async Task add_remove_add_offer_should_work_correctly()
     {
-        var offer = new Offer($"hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
 
         var offersCount = new List<int>();
         var offersRemovedCount = new List<int>();
-        
+
         await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var repository = new OffersPostgresRepository(connection, transaction);
-            
+
             offersCount.Add(await repository.Count());
             offersRemovedCount.Add(await repository.CountRemoved());
 
             await repository.Add(offer);
-            
+
             offersCount.Add(await repository.Count());
             offersRemovedCount.Add(await repository.CountRemoved());
 
@@ -215,11 +215,11 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             offersCount.Add(await repository.Count());
             offersRemovedCount.Add(await repository.CountRemoved());
         });
-        
+
         CollectionAssert.AreEqual(
             new[] { 0, 1, 0, 1 },
             offersCount);
-        
+
         CollectionAssert.AreEqual(
             new[] { 0, 0, 1, 0 },
             offersRemovedCount);
@@ -228,28 +228,28 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
     [Test]
     public void adding_same_offer_two_times_should_throw_exception()
     {
-        var offer = new Offer($"hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
-        
-        Assert.ThrowsAsync<InvalidOperationException>(() => 
-                DoWithTransactionAndRollback(async (connection, transaction) =>
-                {
-                    var repository = new OffersPostgresRepository(connection, transaction);
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
 
-                    await repository.Add(offer);
-                    await repository.Add(offer);
-                }));
+        Assert.ThrowsAsync<InvalidOperationException>(() =>
+            DoWithTransactionAndRollback(async (connection, transaction) =>
+            {
+                var repository = new OffersPostgresRepository(connection, transaction);
+
+                await repository.Add(offer);
+                await repository.Add(offer);
+            }));
     }
 
     [Test]
     public async Task modifying_price_should_succeed()
     {
-        var offer = new Offer($"hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
-        
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
+
         var prices = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var pricesList = new List<int>();
             var repository = new OffersPostgresRepository(connection, transaction);
-            
+
             await repository.Add(offer);
 
             var getOffer = await repository.Get(offer.Id);
@@ -267,16 +267,16 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
 
             return pricesList;
         });
-        
+
         CollectionAssert.AreEqual(
-            new[] { 1300, 1400, 1100 }, 
+            new[] { 1300, 1400, 1100 },
             prices);
     }
 
     [Test]
     public void modifying_price_of_unknown_offer_should_throw_exception()
     {
-        Assert.ThrowsAsync<InvalidOperationException>(() => 
+        Assert.ThrowsAsync<InvalidOperationException>(() =>
             DoWithTransactionAndRollback(async (connection, transaction) =>
             {
                 var repository = new OffersPostgresRepository(connection, transaction);
@@ -287,7 +287,7 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
     [Test]
     public void removing_unknown_offer_should_throw_exception()
     {
-        Assert.ThrowsAsync<InvalidOperationException>(() => 
+        Assert.ThrowsAsync<InvalidOperationException>(() =>
             DoWithTransactionAndRollback(async (connection, transaction) =>
             {
                 var repository = new OffersPostgresRepository(connection, transaction);
@@ -304,17 +304,17 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var date = await repository.GetLastDepartureDate("website");
             return date;
         });
-        
+
         Assert.That(departureDate.IsNone, Is.True);
     }
-    
+
     [Test]
     public async Task last_departure_date_should_be_the_latest_day()
     {
         var offerOne = new Offer("hotel", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
         var offerTwo = new Offer("hotel", "destination", DateOnly.FromDayNumber(6), 4, "city", 1200, "url", "website");
         var offerThree = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 4, "city", 1200, "url", "website");
-        
+
         var departureDate = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var repository = new OffersPostgresRepository(connection, transaction);
@@ -322,11 +322,11 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             await repository.Add(offerOne);
             await repository.Add(offerTwo);
             await repository.Add(offerThree);
-            
+
             var date = await repository.GetLastDepartureDate("website");
             return date;
         });
-        
+
         Assert.That(departureDate.IsNone, Is.False);
         Assert.That(departureDate.Data.DayNumber, Is.EqualTo(6));
     }
@@ -352,25 +352,25 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
 
         Assert.That(getOffer.Data.Price, Is.EqualTo(1500));
     }
-    
+
     [Test]
     public async Task add_offer_with_some_website_name_and_last_departure_date_for_another_should_be_none()
     {
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
-        
+
         var departureDate = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var repository = new OffersPostgresRepository(connection, transaction);
 
             await repository.Add(offer);
-            
+
             var date = await repository.GetLastDepartureDate("another-website");
             return date;
         });
-        
+
         Assert.That(departureDate.IsNone, Is.True);
     }
-    
+
     [Test]
     public async Task add_offers_with_different_website_names_check_if_read_correct_ones()
     {
@@ -378,7 +378,7 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
         var offerTwo = new Offer("hotel-2", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-x");
         var offerThree = new Offer("hotel-3", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-y");
         var offerFour = new Offer("hotel-4", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
-        
+
         var getOffers = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var repository = new OffersPostgresRepository(connection, transaction);
@@ -391,19 +391,19 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAllByWebsiteName("website");
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(2));
         CollectionAssert.AreEquivalent(
             new[] { "hotel-1", "hotel-4" },
             getOffers.Elements.Select(o => o.Hotel));
     }
-    
+
     [Test]
     public async Task add_offers_with_different_website_names_delete_it_and_check_if_read_correct_ones()
     {
         var offerOne = new Offer("hotel-1", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
         var offerTwo = new Offer("hotel-2", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
-        
+
         var (getOffers, getRemovedOffers) = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
             var repository = new OffersPostgresRepository(connection, transaction);
@@ -417,10 +417,10 @@ public class OffersPostgresRepositoryTests : DatabaseTestsBase
             var removedOffers = await repository.GetAllRemovedByWebsiteName("website");
             return (offers, removedOffers);
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(1));
         Assert.That(getOffers.Elements.First().Hotel, Is.EqualTo("hotel-2"));
-        
+
         Assert.That(getRemovedOffers.Elements, Has.Count.EqualTo(1));
         Assert.That(getRemovedOffers.Elements.First().Hotel, Is.EqualTo("hotel-1"));
     }

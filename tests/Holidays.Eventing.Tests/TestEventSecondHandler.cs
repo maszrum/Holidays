@@ -10,9 +10,9 @@ internal class TestEventSecondHandler : IEventHandler<TestEvent>
     {
         _onHandle = onHandle;
     }
-    
+
     public bool Committed { get; private set; }
-    
+
     public bool RolledBack { get; private set; }
 
     public async Task Handle(TestEvent @event, Func<Task> next, CancellationToken cancellationToken)
@@ -21,7 +21,7 @@ internal class TestEventSecondHandler : IEventHandler<TestEvent>
         {
             _onHandle(@event);
             await next();
-            
+
             Committed = true;
         }
         catch

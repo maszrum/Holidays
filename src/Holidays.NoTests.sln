@@ -6,24 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Cli", "Holidays.Cl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{274923D1-08BE-4B33-A1E1-90D2CC298746}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}"
-	ProjectSection(SolutionItems) = preProject
-		..\infrastructure\docker-compose.yml = ..\infrastructure\docker-compose.yml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Eventing", "Holidays.Eventing\Holidays.Eventing.csproj", "{1D3CD4C2-FCD1-44C9-9164-7322067CE299}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.InMemoryStore", "Holidays.InMemoryStore\Holidays.InMemoryStore.csproj", "{E440DF3C-EF8A-465D-8C33-07E2D158C086}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "selenium", "selenium", "{1BF0AA4E-196C-46E6-8E18-248F7A9259A0}"
-	ProjectSection(SolutionItems) = preProject
-		..\infrastructure\selenium\Dockerfile = ..\infrastructure\selenium\Dockerfile
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{3E02539B-6C5F-4B63-8222-BBBA8C1A40B4}"
-	ProjectSection(SolutionItems) = preProject
-		..\README.md = ..\README.md
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Configuration", "Holidays.Configuration\Holidays.Configuration.csproj", "{6CA5C58F-CA42-4619-A943-4F911245507F}"
 EndProject
@@ -31,34 +16,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.DataSource.Rainbow
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Selenium", "Holidays.Selenium\Holidays.Selenium.csproj", "{882A1509-5E03-4E45-876A-6ECA9A4FCAED}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postgres", "postgres", "{A8A55A1C-5113-4F85-822D-1309804BB345}"
-	ProjectSection(SolutionItems) = preProject
-		..\infrastructure\postgres\Dockerfile = ..\infrastructure\postgres\Dockerfile
-		..\infrastructure\postgres\init.sql = ..\infrastructure\postgres\init.sql
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pgadmin", "pgadmin", "{D4B60B6B-2AF7-4F1A-B337-9D1686307BA6}"
-	ProjectSection(SolutionItems) = preProject
-		..\infrastructure\pgadmin\Dockerfile = ..\infrastructure\pgadmin\Dockerfile
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Postgres", "Holidays.Postgres\Holidays.Postgres.csproj", "{6489315C-03E7-4C36-A65D-1E23EDB618D2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rabbitmq", "rabbitmq", "{20594253-16DA-498D-A6E7-91797EDC2C5B}"
-	ProjectSection(SolutionItems) = preProject
-		..\infrastructure\rabbitmq\Dockerfile = ..\infrastructure\rabbitmq\Dockerfile
-		..\infrastructure\rabbitmq\init.sh = ..\infrastructure\rabbitmq\init.sh
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Eventing.RabbitMq", "Holidays.Eventing.RabbitMq\Holidays.Eventing.RabbitMq.csproj", "{80E600E0-F60C-43F5-97C4-A6581804E553}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.DataSource.Tui", "Holidays.DataSource.Tui\Holidays.DataSource.Tui.csproj", "{16379419-9E85-4090-933F-6C91AF7DB372}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "collecting-app", "collecting-app", "{34E8E4E4-CA71-4888-A179-533A2C609FB3}"
-	ProjectSection(SolutionItems) = preProject
-		..\infrastructure\collecting-app\appsettings.json = ..\infrastructure\collecting-app\appsettings.json
-		..\infrastructure\collecting-app\Dockerfile = ..\infrastructure\collecting-app\Dockerfile
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -112,16 +74,11 @@ Global
 		{2C5500BD-1EA0-44F2-8227-9287CEA109E0} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{1D3CD4C2-FCD1-44C9-9164-7322067CE299} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{E440DF3C-EF8A-465D-8C33-07E2D158C086} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
-		{1BF0AA4E-196C-46E6-8E18-248F7A9259A0} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
 		{6CA5C58F-CA42-4619-A943-4F911245507F} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{9FB19964-6FE7-47C6-A491-21BAE55DE172} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{882A1509-5E03-4E45-876A-6ECA9A4FCAED} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
-		{A8A55A1C-5113-4F85-822D-1309804BB345} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
-		{D4B60B6B-2AF7-4F1A-B337-9D1686307BA6} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
 		{6489315C-03E7-4C36-A65D-1E23EDB618D2} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
-		{20594253-16DA-498D-A6E7-91797EDC2C5B} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
 		{80E600E0-F60C-43F5-97C4-A6581804E553} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{16379419-9E85-4090-933F-6C91AF7DB372} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
-		{34E8E4E4-CA71-4888-A179-533A2C609FB3} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
 	EndGlobalSection
 EndGlobal

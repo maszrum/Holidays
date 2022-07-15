@@ -20,11 +20,11 @@ public class OfferStartedTrackingInMemoryStoreEventHandler : IEventHandler<Offer
             throw new InvalidOperationException(
                 "Received event without data.");
         }
-        
+
         using var transaction = new TransactionContext();
-        
+
         var repository = new OffersInMemoryRepository(_database);
-        
+
         repository.Add(@event.Offer);
 
         await next();

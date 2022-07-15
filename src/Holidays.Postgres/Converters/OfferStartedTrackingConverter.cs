@@ -9,6 +9,6 @@ internal class OfferStartedTrackingConverter : EventConverterBase<OfferStartedTr
 
     protected override string GetEventParams(OfferStartedTracking @event) => string.Empty;
 
-    protected override OfferStartedTracking ToObject(OfferEventLogRecord record) => 
+    protected override OfferStartedTracking ToObject(OfferEventLogRecord record) =>
         new(default, record.OfferId, record.EventTimestamp);
 }

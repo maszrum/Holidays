@@ -11,24 +11,24 @@ namespace Holidays.Postgres;
 public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRepository
 {
     private readonly OfferRecordConverter _converter = new();
-    
-    public OffersPostgresRepository(NpgsqlConnection connection) 
+
+    public OffersPostgresRepository(NpgsqlConnection connection)
         : base(connection)
     {
     }
 
-    public OffersPostgresRepository(NpgsqlConnection connection, NpgsqlTransaction transaction) 
+    public OffersPostgresRepository(NpgsqlConnection connection, NpgsqlTransaction transaction)
         : base(connection, transaction)
     {
     }
 
-    public Task<Offers> GetAll() => 
+    public Task<Offers> GetAll() =>
         GetAllOffers(getRemoved: false);
 
-    public Task<Offers> GetAllByWebsiteName(string websiteName) => 
+    public Task<Offers> GetAllByWebsiteName(string websiteName) =>
         GetAllOffersByWebsiteName(websiteName, getRemoved: false);
 
-    public Task<Offers> GetAllRemovedByWebsiteName(string websiteName) => 
+    public Task<Offers> GetAllRemovedByWebsiteName(string websiteName) =>
         GetAllOffersByWebsiteName(websiteName, getRemoved: true);
 
     public async Task<Maybe<Offer>> Get(Guid offerId)
@@ -50,7 +50,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
 
     public async Task<Maybe<DateOnly>> GetLastDepartureDate(string websiteName)
     {
-        const string sql = 
+        const string sql =
             "SELECT departure_date " +
             "FROM holidays.offer " +
             "WHERE website_name = @WebsiteName " +
@@ -58,11 +58,11 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
             "LIMIT 1";
 
         var departureDateDay = await Connection.QuerySingleOrDefaultAsync<int?>(
-            sql: sql, 
+            sql: sql,
             param: new { WebsiteName = websiteName },
             transaction: Transaction);
 
-        return departureDateDay.HasValue 
+        return departureDateDay.HasValue
             ? Maybe.Some(DateOnly.FromDayNumber(departureDateDay.Value))
             : Maybe.None<DateOnly>();
     }
@@ -79,7 +79,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
             throw new InvalidOperationException(
                 $"An error occured on adding offer to database: '{offer.Id}' already exists.");
         }
-        
+
         if (alreadyExists && isRemoved)
         {
             sql = "UPDATE holidays.offer SET is_removed = FALSE, price = @Price WHERE id = @Id";
@@ -88,8 +88,8 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         else
         {
             var record = _converter.ConvertToRecord(offer, isRemoved: false);
-        
-            sql = 
+
+            sql =
                 "INSERT INTO holidays.offer " +
                 "(id, hotel, destination, departure_date, days, city_of_departure, price, details_url, website_name, is_removed) " +
                 "VALUES " +
@@ -97,10 +97,10 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
 
             param = record;
         }
-        
+
         var rowsAffected = await Connection.ExecuteAsync(
-            sql: sql, 
-            param: param, 
+            sql: sql,
+            param: param,
             transaction: Transaction);
 
         if (rowsAffected != 1)
@@ -123,7 +123,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
                 $"An error occured on updating offer price in database: '{offerId}'.");
         }
     }
-    
+
     public async Task Remove(Guid offerId)
     {
         var rowsAffected = await Connection.ExecuteAsync(
@@ -173,8 +173,8 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
             param: new { Id = offerId },
             transaction: Transaction);
 
-        return record is null 
-            ? (false, false) 
+        return record is null
+            ? (false, false)
             : (true, record.IsRemoved);
     }
 
@@ -183,7 +183,7 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
         var trueFalse = countRemoved ? "TRUE" : "FALSE";
 
         var count = await Connection.ExecuteScalarAsync<int>(
-            sql: $"SELECT COUNT(1) FROM holidays.offer WHERE is_removed = {trueFalse}", 
+            sql: $"SELECT COUNT(1) FROM holidays.offer WHERE is_removed = {trueFalse}",
             transaction: Transaction);
 
         return count;

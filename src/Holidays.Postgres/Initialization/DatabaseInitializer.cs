@@ -23,7 +23,7 @@ public class DatabaseInitializer
         try
         {
             await EnsureSchemaCreated(connection, transaction);
-            
+
             var existingTables = await GetExistingTables(connection, transaction);
 
             foreach (var expectedTable in expectedTables)
@@ -33,7 +33,7 @@ public class DatabaseInitializer
                     var query = await sqlSource.ReadSqlForTable(expectedTable);
 
                     _ = await connection.ExecuteAsync(
-                        sql: query, 
+                        sql: query,
                         transaction: transaction);
                 }
             }
@@ -58,7 +58,7 @@ public class DatabaseInitializer
         try
         {
             var existingTables = await GetExistingTables(connection, transaction);
-            
+
             // drop all tables in reverse order
             foreach (var expectedTable in expectedTables.Reverse())
             {
@@ -76,7 +76,7 @@ public class DatabaseInitializer
                 var query = await sqlSource.ReadSqlForTable(expectedTable);
 
                 _ = await connection.ExecuteAsync(
-                    sql: query, 
+                    sql: query,
                     transaction: transaction);
             }
 
@@ -90,7 +90,7 @@ public class DatabaseInitializer
     }
 
     private static async Task EnsureSchemaCreated(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         NpgsqlTransaction transaction)
     {
         await connection.ExecuteAsync(
@@ -99,7 +99,7 @@ public class DatabaseInitializer
     }
 
     private static async Task<IReadOnlyList<string>> GetExistingTables(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         NpgsqlTransaction transaction)
     {
         var existingTables = await connection.QueryAsync<string>(
@@ -111,7 +111,7 @@ public class DatabaseInitializer
 
     private static async Task DropTable(
         string tableName,
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         NpgsqlTransaction transaction)
     {
         await connection.ExecuteAsync(

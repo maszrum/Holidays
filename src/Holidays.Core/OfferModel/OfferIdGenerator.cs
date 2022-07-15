@@ -9,9 +9,9 @@ internal class OfferIdGenerator
     public Guid Generate(Offer offer)
     {
         var objectBytes = GetObjectBytes(offer);
-        
+
         using var md5 = MD5.Create();
-        
+
         var hash = md5.ComputeHash(objectBytes);
         return new Guid(hash);
     }
@@ -23,14 +23,14 @@ internal class OfferIdGenerator
         var cityOfDepartureLength = Encoding.UTF8.GetByteCount(offer.CityOfDeparture);
         var websiteNameLength = Encoding.UTF8.GetByteCount(offer.WebsiteName);
 
-        var bytesCount = 
-            hotelLength + 
-            destinationLength + 
-            sizeof(int) + 
-            sizeof(int) + 
+        var bytesCount =
+            hotelLength +
+            destinationLength +
+            sizeof(int) +
+            sizeof(int) +
             cityOfDepartureLength +
             websiteNameLength;
-        
+
         var bytes = new byte[bytesCount];
 
         var offset = 0;

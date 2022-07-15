@@ -18,7 +18,7 @@ internal class ChangesDetectionJob
     public ChangesDetectionJob(
         OffersDataSourceSettings settings,
         IEventBus eventBus,
-        IOffersRepository offersRepository, 
+        IOffersRepository offersRepository,
         ILogger logger)
     {
         _settings = settings;
@@ -36,26 +36,26 @@ internal class ChangesDetectionJob
                 .WithDefaultValue(DateOnly.FromDayNumber(0));
 
             _logger.Debug(
-                "Starting scraping with data source: {ScraperType}", 
+                "Starting scraping with data source: {ScraperType}",
                 dataSource.GetType().Name);
-            
+
             var currentState = await GetOffers(dataSource);
-            
+
             if (currentState.IsError)
             {
                 _logger.Error(currentState.Error);
                 await Task.Delay(5_000, cancellationToken);
                 continue;
             }
-            
+
             _logger.Debug("Finished scraping");
-            
+
             var changes = new OfferChangesDetector()
                 .DetectChanges(previousState, currentState.Data);
-            
+
             _logger.Information(
-                "Offers scraped: {OffersScraped}, changes detected: {DetectedChanges}", 
-                currentState.Data.Elements.Count, 
+                "Offers scraped: {OffersScraped}, changes detected: {DetectedChanges}",
+                currentState.Data.Elements.Count,
                 changes.Count);
 
             var events = changes.Select(change => GetEventBasedOnChange(change, lastDepartureDay));
@@ -64,7 +64,7 @@ internal class ChangesDetectionJob
             {
                 await _eventBus.Publish(@event, cancellationToken);
             }
-            
+
             await Task.Delay(TimeSpan.FromSeconds(_settings.PauseBetweenCollectionsSeconds), cancellationToken);
         }
     }
@@ -73,7 +73,7 @@ internal class ChangesDetectionJob
     {
         var startedTracking = change.Offer.DepartureDate > lastDepartureDay;
         var offer = change.Offer;
-        
+
         return (change.ChangeType, startedTracking) switch
         {
             (OfferChangeType.OfferAdded, true) => new OfferStartedTracking(offer, offer.Id, DateTime.UtcNow),
@@ -87,7 +87,7 @@ internal class ChangesDetectionJob
     private async Task<Result<Offers>> GetOffers(IOffersDataSource dataSource)
     {
         var maxDepartureDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_settings.NumberOfDaysToCollectOffers));
-        
+
         var offers = await dataSource.GetOffers(maxDepartureDate);
         return offers;
     }

@@ -1,7 +1,7 @@
 ﻿using System.Text;
+using Holidays.Core.InfrastructureInterfaces;
 using Holidays.Core.Monads;
 using Holidays.Core.OfferModel;
-using Holidays.Core.InfrastructureInterfaces;
 using Holidays.Selenium;
 using OpenQA.Selenium;
 
@@ -14,7 +14,7 @@ public class RainbowOffersDataSource : IOffersDataSource
     private readonly WebDriverFactory _webDriverFactory;
 
     public RainbowOffersDataSource(
-        OffersDataSourceSettings settings, 
+        OffersDataSourceSettings settings,
         WebDriverFactory webDriverFactory)
     {
         _settings = settings;
@@ -39,7 +39,7 @@ public class RainbowOffersDataSource : IOffersDataSource
             return new TimeoutError(Constants.WebsiteName);
         }
     }
-    
+
     private async Task<Offers> GetOffersOrThrow(DateOnly maxDepartureDate)
     {
         using var webDriver = _webDriverFactory.Create();
@@ -47,10 +47,10 @@ public class RainbowOffersDataSource : IOffersDataSource
         await Task.Delay(1_000);
 
         await OpenStartUrlAndCloseCookiePopup(webDriver);
-        
+
         var collector = new OfferElementsCollector(webDriver);
         var extractor = new OfferDataExtractor();
-        
+
         Offer? lastOffer;
         var offers = Enumerable.Empty<Offer>();
 
@@ -62,9 +62,9 @@ public class RainbowOffersDataSource : IOffersDataSource
             var collectedOffers = collectedElements
                 .Select(element => extractor.Extract(element))
                 .ToArray();
-            
+
             offers = offers.Concat(collectedOffers.Where(offer => offer.DepartureDate <= maxDepartureDate));
-    
+
             lastOffer = collectedOffers.LastOrDefault();
         } while (lastOffer is not null && lastOffer.DepartureDate <= maxDepartureDate);
 

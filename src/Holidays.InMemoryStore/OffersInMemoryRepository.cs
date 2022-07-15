@@ -37,11 +37,11 @@ public class OffersInMemoryRepository : IOffersRepository
         throw new InvalidOperationException(
             "In-memory repository does not store information about removed offers.");
     }
-    
+
     public Task<Maybe<Offer>> Get(Guid offerId)
     {
         var record = _database.Offers.SingleOrDefault(o => o.Id == offerId);
-        
+
         if (record is null)
         {
             return Task.FromResult(Maybe<Offer>.None());
@@ -55,7 +55,7 @@ public class OffersInMemoryRepository : IOffersRepository
     public Task<Maybe<DateOnly>> GetLastDepartureDate(string websiteName)
     {
         var offersCount = _database.Offers.Count;
-        
+
         if (offersCount == 0)
         {
             return Task.FromResult(Maybe.None<DateOnly>());
@@ -65,8 +65,8 @@ public class OffersInMemoryRepository : IOffersRepository
             .Where(o => o.WebsiteName == websiteName)
             .MaxBy(o => o.DepartureDate.DayNumber);
 
-        return Task.FromResult(result is null 
-            ? Maybe<DateOnly>.None() 
+        return Task.FromResult(result is null
+            ? Maybe<DateOnly>.None()
             : Maybe.Some(result.DepartureDate));
     }
 
@@ -79,9 +79,9 @@ public class OffersInMemoryRepository : IOffersRepository
             throw new InvalidOperationException(
                 "Adding the offer failed: offer already exists.");
         }
-        
+
         var record = _offerConverter.ConvertToRecord(offer);
-        
+
         _database.Offers.Insert(record);
     }
 
@@ -94,7 +94,7 @@ public class OffersInMemoryRepository : IOffersRepository
             throw new InvalidOperationException(
                 "Removing the offer with specified id failed: offer does not exist.");
         }
-        
+
         _database.Offers.Delete(currentRecord);
     }
 
@@ -103,7 +103,7 @@ public class OffersInMemoryRepository : IOffersRepository
     public void ModifyPrice(Guid offerId, int price)
     {
         var currentRecord = _database.Offers.SingleOrDefault(o => o.Id == offerId);
-        
+
         if (currentRecord is null)
         {
             throw new InvalidOperationException(
@@ -111,7 +111,7 @@ public class OffersInMemoryRepository : IOffersRepository
         }
 
         var newRecord = currentRecord with { Price = price };
-        
+
         _database.Offers.Update(newRecord);
     }
 }

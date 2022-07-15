@@ -20,7 +20,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAll();
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(1));
 
         var getOffer = getOffers.First();
@@ -57,7 +57,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAll();
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(20));
 
         CollectionAssert.AreEquivalent(
@@ -163,7 +163,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
         var getOffers = await DoWithTransactionAndRollback(async database =>
         {
             var repository = new OffersInMemoryRepository(database);
-            
+
             var offers = await repository.GetAll();
             return offers;
         });
@@ -179,7 +179,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             _ = await DoWithTransactionAndRollback(async database =>
             {
                 var repository = new OffersInMemoryRepository(database);
-            
+
                 var offers = await repository.GetAllRemovedByWebsiteName("website");
                 return offers;
             });
@@ -189,7 +189,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
     [Test]
     public void add_remove_add_offer_should_work_correctly()
     {
-        var offer = new Offer($"hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
 
         var offersCount = new List<int>();
 
@@ -211,7 +211,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
 
             offersCount.Add(repository.Count());
         });
-        
+
         CollectionAssert.AreEqual(
             new[] { 0, 1, 0, 1 },
             offersCount);
@@ -220,7 +220,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
     [Test]
     public void adding_same_offer_two_times_should_throw_exception()
     {
-        var offer = new Offer($"hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
 
         Assert.Throws<InvalidOperationException>(() =>
         {
@@ -237,10 +237,10 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
     [Test]
     public async Task modifying_price_should_succeed()
     {
-        var offer = new Offer($"hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
+        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
 
         var pricesList = new List<int>();
-        
+
         await DoWithTransactionAndRollback(async database =>
         {
             var repository = new OffersInMemoryRepository(database);
@@ -260,7 +260,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             getOffer = await repository.Get(offer.Id);
             getOffer.IfSome(o => pricesList.Add(o.Price));
         });
-        
+
         CollectionAssert.AreEqual(
             new[] { 1300, 1400, 1100 },
             pricesList);
@@ -274,7 +274,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             DoWithTransactionAndRollback(database =>
             {
                 var repository = new OffersInMemoryRepository(database);
-            
+
                 repository.ModifyPrice(Guid.NewGuid(), 1400);
             });
         });
@@ -300,7 +300,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
         var departureDate = await DoWithTransactionAndRollback(async database =>
         {
             var repository = new OffersInMemoryRepository(database);
-        
+
             var date = await repository.GetLastDepartureDate("website");
             return date;
         });
@@ -326,7 +326,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             var date = await repository.GetLastDepartureDate("website");
             return date;
         });
-        
+
         Assert.That(departureDate.IsNone, Is.False);
         Assert.That(departureDate.Data.DayNumber, Is.EqualTo(6));
     }
@@ -348,28 +348,28 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             var o = await repository.Get(offer.Id);
             return o;
         });
-        
+
         Assert.That(getOffer.Data.Price, Is.EqualTo(1500));
     }
-    
+
     [Test]
     public async Task add_offer_with_some_website_name_and_last_departure_date_for_another_should_be_none()
     {
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
-        
+
         var departureDate = await DoWithTransactionAndRollback(async connection =>
         {
             var repository = new OffersInMemoryRepository(connection);
 
             repository.Add(offer);
-            
+
             var date = await repository.GetLastDepartureDate("another-website");
             return date;
         });
-        
+
         Assert.That(departureDate.IsNone, Is.True);
     }
-    
+
     [Test]
     public async Task add_offers_with_different_website_names_check_if_read_correct_ones()
     {
@@ -377,7 +377,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
         var offerTwo = new Offer("hotel-2", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-x");
         var offerThree = new Offer("hotel-3", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-y");
         var offerFour = new Offer("hotel-4", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
-        
+
         var getOffers = await DoWithTransactionAndRollback(async connection =>
         {
             var repository = new OffersInMemoryRepository(connection);
@@ -390,13 +390,13 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
             var offers = await repository.GetAllByWebsiteName("website");
             return offers;
         });
-        
+
         Assert.That(getOffers.Elements, Has.Count.EqualTo(2));
         CollectionAssert.AreEquivalent(
             new[] { "hotel-1", "hotel-4" },
             getOffers.Elements.Select(o => o.Hotel));
     }
-    
+
     [Test]
     public async Task add_offers_with_different_website_names_delete_it_and_check_if_read_correct_ones()
     {
@@ -404,7 +404,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
         var offerTwo = new Offer("hotel-2", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-2");
         var offerThree = new Offer("hotel-3", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-1");
         var offerFour = new Offer("hotel-4", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-2");
-        
+
         var (getOffersWebsiteOne, getOffersWebsiteTwo) = await DoWithTransactionAndRollback(async (connection) =>
         {
             var repository = new OffersInMemoryRepository(connection);
@@ -419,13 +419,13 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
 
             var offersWebsiteOne = await repository.GetAllByWebsiteName("website-1");
             var offersWebsiteTwo = await repository.GetAllByWebsiteName("website-2");
-            
+
             return (offersWebsiteOne, offersWebsiteTwo);
         });
-        
+
         Assert.That(getOffersWebsiteOne.Elements, Has.Count.EqualTo(1));
         Assert.That(getOffersWebsiteTwo.Elements, Has.Count.EqualTo(1));
-        
+
         Assert.That(getOffersWebsiteOne.Elements.First().Hotel, Is.EqualTo("hotel-3"));
         Assert.That(getOffersWebsiteTwo.Elements.First().Hotel, Is.EqualTo("hotel-2"));
     }

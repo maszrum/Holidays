@@ -16,7 +16,7 @@ internal class RabbitMqSource : IExternalEventSource
         RabbitMqProviderOptions options,
         Guid consumerId,
         ChannelFactory channelFactory,
-        EventBus eventBus, 
+        EventBus eventBus,
         EventConverter eventConverter)
     {
         _options = options;
@@ -82,16 +82,16 @@ internal class RabbitMqSource : IExternalEventSource
 
     private static Guid GetPublisherIdFromHeaders(IDictionary<string, object> headers)
     {
-        var publisherIdBytes = (byte[])headers[Constants.EventPublisherHeader];
+        var publisherIdBytes = (byte[]) headers[Constants.EventPublisherHeader];
         var publisherIdHeader = Encoding.UTF8.GetString(publisherIdBytes);
         var publisherId = Guid.Parse(publisherIdHeader);
-        
+
         return publisherId;
     }
 
     private static string GetEventTypeNameFromHeaders(IDictionary<string, object> headers)
     {
-        var eventTypeBytes = (byte[])headers[Constants.EventTypeHeader];
+        var eventTypeBytes = (byte[]) headers[Constants.EventTypeHeader];
         var eventTypeName = Encoding.UTF8.GetString(eventTypeBytes);
 
         return eventTypeName;

@@ -3,5 +3,5 @@
 namespace Holidays.Core.OfferModel;
 
 public record OfferRemoved(
-    Guid OfferId, 
+    Guid OfferId,
     DateTime Timestamp) : IEvent;

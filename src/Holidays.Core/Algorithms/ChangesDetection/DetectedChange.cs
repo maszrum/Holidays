@@ -5,7 +5,7 @@ namespace Holidays.Core.Algorithms.ChangesDetection;
 public class DetectedChange
 {
     private readonly Offer? _offerBeforeChange;
-    
+
     private DetectedChange(OfferChangeType changeType, Offer offer, Offer? offerBeforeChange)
     {
         ChangeType = changeType;
@@ -28,7 +28,7 @@ public class DetectedChange
             return _offerBeforeChange;
         }
     }
-    
+
     public Offer Offer { get; }
 
     public static DetectedChange PriceChanged(Offer offer, Offer offerBeforeChange) =>

@@ -10,9 +10,9 @@ internal class TestSettings : ISettings<TestSettingsDescriptor>
     public string StringSetting { get; init; } = null!;
 
     public int IntSetting { get; init; } = int.MinValue;
-    
+
     public bool BoolSetting { get; init; }
-    
+
     public bool IsValid()
     {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract

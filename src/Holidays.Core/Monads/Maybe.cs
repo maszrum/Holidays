@@ -44,7 +44,7 @@ public class Maybe<TData> where TData : notnull
         data = _data!;
         return true;
     }
-    
+
     public T Match<T>(Func<T> onNone, Func<TData, T> onData)
     {
         return IsNone
@@ -58,7 +58,7 @@ public class Maybe<TData> where TData : notnull
             ? defaultValue
             : _data!;
     }
-    
+
     public void IfSome(Action<TData> onData)
     {
         if (!IsNone)
@@ -66,7 +66,7 @@ public class Maybe<TData> where TData : notnull
             onData(_data!);
         }
     }
-    
+
     public static Maybe<TData> None() => new();
 
     public static Maybe<TData> Some(TData data) => new(data);
@@ -74,13 +74,7 @@ public class Maybe<TData> where TData : notnull
 
 public static class Maybe
 {
-    public static Maybe<TData> None<TData>() where TData : notnull
-    {
-        return Maybe<TData>.None();
-    }
+    public static Maybe<TData> None<TData>() where TData : notnull => Maybe<TData>.None();
 
-    public static Maybe<TData> Some<TData>(TData data) where TData : notnull
-    {
-        return Maybe<TData>.Some(data);
-    }
+    public static Maybe<TData> Some<TData>(TData data) where TData : notnull => Maybe<TData>.Some(data);
 }

@@ -5,10 +5,10 @@ namespace Holidays.Postgres.Converters;
 
 internal class OfferPriceChangedConverter : EventConverterBase<OfferPriceChanged>
 {
-    protected override Guid GetOfferId(OfferPriceChanged @event) => 
+    protected override Guid GetOfferId(OfferPriceChanged @event) =>
         @event.OfferId;
 
-    protected override string GetEventParams(OfferPriceChanged @event) => 
+    protected override string GetEventParams(OfferPriceChanged @event) =>
         $"{@event.PreviousPrice},{@event.CurrentPrice}";
 
     protected override OfferPriceChanged ToObject(OfferEventLogRecord record)

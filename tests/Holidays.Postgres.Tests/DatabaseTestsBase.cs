@@ -7,9 +7,9 @@ namespace Holidays.Postgres.Tests;
 public abstract class DatabaseTestsBase
 {
     private bool _dirtyDatabase;
-    
+
     protected PostgresConnectionFactory ConnectionFactory { get; private set; } = null!;
-    
+
     [OneTimeSetUp]
     public async Task EnsureDatabaseIsReadyForTests()
     {
@@ -19,14 +19,14 @@ public abstract class DatabaseTestsBase
         var initializer = new DatabaseInitializer(ConnectionFactory);
         await initializer.InitializeForcefully();
     }
-    
+
     [SetUp]
     public async Task EnsureDatabaseIsNotDirty()
     {
         if (_dirtyDatabase)
         {
             _dirtyDatabase = false;
-            
+
             var initializer = new DatabaseInitializer(ConnectionFactory);
             await initializer.InitializeForcefully();
         }
@@ -36,7 +36,7 @@ public abstract class DatabaseTestsBase
     {
         await using var connection = await ConnectionFactory.CreateConnection();
         await using var transaction = await connection.BeginTransactionAsync();
-        
+
         try
         {
             return await action(connection, transaction);
@@ -51,7 +51,7 @@ public abstract class DatabaseTestsBase
     {
         await using var connection = await ConnectionFactory.CreateConnection();
         await using var transaction = await connection.BeginTransactionAsync();
-        
+
         try
         {
             await action(connection, transaction);

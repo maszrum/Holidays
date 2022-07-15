@@ -16,11 +16,11 @@ public class EventBusTests
 
         var @event = new TestEvent();
         await eventBus.Publish(@event);
-        
+
         Assert.That(handledEvents, Has.Count.EqualTo(1));
         Assert.That(ReferenceEquals(handledEvents[0], @event), Is.True);
     }
-    
+
     [Test]
     public async Task register_one_handler_and_published_many_events_concurrently_should_arrive()
     {
@@ -38,11 +38,11 @@ public class EventBusTests
             .ToArray();
 
         await Task.WhenAll(tasks);
-        
+
         Assert.That(handledEvents, Has.Count.EqualTo(20));
         CollectionAssert.AreEquivalent(events, handledEvents);
     }
-    
+
     [Test]
     public async Task register_two_handler_and_published_event_should_arrive_in_correct_order()
     {
@@ -52,7 +52,7 @@ public class EventBusTests
 
         var @event = new TestEvent();
         await eventBus.Publish(@event);
-        
+
         Assert.That(handledEvents, Has.Count.EqualTo(2));
         Assert.That(ReferenceEquals(handledEvents[0], @event), Is.True);
         Assert.That(ReferenceEquals(handledEvents[1], @event), Is.True);
@@ -84,7 +84,7 @@ public class EventBusTests
 
         Assert.ThrowsAsync<InvalidOperationException>(
             () => eventBus.Publish(new TestEvent()));
-        
+
         Assert.That(firstHandler.RolledBack, Is.True);
         Assert.That(firstHandler.Committed, Is.False);
         Assert.That(secondHandler.RolledBack, Is.True);
@@ -107,7 +107,7 @@ public class EventBusTests
         var eventBus = await eventBusBuilder.Build();
 
         await eventBus.Publish(new TestEvent());
-        
+
         Assert.That(firstHandler.RolledBack, Is.False);
         Assert.That(firstHandler.Committed, Is.True);
         Assert.That(secondHandler.RolledBack, Is.False);
@@ -155,7 +155,7 @@ public class EventBusTests
         {
             // ignored
         }
-        
+
         Assert.That(firstHandler.Committed, Is.False);
         Assert.That(firstHandler.RolledBack, Is.True);
         Assert.That(secondHandler.Committed, Is.False);

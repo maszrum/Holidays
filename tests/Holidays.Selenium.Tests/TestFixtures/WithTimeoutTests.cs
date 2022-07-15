@@ -25,7 +25,7 @@ public class WithTimeoutTests
     public async Task cancellation_token_should_be_cancelled_when_timed_out()
     {
         var stopwatch = Stopwatch.StartNew();
-        
+
         try
         {
             await WithTimeout.Do(
@@ -40,9 +40,9 @@ public class WithTimeoutTests
         {
             // ignored
         }
-        
+
         stopwatch.Stop();
-        
+
         Assert.That(stopwatch.ElapsedMilliseconds, Is.LessThan(2000));
     }
 
@@ -50,13 +50,13 @@ public class WithTimeoutTests
     public async Task task_should_not_timeout_and_result_value_should_be_correct()
     {
         var result = await WithTimeout.Do(
-            TimeSpan.FromSeconds(3), 
+            TimeSpan.FromSeconds(3),
             async cancellationToken =>
             {
                 await Task.Delay(1, cancellationToken);
                 return 33;
             });
-        
+
         Assert.That(result, Is.EqualTo(33));
     }
 

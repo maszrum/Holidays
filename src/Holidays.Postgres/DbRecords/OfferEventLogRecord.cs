@@ -6,12 +6,12 @@ internal class OfferEventLogRecord
     private OfferEventLogRecord()
     {
     }
-    
+
     public OfferEventLogRecord(
-        Guid id, 
+        Guid id,
         DateTime eventTimestamp,
-        Guid offerId, 
-        string eventType, 
+        Guid offerId,
+        string eventType,
         string @params)
     {
         Id = id;
@@ -22,9 +22,9 @@ internal class OfferEventLogRecord
     }
 
     public Guid Id { get; init; }
-    
+
     public DateTime EventTimestamp { get; init; }
-    
+
     public Guid OfferId { get; init; }
 
     public string EventType { get; init; } = null!;

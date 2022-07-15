@@ -8,6 +8,6 @@ public class TimeoutError : ErrorBase
     {
         Message = $"Scraping website timed out, unable to load offers on website: {websiteName}";
     }
-    
+
     public override string Message { get; }
 }

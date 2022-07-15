@@ -14,7 +14,7 @@ public class TuiOffersDataSource : IOffersDataSource
     private readonly WebDriverFactory _webDriverFactory;
 
     public TuiOffersDataSource(
-        OffersDataSourceSettings settings, 
+        OffersDataSourceSettings settings,
         WebDriverFactory webDriverFactory)
     {
         _settings = settings;
@@ -22,7 +22,7 @@ public class TuiOffersDataSource : IOffersDataSource
     }
 
     public string WebsiteName => Constants.WebsiteName;
-    
+
     public async Task<Result<Offers>> GetOffers(DateOnly maxDepartureDate)
     {
         try
@@ -47,10 +47,10 @@ public class TuiOffersDataSource : IOffersDataSource
         await Task.Delay(1_000);
 
         await OpenStartUrlAndCloseCookiePopup(webDriver);
-        
+
         var collector = new OfferElementsCollector(webDriver);
         var extractor = new OfferDataExtractor();
-        
+
         Offer? lastOffer;
         var offers = Enumerable.Empty<Offer>();
 
@@ -62,9 +62,9 @@ public class TuiOffersDataSource : IOffersDataSource
             var collectedOffers = collectedElements
                 .Select(element => extractor.Extract(element))
                 .ToArray();
-            
+
             offers = offers.Concat(collectedOffers.Where(offer => offer.DepartureDate <= maxDepartureDate));
-    
+
             lastOffer = collectedOffers.LastOrDefault();
         } while (lastOffer is not null && lastOffer.DepartureDate < maxDepartureDate);
 

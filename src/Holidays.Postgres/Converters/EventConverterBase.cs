@@ -26,7 +26,7 @@ internal abstract class EventConverterBase<TEvent> : IEventConverter
     protected abstract string GetEventParams(TEvent @event);
 
     protected abstract TEvent ToObject(OfferEventLogRecord record);
-    
+
     private OfferEventLogRecord ConvertToRecord(TEvent @event)
     {
         return new OfferEventLogRecord(

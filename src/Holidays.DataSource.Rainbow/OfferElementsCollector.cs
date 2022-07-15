@@ -24,7 +24,7 @@ internal class OfferElementsCollector
             var offers = loadedOffers
                 .Skip(_collectedElementsCount)
                 .ToArray();
-            
+
             _collectedElementsCount = loadedOffers.Count;
 
             return Task.FromResult<IReadOnlyList<IWebElement>>(offers);
@@ -36,7 +36,7 @@ internal class OfferElementsCollector
     private async Task<IReadOnlyList<IWebElement>> ScrollPageAndCollect(CancellationToken cancellationToken)
     {
         var result = default(IReadOnlyList<IWebElement>);
-        
+
         while (result is null)
         {
             ClickShowMoreIconIfExists();
@@ -57,7 +57,7 @@ internal class OfferElementsCollector
                 result = loadedOffers
                     .Skip(_collectedElementsCount)
                     .ToArray();
-                
+
                 _collectedElementsCount = loadedOffers.Count;
             }
 
@@ -75,6 +75,6 @@ internal class OfferElementsCollector
         }
     }
 
-    private ReadOnlyCollection<IWebElement> GetLoadedOffers() => 
+    private ReadOnlyCollection<IWebElement> GetLoadedOffers() =>
         _driver.FindElements(By.ClassName("bloczek__container"));
 }

@@ -19,10 +19,10 @@ public class OfferStartedTrackingPostgresEventHandler : IEventHandler<OfferStart
             throw new InvalidOperationException(
                 "Received event without offer data.");
         }
-        
+
         await using var connection = await _connectionFactory.CreateConnection(cancellationToken);
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
-        
+
         await using var offersRepository = new OffersPostgresRepository(connection, transaction);
         await using var offerChangesRepository = new OfferEventLogPostgresRepository(connection, transaction);
         await using var priceHistoryRepository = new PriceHistoryPostgresRepository(connection, transaction);

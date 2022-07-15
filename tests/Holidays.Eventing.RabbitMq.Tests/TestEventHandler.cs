@@ -2,13 +2,13 @@
 
 namespace Holidays.Eventing.RabbitMq.Tests;
 
-internal class TestEventHandler<TEvent> : IEventHandler<TEvent> 
+internal class TestEventHandler<TEvent> : IEventHandler<TEvent>
     where TEvent : IEvent
 {
     private readonly List<Action<TEvent>> _onHandle = new();
-    
+
     public bool Committed { get; private set; }
-    
+
     public bool RolledBack { get; private set; }
 
     public async Task Handle(TEvent @event, Func<Task> next, CancellationToken cancellationToken)
@@ -21,7 +21,7 @@ internal class TestEventHandler<TEvent> : IEventHandler<TEvent>
             }
 
             await next();
-            
+
             Committed = true;
         }
         catch

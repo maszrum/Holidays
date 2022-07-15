@@ -9,6 +9,6 @@ internal class OfferRemovedConverter : EventConverterBase<OfferRemoved>
 
     protected override string GetEventParams(OfferRemoved @event) => string.Empty;
 
-    protected override OfferRemoved ToObject(OfferEventLogRecord record) => 
+    protected override OfferRemoved ToObject(OfferEventLogRecord record) =>
         new(record.OfferId, record.EventTimestamp);
 }

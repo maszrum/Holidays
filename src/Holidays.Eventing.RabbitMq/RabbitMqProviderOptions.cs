@@ -5,13 +5,13 @@ namespace Holidays.Eventing.RabbitMq;
 public class RabbitMqProviderOptions
 {
     public Action<string>? UnknownEventTypeAction { get; private set; }
-    
+
     public Action<Exception, string>? EventDeserializationError { get; private set; }
-    
+
     public Action<IEvent>? EventReceivedLogAction { get; private set; }
-    
+
     public Action<IEvent>? EventSentLogAction { get; private set; }
-    
+
     public void OnUnknownEventType(Action<string> action)
     {
         UnknownEventTypeAction = action;

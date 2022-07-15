@@ -41,7 +41,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=payAlot
-  
+
   collecting-app-1:
     build:
       context: ./..
@@ -54,7 +54,7 @@ services:
       - OffersDataSource__Provider=Rainbow
       - OffersDataSource__CollectingTimeoutSeconds=60
       - Selenium__RemoteWebDriverUrl=http://selenium-1:4444/wd/hub
-  
+
   collecting-app-2:
     build:
       context: ./..
@@ -70,4 +70,4 @@ services:
       - Selenium__RemoteWebDriverUrl=http://selenium-2:4444/wd/hub
 
 volumes:
-  pgdata: {}
+  pgdata: { }

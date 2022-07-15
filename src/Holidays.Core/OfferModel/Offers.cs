@@ -11,7 +11,7 @@ public class Offers : IEnumerable<Offer>
     }
 
     public ImmutableHashSet<Offer> Elements { get; }
-    
+
     public IEnumerator<Offer> GetEnumerator() => Elements.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => Elements.GetEnumerator();

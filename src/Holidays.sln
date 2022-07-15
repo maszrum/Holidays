@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}"
 	ProjectSection(SolutionItems) = preProject
 		..\infrastructure\docker-compose.yml = ..\infrastructure\docker-compose.yml
+		..\infrastructure\.dockerignore = ..\infrastructure\.dockerignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Eventing", "Holidays.Eventing\Holidays.Eventing.csproj", "{1D3CD4C2-FCD1-44C9-9164-7322067CE299}"
@@ -69,6 +70,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "collecting-app", "collectin
 	ProjectSection(SolutionItems) = preProject
 		..\infrastructure\collecting-app\appsettings.json = ..\infrastructure\collecting-app\appsettings.json
 		..\infrastructure\collecting-app\Dockerfile = ..\infrastructure\collecting-app\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{9A3E3552-32F0-46B1-94F4-206BE31D3BD2}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
+		..\.gitattributes = ..\.gitattributes
 	EndProjectSection
 EndProject
 Global

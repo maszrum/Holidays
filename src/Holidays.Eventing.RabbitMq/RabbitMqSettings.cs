@@ -12,7 +12,7 @@ public class RabbitMqSettings : ISettings<RabbitMqSettingsDescriptor>
     public bool UseRabbitMq { get; init; }
 
     public string HostName { get; init; } = null!;
-    
+
     public int Port { get; init; }
 
     public string VirtualHost { get; init; } = string.Empty;
@@ -20,7 +20,7 @@ public class RabbitMqSettings : ISettings<RabbitMqSettingsDescriptor>
     public string UserName { get; init; } = null!;
 
     public string Password { get; init; } = null!;
-    
+
     public bool IsValid()
     {
         if (!UseRabbitMq)
@@ -28,7 +28,7 @@ public class RabbitMqSettings : ISettings<RabbitMqSettingsDescriptor>
             return true;
         }
 
-        return !string.IsNullOrWhiteSpace(HostName) && 
+        return !string.IsNullOrWhiteSpace(HostName) &&
                Port > 0 &&
                !string.IsNullOrWhiteSpace(UserName) &&
                !string.IsNullOrWhiteSpace(Password);

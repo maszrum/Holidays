@@ -5,13 +5,13 @@ namespace Holidays.InMemoryStore.Tests;
 public abstract class DatabaseTestsBase
 {
     protected InMemoryDatabase Database { get; } = InMemoryDatabase.CreateEmpty();
-    
+
     protected async Task<T> DoWithTransactionAndRollback<T>(Func<InMemoryDatabase, Task<T>> action)
     {
         using var transactionScope = new TransactionScope();
         return await action(Database);
     }
-    
+
     protected T DoWithTransactionAndRollback<T>(Func<InMemoryDatabase, T> action)
     {
         using var transactionScope = new TransactionScope();

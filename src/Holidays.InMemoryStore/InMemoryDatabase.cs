@@ -31,7 +31,7 @@ public class InMemoryDatabase : Database
             .Select(o => converter.ConvertToRecord(o));
 
         var database = new InMemoryDatabase();
-        
+
         database.InsertInitialState(records);
 
         return database;

@@ -16,12 +16,12 @@ public class OfferPriceChangedInMemoryStoreEventHandler : IEventHandler<OfferPri
     public async Task Handle(OfferPriceChanged @event, Func<Task> next, CancellationToken cancellationToken)
     {
         using var transaction = new TransactionContext();
-        
+
         var repository = new OffersInMemoryRepository(_database);
         repository.ModifyPrice(@event.OfferId, @event.CurrentPrice);
 
         await next();
-            
+
         transaction.Complete();
     }
 }

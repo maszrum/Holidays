@@ -6,8 +6,8 @@ namespace Holidays.Selenium;
 public static class SeleniumExtensions
 {
     public static bool TryFindElement(
-        this IWebDriver driver, 
-        By by, 
+        this IWebDriver driver,
+        By by,
         [NotNullWhen(true)] out IWebElement? element)
     {
         try

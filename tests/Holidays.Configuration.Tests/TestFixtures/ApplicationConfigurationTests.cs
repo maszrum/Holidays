@@ -10,11 +10,11 @@ public class ApplicationConfigurationTests
     public void valid_config_should_be_read_correctly()
     {
         var applicationConfiguration = new ApplicationConfiguration(
-            "valid-configuration.json",  
+            "valid-configuration.json",
             overrideWithEnvironmentVariables: false);
 
         var testSettings = applicationConfiguration.Get<TestSettings>();
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(testSettings.StringSetting, Is.EqualTo("Hello"));
@@ -22,12 +22,12 @@ public class ApplicationConfigurationTests
             Assert.That(testSettings.BoolSetting, Is.True);
         });
     }
-    
+
     [Test]
     public void reading_valid_config_concurrently_should_succeed()
     {
         var applicationConfiguration = new ApplicationConfiguration(
-            "valid-configuration.json",  
+            "valid-configuration.json",
             overrideWithEnvironmentVariables: false);
 
         var stringValues = new ConcurrentBag<string>();
@@ -37,12 +37,12 @@ public class ApplicationConfigurationTests
         Parallel.For(0, 20, _ =>
         {
             var testSettings = applicationConfiguration.Get<TestSettings>();
-            
+
             stringValues.Add(testSettings.StringSetting);
             intValues.Add(testSettings.IntSetting);
             boolValues.Add(testSettings.BoolSetting);
         });
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(stringValues.All(v => v == "Hello"), Is.True);
@@ -58,7 +58,7 @@ public class ApplicationConfigurationTests
     public void reading_invalid_configuration_should_throw_exception(string configFileName)
     {
         var applicationConfiguration = new ApplicationConfiguration(
-            configFileName,  
+            configFileName,
             overrideWithEnvironmentVariables: false);
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -66,12 +66,12 @@ public class ApplicationConfigurationTests
             _ = applicationConfiguration.Get<TestSettings>();
         });
     }
-    
+
     [Test]
     public void reading_not_existing_configuration_file_should_throw_exception()
     {
         var applicationConfiguration = new ApplicationConfiguration(
-            "not-existing-file.json",  
+            "not-existing-file.json",
             overrideWithEnvironmentVariables: false);
 
         Assert.Throws<FileNotFoundException>(() =>
@@ -79,23 +79,23 @@ public class ApplicationConfigurationTests
             _ = applicationConfiguration.Get<TestSettings>();
         });
     }
-    
+
     [Test]
     public void setting_from_environment_variable_should_be_overridden()
     {
         string readStringSetting;
-        
+
         try
         {
             Environment.SetEnvironmentVariable(
-                "TestSection:StringSetting", 
-                "Overridden value", 
+                "TestSection:StringSetting",
+                "Overridden value",
                 EnvironmentVariableTarget.Process);
-            
+
             var applicationConfiguration = new ApplicationConfiguration(
-                "valid-configuration.json",  
+                "valid-configuration.json",
                 overrideWithEnvironmentVariables: true);
-            
+
             var testSettings = applicationConfiguration.Get<TestSettings>();
 
             readStringSetting = testSettings.StringSetting;
@@ -103,30 +103,30 @@ public class ApplicationConfigurationTests
         finally
         {
             Environment.SetEnvironmentVariable(
-                "TestSection:StringSetting", 
-                default, 
+                "TestSection:StringSetting",
+                default,
                 EnvironmentVariableTarget.Process);
         }
-        
+
         Assert.That(readStringSetting, Is.EqualTo("Overridden value"));
     }
-    
+
     [Test]
     public void setting_from_environment_variable_should_not_be_overridden()
     {
         string readStringSetting;
-        
+
         try
         {
             Environment.SetEnvironmentVariable(
-                "TestSection:StringSetting", 
-                "Overridden value", 
+                "TestSection:StringSetting",
+                "Overridden value",
                 EnvironmentVariableTarget.Process);
-            
+
             var applicationConfiguration = new ApplicationConfiguration(
-                "valid-configuration.json",  
+                "valid-configuration.json",
                 overrideWithEnvironmentVariables: false);
-            
+
             var testSettings = applicationConfiguration.Get<TestSettings>();
 
             readStringSetting = testSettings.StringSetting;
@@ -134,11 +134,11 @@ public class ApplicationConfigurationTests
         finally
         {
             Environment.SetEnvironmentVariable(
-                "TestSection:StringSetting", 
-                default, 
+                "TestSection:StringSetting",
+                default,
                 EnvironmentVariableTarget.Process);
         }
-        
+
         Assert.That(readStringSetting, Is.EqualTo("Hello"));
     }
 }

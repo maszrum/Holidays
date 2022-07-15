@@ -22,11 +22,11 @@ public class ApplicationConfiguration
     }
 
     public IConfigurationRoot ConfigurationRoot => _configuration.Value;
-    
+
     public TSettings Get<TSettings>() where TSettings : ISettings
     {
         var sectionName = GetSectionName(typeof(TSettings));
-        
+
         var settings = _configuration.Value
             .GetSection(sectionName)
             .Get<TSettings>(options =>
@@ -40,7 +40,7 @@ public class ApplicationConfiguration
             throw new InvalidOperationException(
                 $"Unable to find section in configuration: {sectionName}");
         }
-        
+
         if (!settings.IsValid())
         {
             throw new InvalidOperationException(
@@ -74,11 +74,11 @@ public class ApplicationConfiguration
             {
                 return sectionName;
             }
-        
+
             sectionName = GetSectionNameUsingReflection(settingsType);
-            
+
             _sectionNames.Add(settingsType, sectionName);
-            
+
             return sectionName;
         }
         finally

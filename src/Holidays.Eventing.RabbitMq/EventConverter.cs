@@ -8,16 +8,16 @@ namespace Holidays.Eventing.RabbitMq;
 internal class EventConverter
 {
     private readonly ImmutableDictionary<string, Type> _eventTypes;
-    
+
     public EventConverter(IEnumerable<Type> eventTypes)
     {
         _eventTypes = eventTypes.ToImmutableDictionary(
-            t => t.Name, 
+            t => t.Name,
             t => t);
     }
 
     public bool IsTypeRegistered(string typeName) => _eventTypes.ContainsKey(typeName);
-    
+
     public IEvent ConvertToEvent(string typeName, ReadOnlySpan<byte> bytes)
     {
         if (!_eventTypes.TryGetValue(typeName, out var eventType))
@@ -27,7 +27,7 @@ internal class EventConverter
         }
 
         var json = Encoding.UTF8.GetString(bytes);
-        
+
         var @event = JsonConvert.DeserializeObject(json, eventType);
 
         if (@event is not IEvent eventTyped)

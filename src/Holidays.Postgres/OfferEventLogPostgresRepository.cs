@@ -11,17 +11,17 @@ namespace Holidays.Postgres;
 public sealed class OfferEventLogPostgresRepository : PostgresRepositoryBase, IOfferEventLogRepository
 {
     private readonly EventRecordConverter _converter = new();
-    
-    public OfferEventLogPostgresRepository(NpgsqlConnection connection) 
+
+    public OfferEventLogPostgresRepository(NpgsqlConnection connection)
         : base(connection)
     {
     }
 
-    public OfferEventLogPostgresRepository(NpgsqlConnection connection, NpgsqlTransaction transaction) 
+    public OfferEventLogPostgresRepository(NpgsqlConnection connection, NpgsqlTransaction transaction)
         : base(connection, transaction)
     {
     }
-    
+
     public Task Add(OfferAdded @event)
     {
         var record = _converter.ConvertToRecord(@event);
@@ -75,7 +75,7 @@ public sealed class OfferEventLogPostgresRepository : PostgresRepositoryBase, IO
 
     private async Task AddEventLogRecord(OfferEventLogRecord record)
     {
-        const string sql = 
+        const string sql =
             "INSERT INTO holidays.offer_event_log " +
             "(id, event_timestamp, offer_id, event_type, params) " +
             "VALUES " +

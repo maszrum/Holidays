@@ -18,16 +18,16 @@ public abstract class PostgresRepositoryBase : IAsyncDisposable
         Transaction = transaction;
         _externalTransaction = true;
     }
-    
+
     protected NpgsqlConnection Connection { get; }
 
     protected NpgsqlTransaction? Transaction { get; private set; }
-    
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     protected Task<NpgsqlTransaction> GetOrCreateTransaction()
     {
-        return Transaction is null 
-            ? StartAndSet() 
+        return Transaction is null
+            ? StartAndSet()
             : Task.FromResult(Transaction);
 
         async Task<NpgsqlTransaction> StartAndSet()

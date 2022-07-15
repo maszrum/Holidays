@@ -6,9 +6,9 @@ namespace Holidays.Eventing;
 
 public sealed class EventBus : IEventBus
 {
+    private readonly IReadOnlyList<IExternalProvider> _externalProviders;
     private readonly IReadOnlyDictionary<Type, List<EventHandlerDescriptor>> _handlerFactories;
     private readonly ImmutableDictionary<Type, MethodInfo> _methodInfos;
-    private readonly IReadOnlyList<IExternalProvider> _externalProviders;
 
     internal EventBus(
         IReadOnlyDictionary<Type, List<EventHandlerDescriptor>> handlerFactories,
@@ -32,8 +32,8 @@ public sealed class EventBus : IEventBus
         CancellationToken cancellationToken = default)
     {
         return PublishEvent(
-            @event, 
-            asExternalProvider: false, 
+            @event,
+            asExternalProvider: false,
             cancellationToken);
     }
 
@@ -42,8 +42,8 @@ public sealed class EventBus : IEventBus
         CancellationToken cancellationToken = default)
     {
         return PublishEvent(
-            @event, 
-            asExternalProvider: true, 
+            @event,
+            asExternalProvider: true,
             cancellationToken);
     }
 
@@ -63,7 +63,7 @@ public sealed class EventBus : IEventBus
         CancellationToken cancellationToken)
     {
         var eventType = @event.GetType();
-        
+
         if (!_handlerFactories.TryGetValue(eventType, out var descriptors))
         {
             throw new InvalidOperationException(
@@ -81,10 +81,10 @@ public sealed class EventBus : IEventBus
         foreach (var descriptor in descriptorsToHandle)
         {
             var nextHandler = next;
-            
-            var nextNext = () => 
+
+            var nextNext = () =>
                 InvokeHandleMethod(descriptor.HandlerFactory, @event, nextHandler, cancellationToken);
-            
+
             next = nextNext;
         }
 
@@ -92,16 +92,16 @@ public sealed class EventBus : IEventBus
     }
 
     private async Task InvokeHandleMethod(
-        Func<object> handlerFactory, 
-        IEvent @event, 
+        Func<object> handlerFactory,
+        IEvent @event,
         Func<Task> next,
         CancellationToken cancellationToken = default)
     {
         var handlerInstance = handlerFactory();
         var handleMethodInfo = _methodInfos[handlerInstance.GetType()];
-        
+
         var result = handleMethodInfo.Invoke(
-            handlerInstance, 
+            handlerInstance,
             new object[] { @event, next, cancellationToken });
 
         if (result is null)
@@ -147,7 +147,7 @@ public sealed class EventBus : IEventBus
                     $"Cannot find {nameof(IEventHandler<IEvent>.Handle)} method " +
                     $"in type {handlerInstance.GetType().Name}");
             }
-            
+
             result.Add(handlerType, handleMethodInfo);
         }
 

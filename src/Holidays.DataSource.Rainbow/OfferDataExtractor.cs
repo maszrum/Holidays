@@ -1,5 +1,5 @@
-﻿using OpenQA.Selenium;
-using Holidays.Core.OfferModel;
+﻿using Holidays.Core.OfferModel;
+using OpenQA.Selenium;
 
 namespace Holidays.DataSource.Rainbow;
 
@@ -9,13 +9,13 @@ internal class OfferDataExtractor
     {
         var hotelElement = element.FindElement(By.CssSelector(".bloczek__naglowek .bloczek__tytul"));
         var destinationElement = element.FindElement(By.CssSelector(".bloczek__lokalizacja .bloczek__lokalizacja--text"));
-        
+
         var parameterElements = element.FindElements(By.CssSelector(".bloczek__content .bloczek__parametr-text"));
         var departureDateAndDaysElement = parameterElements[0];
         var cityOfDepartureElement = parameterElements[1];
 
         var priceElement = element.FindElement(By.CssSelector(".content__right .bloczek__cena"));
-        
+
         var detailsLinkElement = element.FindElement(By.CssSelector("a.content__right"));
 
         var (departureDate, days) = ExtractDepartureDateAndDays(departureDateAndDaysElement.Text);

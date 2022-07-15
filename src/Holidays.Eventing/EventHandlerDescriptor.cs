@@ -9,6 +9,6 @@ public class EventHandlerDescriptor
     }
 
     public Func<object> HandlerFactory { get; }
-    
+
     public bool OnlyForLocalEvents { get; }
 }

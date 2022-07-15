@@ -10,7 +10,7 @@ internal class DataSourceFactory
     private readonly WebDriverFactory _webDriverFactory;
 
     public DataSourceFactory(
-        OffersDataSourceSettings settings, 
+        OffersDataSourceSettings settings,
         WebDriverFactory webDriverFactory)
     {
         _settings = settings;
@@ -20,7 +20,7 @@ internal class DataSourceFactory
     public IOffersDataSource Get(string name)
     {
         var expectedDllName = $"{nameof(Holidays)}.{nameof(DataSource)}.{name}.dll";
-        
+
         var currentAssemblyFileName = Assembly.GetExecutingAssembly().Location;
         var location = Path.GetDirectoryName(currentAssemblyFileName);
 
@@ -42,14 +42,14 @@ internal class DataSourceFactory
         if (dataSourceTypes.Length == 0)
         {
             throw new InvalidOperationException(
-                $"Specified data source was not found. " +
+                "Specified data source was not found. " +
                 $"Cannot find class that implements interface {nameof(IOffersDataSource)}.");
         }
 
         if (dataSourceTypes.Length > 1)
         {
             throw new InvalidOperationException(
-                $"An error occured when loading data source. " +
+                "An error occured when loading data source. " +
                 $"There is more than one class implementing {nameof(IOffersDataSource)} interface.");
         }
 

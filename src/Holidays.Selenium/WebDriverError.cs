@@ -12,6 +12,6 @@ public class WebScrapingError : ErrorBase<WebDriverException>
     }
 
     public override string Message { get; }
-    
+
     public override WebDriverException Exception { get; }
 }

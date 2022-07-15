@@ -6,7 +6,6 @@ public interface ISettings
 }
 
 // ReSharper disable once UnusedTypeParameter
-
 public interface ISettings<TDescriptor> : ISettings
     where TDescriptor : ISettingsDescriptor, new()
 {

@@ -11,8 +11,8 @@ internal class RabbitMqSink : IExternalEventSink
 
     public RabbitMqSink(
         RabbitMqProviderOptions options,
-        Guid publisherId, 
-        ChannelFactory channelFactory, 
+        Guid publisherId,
+        ChannelFactory channelFactory,
         EventConverter eventConverter)
     {
         _options = options;
@@ -26,21 +26,21 @@ internal class RabbitMqSink : IExternalEventSink
         var channel = _channelFactory.GetOrCreateChannel();
 
         var properties = channel.CreateBasicProperties();
-        properties.Headers = new Dictionary<string, object>()
+        properties.Headers = new Dictionary<string, object>
         {
             [Constants.EventTypeHeader] = @event.GetType().Name,
             [Constants.EventPublisherHeader] = _publisherId.ToString()
         };
 
         var eventBytes = _eventConverter.ConvertToBytes(@event);
-        
+
         channel.BasicPublish(
-            Constants.Exchange, 
-            routingKey: string.Empty, 
-            mandatory: true, 
-            basicProperties: properties, 
+            Constants.Exchange,
+            routingKey: string.Empty,
+            mandatory: true,
+            basicProperties: properties,
             body: eventBytes);
-        
+
         _options.EventSentLogAction?.Invoke(@event);
 
         return Task.CompletedTask;

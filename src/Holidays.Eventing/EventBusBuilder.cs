@@ -4,10 +4,10 @@ namespace Holidays.Eventing;
 
 public class EventBusBuilder
 {
-    private readonly Dictionary<Type, List<EventHandlerDescriptor>> _handlerFactories = new();
     private readonly List<IExternalProvider> _externalProviders = new();
+    private readonly Dictionary<Type, List<EventHandlerDescriptor>> _handlerFactories = new();
 
-    public EventBusBuilderForEventType<TEvent> ForEventType<TEvent>() 
+    public EventBusBuilderForEventType<TEvent> ForEventType<TEvent>()
         where TEvent : IEvent
     {
         if (_handlerFactories.ContainsKey(typeof(TEvent)))
@@ -18,7 +18,7 @@ public class EventBusBuilder
 
         var factories = new List<EventHandlerDescriptor>();
         _handlerFactories.Add(typeof(TEvent), factories);
-        
+
         return new EventBusBuilderForEventType<TEvent>(
             descriptor => factories.Add(descriptor));
     }
@@ -29,7 +29,7 @@ public class EventBusBuilder
 
         return this;
     }
-    
+
     public Task<IEventBus> Build()
     {
         if (_externalProviders.Count == 0)
@@ -43,7 +43,7 @@ public class EventBusBuilder
         async Task<IEventBus> InitializeAndBuild()
         {
             var eventBus = new EventBus(_handlerFactories, _externalProviders);
-            
+
             foreach (var externalProvider in _externalProviders)
             {
                 await externalProvider.Initialize(eventBus);

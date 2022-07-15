@@ -5,8 +5,8 @@ namespace Holidays.Eventing.RabbitMq.Tests;
 internal static class Create
 {
     public static async Task<IEventBus> EventBus(
-        Action<EventBusBuilder> builderAction, 
-        Action<string>? onUnknownEventType = default, 
+        Action<EventBusBuilder> builderAction,
+        Action<string>? onUnknownEventType = default,
         Action<Exception, string>? onDeserializationError = default)
     {
         var rabbitMqSettings = ReadSettings();
@@ -35,7 +35,7 @@ internal static class Create
     private static RabbitMqSettings ReadSettings()
     {
         var configuration = new ApplicationConfiguration(
-            "testsettings.json", 
+            "testsettings.json",
             overrideWithEnvironmentVariables: false);
 
         return configuration.Get<RabbitMqSettings>();

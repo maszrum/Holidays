@@ -5,6 +5,6 @@ namespace Holidays.Core.InfrastructureInterfaces;
 public interface IOffersDataSource
 {
     string WebsiteName { get; }
-    
+
     Task<Result<Offers>> GetOffers(DateOnly maxDepartureDate);
 }

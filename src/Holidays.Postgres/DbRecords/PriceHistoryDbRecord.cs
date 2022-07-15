@@ -18,12 +18,12 @@ public class PriceHistoryDbRecord
         OfferId = offerId;
         Price = price;
     }
-    
+
     public Guid Id { get; init; }
-    
+
     public DateTime PriceTimestamp { get; }
-    
+
     public Guid OfferId { get; init; }
-    
+
     public int Price { get; init; }
 }

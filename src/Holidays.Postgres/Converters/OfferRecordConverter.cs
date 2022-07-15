@@ -31,7 +31,7 @@ internal class OfferRecordConverter
             record.Price,
             record.DetailsUrl,
             record.WebsiteName);
-        
+
         if (offer.Id != record.Id)
         {
             throw new InvalidOperationException(

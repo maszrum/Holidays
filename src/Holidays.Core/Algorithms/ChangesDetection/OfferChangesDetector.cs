@@ -33,7 +33,7 @@ public class OfferChangesDetector
     private static IEnumerable<DetectedChange> GetOffersWithChangedPrice(Offers previousState, Offers currentState)
     {
         var commonOffers = currentState.Elements.Intersect(previousState.Elements);
-        
+
         foreach (var offer in commonOffers)
         {
             previousState.Elements.TryGetValue(offer, out var previousOffer);

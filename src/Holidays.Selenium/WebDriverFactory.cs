@@ -25,8 +25,8 @@ public class WebDriverFactory
         var chromeOptions = GetChromeOptions();
 
         var webDriver = new ChromeDriver(
-            ChromeDriverService.CreateDefaultService(), 
-            chromeOptions, 
+            ChromeDriverService.CreateDefaultService(),
+            chromeOptions,
             TimeSpan.FromSeconds(_settings.CommandTimeoutSeconds));
 
         return webDriver;
@@ -38,7 +38,7 @@ public class WebDriverFactory
 
         var webDriver = new RemoteWebDriver(
             new Uri(_settings.RemoteWebDriverUrl),
-            chromeOptions.ToCapabilities(), 
+            chromeOptions.ToCapabilities(),
             TimeSpan.FromSeconds(_settings.CommandTimeoutSeconds));
 
         return webDriver;

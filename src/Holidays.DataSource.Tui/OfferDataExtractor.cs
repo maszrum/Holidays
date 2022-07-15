@@ -8,7 +8,7 @@ internal class OfferDataExtractor
     public Offer Extract(IWebElement element)
     {
         var hotelElement = element.FindElement(By.ClassName("offer-tile-body__hotel-name"));
-        
+
         var destination = GetDestination(element);
 
         var (departureDate, days) = GetDepartureDateAndDays(element);
@@ -16,7 +16,7 @@ internal class OfferDataExtractor
         var cityOfDepartureElement = element.FindElement(By.CssSelector("button.dropdown-field--same-day-offers span"));
 
         var priceElement = element.FindElement(By.ClassName("price-value__amount"));
-        
+
         var detailsLinkElement = element.FindElement(By.ClassName("offer-tile-aside__button--cta"));
 
         var offer = new Offer(
@@ -64,7 +64,7 @@ internal class OfferDataExtractor
         daysText = daysText.Substring(0, indexOfSpace);
 
         return (
-            DateOnly.ParseExact(departureDateText, "dd.MM.yyyy"), 
+            DateOnly.ParseExact(departureDateText, "dd.MM.yyyy"),
             int.Parse(daysText));
     }
 }

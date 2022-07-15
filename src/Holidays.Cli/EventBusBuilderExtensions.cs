@@ -40,7 +40,7 @@ internal static class EventBusBuilderExtensions
     }
 
     public static EventBusBuilder ConfigureRabbitMqIfTurnedOn(
-        this EventBusBuilder builder, 
+        this EventBusBuilder builder,
         ApplicationBootstrapper app)
     {
         var rabbitMqSettings = app.Configuration.Get<RabbitMqSettings>();

@@ -4,8 +4,8 @@ internal static class Wait
 {
     public static Task<bool> Until(Func<bool> func, TimeSpan timeout)
     {
-        return func() 
-            ? Task.FromResult(true) 
+        return func()
+            ? Task.FromResult(true)
             : EnterCheckLoop();
 
         async Task<bool> EnterCheckLoop()

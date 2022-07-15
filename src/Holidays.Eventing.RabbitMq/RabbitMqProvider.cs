@@ -7,7 +7,7 @@ public sealed class RabbitMqProvider : IExternalProvider
     private readonly RabbitMqSettings _settings;
     private readonly RabbitMqProviderOptions _options;
     private readonly Guid _clientId = Guid.NewGuid();
-    
+
     private IConnection? _connection;
     private ChannelFactory? _channelFactory;
     private IExternalEventSource? _source;
@@ -25,15 +25,15 @@ public sealed class RabbitMqProvider : IExternalProvider
     public IExternalEventSink Sink =>
         _sink ?? throw new InvalidOperationException("Provider has not been initialized.");
 
-    private IConnection Connection => 
+    private IConnection Connection =>
         _connection ?? throw new NullReferenceException($"{nameof(Connection)} is null.");
-    
-    private IModel Channel => 
+
+    private IModel Channel =>
         _channelFactory?.GetOrCreateChannel() ?? throw new NullReferenceException($"{nameof(Channel)} is null.");
 
     public async Task Initialize(EventBus eventBus)
     {
-        var connectionFactory = new ConnectionFactory()
+        var connectionFactory = new ConnectionFactory
         {
             HostName = _settings.HostName,
             Port = _settings.Port,
@@ -46,7 +46,7 @@ public sealed class RabbitMqProvider : IExternalProvider
 
         _connection = connectionFactory.CreateConnection();
         _channelFactory = new ChannelFactory(_connection);
-        
+
         SetupQueue(_channelFactory.GetOrCreateChannel());
 
         var eventConverter = new EventConverter(eventBus.GetRegisteredEventTypes());
@@ -61,29 +61,29 @@ public sealed class RabbitMqProvider : IExternalProvider
     {
         Channel.Dispose();
         Connection.Dispose();
-        
+
         return ValueTask.CompletedTask;
     }
 
     private void SetupQueue(IModel channel)
     {
         var queueName = $"{Constants.QueuePrefix}{_clientId.ToString()}";
-        
+
         channel.ExchangeDeclare(
-            Constants.Exchange, 
-            ExchangeType.Fanout, 
-            durable: true, 
+            Constants.Exchange,
+            ExchangeType.Fanout,
+            durable: true,
             autoDelete: false);
 
         channel.QueueDeclare(
-            queueName, 
-            durable: false, 
-            autoDelete: true, 
+            queueName,
+            durable: false,
+            autoDelete: true,
             exclusive: true);
-        
+
         channel.QueueBind(
-            queueName, 
-            Constants.Exchange, 
+            queueName,
+            Constants.Exchange,
             routingKey: string.Empty);
     }
 }

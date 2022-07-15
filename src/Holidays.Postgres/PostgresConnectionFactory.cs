@@ -21,7 +21,7 @@ public class PostgresConnectionFactory
     {
         var connection = new NpgsqlConnection(_settings.ConnectionString);
         await connection.OpenAsync(cancellationToken);
-        
+
         return connection;
     }
 }

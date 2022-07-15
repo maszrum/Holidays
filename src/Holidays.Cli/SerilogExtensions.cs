@@ -16,7 +16,7 @@ internal static class SerilogExtensions
         }
     }
 
-    public static void Error<TException>(this ILogger logger, ErrorBase<TException> error) 
+    public static void Error<TException>(this ILogger logger, ErrorBase<TException> error)
         where TException : Exception
     {
         logger.Error(error.Exception, error.Message);

@@ -22,12 +22,12 @@ public class OfferAddedInMemoryStoreEventHandler : IEventHandler<OfferAdded>
         }
 
         using var transaction = new TransactionContext();
-        
+
         var repository = new OffersInMemoryRepository(_database);
         repository.Add(@event.Offer);
 
         await next();
-            
+
         transaction.Complete();
     }
 }

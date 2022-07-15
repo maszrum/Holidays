@@ -5,8 +5,8 @@ namespace Holidays.Eventing.RabbitMq.Tests;
 internal class TestEvent : IEvent
 {
     public TestEvent(
-        DateTime timestamp, 
-        int intValue, 
+        DateTime timestamp,
+        int intValue,
         string stringValue)
     {
         Timestamp = timestamp;
@@ -14,9 +14,9 @@ internal class TestEvent : IEvent
         StringValue = stringValue;
     }
 
-    public DateTime Timestamp { get; }
-    
     public int IntValue { get; }
-    
+
     public string StringValue { get; }
+
+    public DateTime Timestamp { get; }
 }

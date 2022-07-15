@@ -6,16 +6,16 @@ internal class OfferDbRecord
     private OfferDbRecord()
     {
     }
-    
+
     public OfferDbRecord(
         Guid id,
-        string hotel, 
-        string destination, 
-        int departureDate, 
-        int days, 
-        string cityOfDeparture, 
-        int price, 
-        string detailsUrl, 
+        string hotel,
+        string destination,
+        int departureDate,
+        int days,
+        string cityOfDeparture,
+        int price,
+        string detailsUrl,
         string websiteName,
         bool isRemoved)
     {
@@ -36,18 +36,18 @@ internal class OfferDbRecord
     public string Hotel { get; init; } = null!;
 
     public string Destination { get; init; } = null!;
-    
+
     public int DepartureDate { get; init; }
-    
+
     public int Days { get; init; }
 
     public string CityOfDeparture { get; init; } = null!;
-    
+
     public int Price { get; init; }
 
     public string DetailsUrl { get; init; } = null!;
 
     public string WebsiteName { get; init; } = null!;
-    
+
     public bool IsRemoved { get; init; }
 }

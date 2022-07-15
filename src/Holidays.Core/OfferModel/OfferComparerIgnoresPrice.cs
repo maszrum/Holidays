@@ -1,5 +1,7 @@
 ﻿namespace Holidays.Core.OfferModel;
 
+// ReSharper disable EnforceIfStatementBraces
+
 internal class OfferComparerIgnoresPrice : IEqualityComparer<Offer>
 {
     public bool Equals(Offer? x, Offer? y)
@@ -20,11 +22,11 @@ internal class OfferComparerIgnoresPrice : IEqualityComparer<Offer>
     public int GetHashCode(Offer obj)
     {
         return HashCode.Combine(
-            obj.Hotel, 
-            obj.Destination, 
+            obj.Hotel,
+            obj.Destination,
             obj.DepartureDate,
-            obj.Days, 
-            obj.CityOfDeparture, 
+            obj.Days,
+            obj.CityOfDeparture,
             obj.WebsiteName);
     }
 }

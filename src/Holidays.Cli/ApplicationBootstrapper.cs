@@ -6,12 +6,12 @@ namespace Holidays.Cli;
 internal class ApplicationBootstrapper
 {
     private const string ConfigurationFile = "appsettings.json";
-    
+
     private readonly CancellationTokenSource _applicationCts = new();
     private readonly ILogger _logger;
 
     private ApplicationBootstrapper(
-        ApplicationConfiguration configuration, 
+        ApplicationConfiguration configuration,
         ILogger logger)
     {
         Configuration = configuration;
@@ -25,11 +25,11 @@ internal class ApplicationBootstrapper
     public ILogger GetLogger() => _logger;
 
     public ILogger GetLogger<TContext>() => _logger.ForContext<TContext>();
-    
+
     private static ApplicationConfiguration CreateConfiguration()
     {
         var configuration = new ApplicationConfiguration(
-            ConfigurationFile, 
+            ConfigurationFile,
             overrideWithEnvironmentVariables: true);
 
         return configuration;
@@ -52,7 +52,7 @@ internal class ApplicationBootstrapper
             if (e.ExceptionObject is Exception exception)
             {
                 GetLogger<ApplicationBootstrapper>().Fatal(
-                    exception, 
+                    exception,
                     "Unhandled exception occured");
             }
             else
@@ -61,34 +61,34 @@ internal class ApplicationBootstrapper
                     "Unhandled unknown exception occured");
             }
         };
-        
+
         AppDomain.CurrentDomain.ProcessExit += (_, _) =>
         {
             GetLogger<ApplicationBootstrapper>().Information(
             "Closing application due to process exit event");
-            
+
             _applicationCts.Cancel();
         };
-        
+
         Console.CancelKeyPress += (_, e) =>
         {
             GetLogger<ApplicationBootstrapper>().Information(
                 "Closing application due to cancel key pressed");
-            
+
             _applicationCts.Cancel();
             e.Cancel = true;
         };
     }
-    
+
     public static async Task Run(Func<ApplicationBootstrapper, Task> action)
     {
         var configuration = CreateConfiguration();
         var logger = CreateLogger(configuration);
-        
+
         var bootstrapper = new ApplicationBootstrapper(configuration, logger);
-        
+
         bootstrapper.SetupApplicationEvents();
-        
+
         try
         {
             await action(bootstrapper);
