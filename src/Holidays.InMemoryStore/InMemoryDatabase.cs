@@ -23,19 +23,16 @@ public class InMemoryDatabase : Database
         }
     }
 
-    public static InMemoryDatabase CreateWithInitialState(Offers activeOffers, Offers removedOffers)
+    public static InMemoryDatabase CreateWithInitialState(Offers offers)
     {
         var converter = new OfferDbRecordConverter();
 
-        var activeRecords = activeOffers
-            .Select(o => converter.ConvertToRecord(o, isRemoved: false));
-
-        var removedRecords = removedOffers
-            .Select(o => converter.ConvertToRecord(o, isRemoved: true));
+        var records = offers
+            .Select(o => converter.ConvertToRecord(o));
 
         var database = new InMemoryDatabase();
         
-        database.InsertInitialState(activeRecords.Concat(removedRecords));
+        database.InsertInitialState(records);
 
         return database;
     }

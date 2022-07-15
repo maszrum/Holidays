@@ -49,16 +49,15 @@ var postgresConnectionFactory = new PostgresConnectionFactory(configuration.Get<
 var databaseInitializer = new DatabaseInitializer(postgresConnectionFactory);
 await databaseInitializer.InitializeIfNeed();
 
-Offers persistedActiveOffers, persistedRemovedOffers;
+Offers persistedActiveOffers;
 
 await using(var connection = await postgresConnectionFactory.CreateConnection())
 await using (var postgresOffersRepository = new OffersPostgresRepository(connection))
 {
     persistedActiveOffers = await postgresOffersRepository.GetAllByWebsiteName(offersDataSource.WebsiteName);
-    persistedRemovedOffers = await postgresOffersRepository.GetAllRemovedByWebsiteName(offersDataSource.WebsiteName);
 }
 
-var inMemoryStore = InMemoryDatabase.CreateWithInitialState(persistedActiveOffers, persistedRemovedOffers);
+var inMemoryStore = InMemoryDatabase.CreateWithInitialState(persistedActiveOffers);
 
 var eventBusBuilder = new EventBusBuilder();
 

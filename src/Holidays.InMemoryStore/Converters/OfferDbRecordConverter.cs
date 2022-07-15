@@ -18,7 +18,7 @@ internal class OfferDbRecordConverter
             record.WebsiteName);
     }
 
-    public OfferDbRecord ConvertToRecord(Offer offer, bool isRemoved)
+    public OfferDbRecord ConvertToRecord(Offer offer)
     {
         return new OfferDbRecord(
             offer.Id,
@@ -29,7 +29,6 @@ internal class OfferDbRecordConverter
             offer.CityOfDeparture,
             offer.Price,
             offer.DetailsUrl,
-            offer.WebsiteName,
-            isRemoved);
+            offer.WebsiteName);
     }
 }

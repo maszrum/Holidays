@@ -15,8 +15,7 @@ internal record OfferDbRecord
         string cityOfDeparture,
         int price,
         string detailsUrl,
-        string websiteName,
-        bool isRemoved)
+        string websiteName)
     {
         Id = id;
         Hotel = hotel;
@@ -27,7 +26,6 @@ internal record OfferDbRecord
         Price = price;
         DetailsUrl = detailsUrl;
         WebsiteName = websiteName;
-        IsRemoved = isRemoved;
     }
 
     public Guid Id { get; init; }
@@ -47,6 +45,4 @@ internal record OfferDbRecord
     public string DetailsUrl { get; init; } = null!;
 
     public string WebsiteName { get; init; } = null!;
-    
-    public bool IsRemoved { get; init; }
 }

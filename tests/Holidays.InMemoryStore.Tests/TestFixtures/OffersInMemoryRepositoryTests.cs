@@ -97,7 +97,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
     }
 
     [Test]
-    public async Task add_three_offers_remove_one_and_check_if_exists_in_removed_offers()
+    public async Task add_three_offers_remove_one_and_check_if_correct_one_was_removed()
     {
         var offersToAdd = Enumerable
             .Range(1, 3)
@@ -116,17 +116,19 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
 
             repository.Remove(offersToAdd[1].Id);
 
-            var offers = await repository.GetAllRemovedByWebsiteName("website");
+            var offers = await repository.GetAllByWebsiteName("website");
             return offers;
         });
 
-        Assert.That(getOffers.Elements, Has.Count.EqualTo(1));
+        Assert.That(getOffers.Elements, Has.Count.EqualTo(2));
 
-        Assert.That(getOffers.Elements.First().Hotel, Is.EqualTo("hotel-2"));
+        CollectionAssert.AreEquivalent(
+            new[] { "hotel-1", "hotel-3" },
+            getOffers.Elements.Select(o => o.Hotel));
     }
 
     [Test]
-    public async Task add_many_offers_remove_them_and_check_if_count_removed_offers_returns_correct_value()
+    public void add_many_offers_remove_them_and_check_if_count_offers_returns_zero()
     {
         var offersToAddAndRemove = Enumerable
             .Range(1, 23)
@@ -134,7 +136,7 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
                 new Offer($"hotel-{i}", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website"))
             .ToArray();
 
-        var getOffers = await DoWithTransactionAndRollback(async database =>
+        var offersCount = DoWithTransactionAndRollback(database =>
         {
             var repository = new OffersInMemoryRepository(database);
 
@@ -148,15 +150,11 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
                 repository.Remove(offerToRemove.Id);
             }
 
-            var offers = await repository.GetAllRemovedByWebsiteName("website");
-            return offers;
+            var count = repository.Count();
+            return count;
         });
 
-        Assert.That(getOffers.Elements, Has.Count.EqualTo(23));
-
-        CollectionAssert.AreEquivalent(
-            Enumerable.Range(1, 23).Select(i => $"hotel-{i}"),
-            getOffers.Select(o => o.Hotel));
+        Assert.That(offersCount, Is.Zero);
     }
 
     [Test]
@@ -174,17 +172,18 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
     }
 
     [Test]
-    public async Task get_all_removed_offers_should_return_empty_collection()
+    public void get_all_removed_offers_should_throw_exception()
     {
-        var getOffers = await DoWithTransactionAndRollback(async database =>
+        Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
-            var repository = new OffersInMemoryRepository(database);
+            _ = await DoWithTransactionAndRollback(async database =>
+            {
+                var repository = new OffersInMemoryRepository(database);
             
-            var offers = await repository.GetAllRemovedByWebsiteName("website");
-            return offers;
+                var offers = await repository.GetAllRemovedByWebsiteName("website");
+                return offers;
+            });
         });
-
-        Assert.That(getOffers.Elements, Has.Count.EqualTo(0));
     }
 
     [Test]
@@ -193,38 +192,29 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
         var offer = new Offer($"hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");
 
         var offersCount = new List<int>();
-        var offersRemovedCount = new List<int>();
 
         DoWithTransactionAndRollback(database =>
         {
             var repository = new OffersInMemoryRepository(database);
 
             offersCount.Add(repository.Count());
-            offersRemovedCount.Add(repository.CountRemoved());
 
             repository.Add(offer);
 
             offersCount.Add(repository.Count());
-            offersRemovedCount.Add(repository.CountRemoved());
 
             repository.Remove(offer.Id);
 
             offersCount.Add(repository.Count());
-            offersRemovedCount.Add(repository.CountRemoved());
 
             repository.Add(offer);
 
             offersCount.Add(repository.Count());
-            offersRemovedCount.Add(repository.CountRemoved());
         });
         
         CollectionAssert.AreEqual(
             new[] { 0, 1, 0, 1 },
             offersCount);
-
-        CollectionAssert.AreEqual(
-            new[] { 0, 0, 1, 0 },
-            offersRemovedCount);
     }
 
     [Test]
@@ -410,27 +400,33 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
     [Test]
     public async Task add_offers_with_different_website_names_delete_it_and_check_if_read_correct_ones()
     {
-        var offerOne = new Offer("hotel-1", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
-        var offerTwo = new Offer("hotel-2", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website");
+        var offerOne = new Offer("hotel-1", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-1");
+        var offerTwo = new Offer("hotel-2", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-2");
+        var offerThree = new Offer("hotel-3", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-1");
+        var offerFour = new Offer("hotel-4", "destination", DateOnly.FromDayNumber(5), 4, "city", 1200, "url", "website-2");
         
-        var (getOffers, getRemovedOffers) = await DoWithTransactionAndRollback(async (connection) =>
+        var (getOffersWebsiteOne, getOffersWebsiteTwo) = await DoWithTransactionAndRollback(async (connection) =>
         {
             var repository = new OffersInMemoryRepository(connection);
 
             repository.Add(offerOne);
             repository.Add(offerTwo);
+            repository.Add(offerThree);
+            repository.Add(offerFour);
 
             repository.Remove(offerOne.Id);
+            repository.Remove(offerFour.Id);
 
-            var offers = await repository.GetAllByWebsiteName("website");
-            var removedOffers = await repository.GetAllRemovedByWebsiteName("website");
-            return (offers, removedOffers);
+            var offersWebsiteOne = await repository.GetAllByWebsiteName("website-1");
+            var offersWebsiteTwo = await repository.GetAllByWebsiteName("website-2");
+            
+            return (offersWebsiteOne, offersWebsiteTwo);
         });
         
-        Assert.That(getOffers.Elements, Has.Count.EqualTo(1));
-        Assert.That(getOffers.Elements.First().Hotel, Is.EqualTo("hotel-2"));
+        Assert.That(getOffersWebsiteOne.Elements, Has.Count.EqualTo(1));
+        Assert.That(getOffersWebsiteTwo.Elements, Has.Count.EqualTo(1));
         
-        Assert.That(getRemovedOffers.Elements, Has.Count.EqualTo(1));
-        Assert.That(getRemovedOffers.Elements.First().Hotel, Is.EqualTo("hotel-1"));
+        Assert.That(getOffersWebsiteOne.Elements.First().Hotel, Is.EqualTo("hotel-3"));
+        Assert.That(getOffersWebsiteTwo.Elements.First().Hotel, Is.EqualTo("hotel-2"));
     }
 }

@@ -14,20 +14,35 @@ public class OffersInMemoryRepository : IOffersRepository
         _database = database;
     }
 
-    public Task<Offers> GetAll() => 
-        GetAllOffers(getRemovedOffers: false);
+    public Task<Offers> GetAll()
+    {
+        var offers = _database.Offers
+            .Select(_offerConverter.ConvertToObject);
 
-    public Task<Offers> GetAllByWebsiteName(string websiteName) => 
-        GetAllOffersByWebsiteName(websiteName, getRemovedOffers: false);
+        return Task.FromResult(new Offers(offers));
+    }
 
-    public Task<Offers> GetAllRemovedByWebsiteName(string websiteName) => 
-        GetAllOffersByWebsiteName(websiteName, getRemovedOffers: true);
+    public Task<Offers> GetAllByWebsiteName(string websiteName)
+    {
+        var offers = _database.Offers
+            .Where(r => r.WebsiteName == websiteName)
+            .AsEnumerable()
+            .Select(_offerConverter.ConvertToObject);
+
+        return Task.FromResult(new Offers(offers));
+    }
+
+    public Task<Offers> GetAllRemovedByWebsiteName(string websiteName)
+    {
+        throw new InvalidOperationException(
+            "In-memory repository does not store information about removed offers.");
+    }
     
     public Task<Maybe<Offer>> Get(Guid offerId)
     {
         var record = _database.Offers.SingleOrDefault(o => o.Id == offerId);
         
-        if (record is null || record.IsRemoved)
+        if (record is null)
         {
             return Task.FromResult(Maybe<Offer>.None());
         }
@@ -55,69 +70,41 @@ public class OffersInMemoryRepository : IOffersRepository
             : Maybe.Some(result.DepartureDate));
     }
 
-    public Task<Maybe<Offer>> RemovedExists(Guid offerId)
-    {
-        var record = _database.Offers.SingleOrDefault(o => o.Id == offerId);
-        
-        if (record is null || !record.IsRemoved)
-        {
-            return Task.FromResult(Maybe.None<Offer>());
-        }
-
-        var offer = _offerConverter.ConvertToObject(record);
-
-        return Task.FromResult(Maybe.Some(offer));
-    }
-
     public void Add(Offer offer)
     {
         var existingOffer = _database.Offers.SingleOrDefault(o => o.Id == offer.Id);
 
-        if (existingOffer is not null && !existingOffer.IsRemoved)
+        if (existingOffer is not null)
         {
             throw new InvalidOperationException(
                 "Adding the offer failed: offer already exists.");
         }
         
-        var record = _offerConverter.ConvertToRecord(offer, isRemoved: false);
-
-        if (existingOffer is not null && existingOffer.IsRemoved)
-        {
-            _database.Offers.Update(record);
-        }
-        else
-        {
-
-            _database.Offers.Insert(record);
-        }
+        var record = _offerConverter.ConvertToRecord(offer);
+        
+        _database.Offers.Insert(record);
     }
 
     public void Remove(Guid offerId)
     {
         var currentRecord = _database.Offers.SingleOrDefault(o => o.Id == offerId);
 
-        if (currentRecord is null || currentRecord.IsRemoved)
+        if (currentRecord is null)
         {
             throw new InvalidOperationException(
                 "Removing the offer with specified id failed: offer does not exist.");
         }
-
-        var newRecord = currentRecord with { IsRemoved = true };
         
-        _database.Offers.Update(newRecord);
+        _database.Offers.Delete(currentRecord);
     }
 
-    public int Count() => 
-        _database.Offers.Count(o => !o.IsRemoved);
-
-    public int CountRemoved() => 
-        _database.Offers.Count(o => o.IsRemoved);
+    public int Count() => (int) _database.Offers.Count;
 
     public void ModifyPrice(Guid offerId, int price)
     {
         var currentRecord = _database.Offers.SingleOrDefault(o => o.Id == offerId);
         
-        if (currentRecord is null || currentRecord.IsRemoved)
+        if (currentRecord is null)
         {
             throw new InvalidOperationException(
                 "Offer with specified id does not exist.");
@@ -126,25 +113,5 @@ public class OffersInMemoryRepository : IOffersRepository
         var newRecord = currentRecord with { Price = price };
         
         _database.Offers.Update(newRecord);
-    }
-
-    private Task<Offers> GetAllOffers(bool getRemovedOffers)
-    {
-        var offers = _database.Offers
-            .Where(r => r.IsRemoved == getRemovedOffers)
-            .AsEnumerable()
-            .Select(_offerConverter.ConvertToObject);
-
-        return Task.FromResult(new Offers(offers));
-    }
-
-    private Task<Offers> GetAllOffersByWebsiteName(string websiteName, bool getRemovedOffers)
-    {
-        var offers = _database.Offers
-            .Where(r => r.WebsiteName == websiteName && r.IsRemoved == getRemovedOffers)
-            .AsEnumerable()
-            .Select(_offerConverter.ConvertToObject);
-
-        return Task.FromResult(new Offers(offers));
     }
 }
