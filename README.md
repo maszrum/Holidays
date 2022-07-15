@@ -1,4 +1,3 @@
- - Check TODOs
  - Refactor program main
  - Add Itaka web scraper
  - Add Blazor UI

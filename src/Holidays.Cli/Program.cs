@@ -35,14 +35,15 @@ AppDomain.CurrentDomain.UnhandledException += (_, e) =>
     }
 };
 
-var offersDataSourceSettings = configuration.Get<OffersDatasourceSettings>();
+var offersDataSourceSettings = configuration.Get<OffersDataSourceSettings>();
 
 logger.Information(
     "Starting application with {DataSourceType} data source", 
     offersDataSourceSettings.Provider);
 
 var webDriverFactory = new WebDriverFactory(configuration.Get<SeleniumSettings>());
-var offersDataSource = new DataSourceFactory(webDriverFactory).Get(offersDataSourceSettings.Provider);
+var offersDataSource = new DataSourceFactory(offersDataSourceSettings, webDriverFactory)
+    .Get(offersDataSourceSettings.Provider);
 
 var postgresConnectionFactory = new PostgresConnectionFactory(configuration.Get<PostgresSettings>());
 
@@ -58,6 +59,7 @@ await using (var postgresOffersRepository = new OffersPostgresRepository(connect
 }
 
 var inMemoryStore = InMemoryDatabase.CreateWithInitialState(persistedActiveOffers);
+var offersInMemoryRepository = new OffersInMemoryRepository(inMemoryStore);
 
 var eventBusBuilder = new EventBusBuilder();
 
@@ -131,14 +133,21 @@ AppDomain.CurrentDomain.ProcessExit += (_, _) =>
     cts.Cancel();
 };
 
-var offersInMemoryRepository = new OffersInMemoryRepository(inMemoryStore);
-var job = new ChangesDetectionJob(eventBus, offersInMemoryRepository, logger.ForContext<ChangesDetectionJob>());
+var job = new ChangesDetectionJob(
+    offersDataSourceSettings, 
+    eventBus, 
+    offersInMemoryRepository, 
+    logger.ForContext<ChangesDetectionJob>());
 
 logger.Information("Application started");
 
 try
 {
     await job.Run(offersDataSource, cts.Token);
+}
+catch (OperationCanceledException)
+{
+    // ignored
 }
 finally
 {

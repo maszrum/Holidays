@@ -7,12 +7,17 @@ using OpenQA.Selenium;
 
 namespace Holidays.DataSource.Tui;
 
+// ReSharper disable once UnusedType.Global
 public class TuiOffersDataSource : IOffersDataSource
 {
+    private readonly OffersDataSourceSettings _settings;
     private readonly WebDriverFactory _webDriverFactory;
 
-    public TuiOffersDataSource(WebDriverFactory webDriverFactory)
+    public TuiOffersDataSource(
+        OffersDataSourceSettings settings, 
+        WebDriverFactory webDriverFactory)
     {
+        _settings = settings;
         _webDriverFactory = webDriverFactory;
     }
 
@@ -51,7 +56,8 @@ public class TuiOffersDataSource : IOffersDataSource
 
         do
         {
-            var collectedElements = await collector.Collect(TimeSpan.FromMinutes(3)); // TODO: move timeout to configuration
+            var timeout = TimeSpan.FromSeconds(_settings.CollectingTimeoutSeconds);
+            var collectedElements = await collector.Collect(timeout);
 
             var collectedOffers = collectedElements
                 .Select(element => extractor.Extract(element))

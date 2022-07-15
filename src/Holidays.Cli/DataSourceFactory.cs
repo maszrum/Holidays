@@ -6,10 +6,14 @@ namespace Holidays.Cli;
 
 internal class DataSourceFactory
 {
+    private readonly OffersDataSourceSettings _settings;
     private readonly WebDriverFactory _webDriverFactory;
 
-    public DataSourceFactory(WebDriverFactory webDriverFactory)
+    public DataSourceFactory(
+        OffersDataSourceSettings settings, 
+        WebDriverFactory webDriverFactory)
     {
+        _settings = settings;
         _webDriverFactory = webDriverFactory;
     }
 
@@ -49,13 +53,13 @@ internal class DataSourceFactory
                 $"There is more than one class implementing {nameof(IOffersDataSource)} interface.");
         }
 
-        var dataSource = Activator.CreateInstance(dataSourceTypes[0], _webDriverFactory);
+        var dataSource = Activator.CreateInstance(dataSourceTypes[0], _settings, _webDriverFactory);
 
         if (dataSource is not IOffersDataSource dataSourceTyped)
         {
             throw new InvalidOperationException(
-                $"Cannot instantiate object of type {dataSourceTypes[0].Name} " +
-                $"with one argument of type {nameof(WebDriverFactory)}.");
+                $"Cannot instantiate object of type {dataSourceTypes[0].Name}. " +
+                $"Cannot find ctor: {dataSourceTypes[0].Name}({nameof(OffersDataSourceSettings)}, {nameof(WebDriverFactory)}).");
         }
 
         return dataSourceTyped;

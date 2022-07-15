@@ -3,21 +3,25 @@ using Holidays.Core.Eventing;
 using Holidays.Core.InfrastructureInterfaces;
 using Holidays.Core.OfferModel;
 using Holidays.Eventing;
+using Holidays.Selenium;
 using Serilog;
 
 namespace Holidays.Cli;
 
 internal class ChangesDetectionJob
 {
+    private readonly OffersDataSourceSettings _settings;
     private readonly IEventBus _eventBus;
     private readonly IOffersRepository _offersRepository;
     private readonly ILogger _logger;
 
     public ChangesDetectionJob(
+        OffersDataSourceSettings settings,
         IEventBus eventBus,
         IOffersRepository offersRepository, 
         ILogger logger)
     {
+        _settings = settings;
         _eventBus = eventBus;
         _offersRepository = offersRepository;
         _logger = logger;
@@ -61,7 +65,7 @@ internal class ChangesDetectionJob
                 await _eventBus.Publish(@event, cancellationToken);
             }
             
-            await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken); // TODO: add configuration key
+            await Task.Delay(TimeSpan.FromSeconds(_settings.PauseBetweenCollectionsSeconds), cancellationToken);
         }
     }
 
@@ -80,9 +84,9 @@ internal class ChangesDetectionJob
         };
     }
 
-    private static async Task<Result<Offers>> GetOffers(IOffersDataSource dataSource)
+    private async Task<Result<Offers>> GetOffers(IOffersDataSource dataSource)
     {
-        var maxDepartureDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)); // TODO: to configuration file
+        var maxDepartureDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_settings.NumberOfDaysToCollectOffers));
         
         var offers = await dataSource.GetOffers(maxDepartureDate);
         return offers;
