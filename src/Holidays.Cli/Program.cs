@@ -125,8 +125,16 @@ Console.CancelKeyPress += (_, e) =>
     e.Cancel = true;
 };
 
+AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+{
+    logger.Information("Closing application due to process exit event");
+    cts.Cancel();
+};
+
 var offersInMemoryRepository = new OffersInMemoryRepository(inMemoryStore);
 var job = new ChangesDetectionJob(eventBus, offersInMemoryRepository, logger.ForContext<ChangesDetectionJob>());
+
+logger.Information("Application started");
 
 try
 {

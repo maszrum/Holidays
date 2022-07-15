@@ -1,4 +1,3 @@
- - Really remove offers from in-memory database
  - Check TODOs
  - Refactor program main
  - Add Itaka web scraper
