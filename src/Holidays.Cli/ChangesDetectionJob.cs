@@ -41,14 +41,14 @@ internal class ChangesDetectionJob
             
             var currentState = await GetOffers(dataSource);
             
-            _logger.Debug("Finished scraping");
-            
             if (currentState.IsError)
             {
                 _logger.Error(currentState.Error);
                 await Task.Delay(5_000, cancellationToken);
                 continue;
             }
+            
+            _logger.Debug("Finished scraping");
             
             var changes = new OfferChangesDetector()
                 .DetectChanges(previousState, currentState.Data);
