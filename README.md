@@ -1,2 +1,3 @@
+- Move docker ignore files
 - Add Itaka web scraper
 - Add Blazor UI

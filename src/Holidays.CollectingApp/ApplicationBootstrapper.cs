@@ -1,7 +1,7 @@
 ﻿using Holidays.Configuration;
 using Serilog;
 
-namespace Holidays.Cli;
+namespace Holidays.CollectingApp;
 
 internal class ApplicationBootstrapper
 {

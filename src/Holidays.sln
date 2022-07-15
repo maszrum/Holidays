@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Core", "Holidays.Core\Holidays.Core.csproj", "{2C5500BD-1EA0-44F2-8227-9287CEA109E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Cli", "Holidays.Cli\Holidays.Cli.csproj", "{FB399882-D8BC-4ED3-80B0-AC1ECB6FADEE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.CollectingApp", "Holidays.CollectingApp\Holidays.CollectingApp.csproj", "{FB399882-D8BC-4ED3-80B0-AC1ECB6FADEE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Selenium.Tests", "..\tests\Holidays.Selenium.Tests\Holidays.Selenium.Tests.csproj", "{44C68209-CF0F-45FB-A8E5-C9776BB924BA}"
 EndProject

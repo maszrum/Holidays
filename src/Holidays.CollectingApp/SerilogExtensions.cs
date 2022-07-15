@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace Holidays.Cli;
+namespace Holidays.CollectingApp;
 
 internal static class SerilogExtensions
 {

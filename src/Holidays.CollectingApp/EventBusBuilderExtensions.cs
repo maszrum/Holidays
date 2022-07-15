@@ -6,7 +6,7 @@ using Holidays.InMemoryStore.EventHandlers;
 using Holidays.Postgres;
 using Holidays.Postgres.EventHandlers;
 
-namespace Holidays.Cli;
+namespace Holidays.CollectingApp;
 
 internal static class EventBusBuilderExtensions
 {
@@ -33,8 +33,7 @@ internal static class EventBusBuilderExtensions
         builder
             .ForEventType<OfferStartedTracking>()
             .RegisterHandlerForAllEvents(() => new OfferStartedTrackingInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandlerForLocalEvents(
-                () => new OfferStartedTrackingPostgresEventHandler(postgresConnectionFactory));
+            .RegisterHandlerForLocalEvents(() => new OfferStartedTrackingPostgresEventHandler(postgresConnectionFactory));
 
         return builder;
     }

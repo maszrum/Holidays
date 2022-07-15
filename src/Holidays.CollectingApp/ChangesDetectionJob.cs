@@ -6,7 +6,7 @@ using Holidays.Eventing;
 using Holidays.Selenium;
 using Serilog;
 
-namespace Holidays.Cli;
+namespace Holidays.CollectingApp;
 
 internal class ChangesDetectionJob
 {

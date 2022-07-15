@@ -13,4 +13,4 @@ WORKDIR /app
 COPY --from=build-env /app/out .
 COPY ./infrastructure/collecting-app/appsettings.json .
 
-ENTRYPOINT ["dotnet", "Holidays.Cli.dll"]
+ENTRYPOINT ["dotnet", "Holidays.CollectingApp.dll"]

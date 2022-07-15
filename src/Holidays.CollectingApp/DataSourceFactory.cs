@@ -2,7 +2,7 @@
 using Holidays.Core.InfrastructureInterfaces;
 using Holidays.Selenium;
 
-namespace Holidays.Cli;
+namespace Holidays.CollectingApp;
 
 internal class DataSourceFactory
 {

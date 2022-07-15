@@ -1,4 +1,4 @@
-﻿using Holidays.Cli;
+﻿using Holidays.CollectingApp;
 using Holidays.Core.OfferModel;
 using Holidays.Eventing;
 using Holidays.InMemoryStore;
