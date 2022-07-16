@@ -6,6 +6,7 @@ namespace Holidays.CollectingApp;
 internal class ApplicationBootstrapper
 {
     private const string ConfigurationFile = "appsettings.json";
+    private const string EnvironmentConfigurationFile = "appsettings.{ENVIRONMENT}.json";
 
     private readonly CancellationTokenSource _applicationCts = new();
     private readonly ILogger _logger;
@@ -30,6 +31,7 @@ internal class ApplicationBootstrapper
     {
         var configuration = new ApplicationConfiguration(
             ConfigurationFile,
+            EnvironmentConfigurationFile,
             overrideWithEnvironmentVariables: true);
 
         return configuration;

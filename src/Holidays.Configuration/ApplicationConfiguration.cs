@@ -8,10 +8,21 @@ public class ApplicationConfiguration
     private readonly Dictionary<Type, string> _sectionNames = new();
     private readonly ReaderWriterLockSlim _sectionNamesLock = new();
 
-    public ApplicationConfiguration(string jsonFile, bool overrideWithEnvironmentVariables)
+    public ApplicationConfiguration(
+        string jsonFileName,
+        string? environmentJsonFileName,
+        bool overrideWithEnvironmentVariables)
     {
         var configurationBuilder = new ConfigurationBuilder()
-            .AddJsonFile(jsonFile);
+            .AddJsonFile(
+                jsonFileName,
+                optional: false,
+                reloadOnChange: false);
+
+        if (environmentJsonFileName is not null)
+        {
+            AddEnvironmentJsonFile(configurationBuilder, environmentJsonFileName);
+        }
 
         if (overrideWithEnvironmentVariables)
         {
@@ -89,6 +100,35 @@ public class ApplicationConfiguration
         finally
         {
             _sectionNamesLock.ExitWriteLock();
+        }
+    }
+
+    private static void AddEnvironmentJsonFile(
+        IConfigurationBuilder configurationBuilder,
+        string environmentJsonFileName)
+    {
+        var indexOfOpening = environmentJsonFileName.IndexOf('{');
+        var indexOfClosing = environmentJsonFileName.IndexOf('}');
+
+        if (indexOfOpening == -1 || indexOfClosing == -1 || indexOfClosing < indexOfOpening)
+        {
+            throw new FormatException(
+                $"Specified environment json file name is invalid: '{environmentJsonFileName}'.");
+        }
+
+        var environmentVariableName = environmentJsonFileName
+            .Substring(indexOfOpening + 1, indexOfClosing - indexOfOpening - 1);
+
+        var environmentVariable = Environment.GetEnvironmentVariable(environmentVariableName);
+
+        if (!string.IsNullOrWhiteSpace(environmentVariable))
+        {
+            var fileName = environmentJsonFileName.Replace($"{{{environmentVariableName}}}", environmentVariable);
+
+            configurationBuilder.AddJsonFile(
+                fileName,
+                optional: true,
+                reloadOnChange: false);
         }
     }
 

@@ -1,0 +1,5 @@
+﻿{
+  "TestSection": {
+    "StringSetting": "Hello overridden"
+  }
+}

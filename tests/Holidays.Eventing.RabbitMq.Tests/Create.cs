@@ -38,6 +38,7 @@ internal static class Create
     {
         var configuration = new ApplicationConfiguration(
             "testsettings.json",
+            environmentJsonFileName: default,
             overrideWithEnvironmentVariables: false);
 
         return configuration.Get<RabbitMqSettings>();

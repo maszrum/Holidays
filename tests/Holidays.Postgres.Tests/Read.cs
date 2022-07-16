@@ -8,6 +8,7 @@ internal static class Read
     {
         var configuration = new ApplicationConfiguration(
             "testsettings.json",
+            environmentJsonFileName: default,
             overrideWithEnvironmentVariables: true);
 
         var settings = configuration.Get<PostgresSettings>();
