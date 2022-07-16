@@ -22,4 +22,10 @@
     <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="aspnetapp.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

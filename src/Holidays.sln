@@ -13,7 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}"
 	ProjectSection(SolutionItems) = preProject
 		..\infrastructure\docker-compose.yml = ..\infrastructure\docker-compose.yml
-		..\infrastructure\.dockerignore = ..\infrastructure\.dockerignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Eventing", "Holidays.Eventing\Holidays.Eventing.csproj", "{1D3CD4C2-FCD1-44C9-9164-7322067CE299}"
@@ -65,12 +64,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.Eventing.RabbitMq.Tests", "..\tests\Holidays.Eventing.RabbitMq.Tests\Holidays.Eventing.RabbitMq.Tests.csproj", "{4FC9682A-9768-42F2-8CD8-CC3CDF5AC7E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Holidays.DataSource.Tui", "Holidays.DataSource.Tui\Holidays.DataSource.Tui.csproj", "{16379419-9E85-4090-933F-6C91AF7DB372}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "collecting-app", "collecting-app", "{34E8E4E4-CA71-4888-A179-533A2C609FB3}"
-	ProjectSection(SolutionItems) = preProject
-		..\infrastructure\collecting-app\appsettings.json = ..\infrastructure\collecting-app\appsettings.json
-		..\infrastructure\collecting-app\Dockerfile = ..\infrastructure\collecting-app\Dockerfile
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{9A3E3552-32F0-46B1-94F4-206BE31D3BD2}"
 	ProjectSection(SolutionItems) = preProject
@@ -186,7 +179,6 @@ Global
 		{9DED9D08-667B-4D68-A275-02D1EED0590E} = {01772BFC-28B1-49CB-A06D-7A6681E7FA3F}
 		{20594253-16DA-498D-A6E7-91797EDC2C5B} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
 		{4FC9682A-9768-42F2-8CD8-CC3CDF5AC7E9} = {01772BFC-28B1-49CB-A06D-7A6681E7FA3F}
-		{34E8E4E4-CA71-4888-A179-533A2C609FB3} = {98E8A841-EF9B-4433-93B0-0B9F4EDF85B8}
 		{9F9D0AFE-B165-4C6B-9245-5BA14F61A9E5} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{ED078764-23D7-41E7-BACF-A7FC389ACFBD} = {274923D1-08BE-4B33-A1E1-90D2CC298746}
 		{9C605631-77ED-46C5-8520-CAE557B2BDCF} = {274923D1-08BE-4B33-A1E1-90D2CC298746}

@@ -4,8 +4,8 @@ services:
 
   postgres:
     build:
-      context: .
-      dockerfile: ./postgres/Dockerfile
+      context: ./postgres/
+      dockerfile: ./Dockerfile
     ports:
       - "5432:5432"
     volumes:
@@ -17,24 +17,24 @@ services:
 
   selenium-1:
     build:
-      context: .
-      dockerfile: ./selenium/Dockerfile
+      context: ./selenium/
+      dockerfile: ./Dockerfile
     ports:
       - "4444:4444"
     shm_size: '2gb'
 
   selenium-2:
     build:
-      context: .
-      dockerfile: ./selenium/Dockerfile
+      context: ./selenium/
+      dockerfile: ./Dockerfile
     ports:
       - "4445:4444"
     shm_size: '2gb'
 
   rabbit:
     build:
-      context: .
-      dockerfile: ./rabbitmq/Dockerfile
+      context: ./rabbitmq/
+      dockerfile: ./Dockerfile
     ports:
       - "15672:15672"
       - "5672:5672"
@@ -44,30 +44,64 @@ services:
 
   collecting-app-1:
     build:
-      context: ./..
-      dockerfile: ./infrastructure/collecting-app/Dockerfile
+      context: ./../src/
+      dockerfile: ./Holidays.CollectingApp/Dockerfile
     depends_on:
       - postgres
       - selenium-1
       - rabbit
     environment:
+      - ENVIRONMENT=Docker
       - OffersDataSource__Provider=Rainbow
       - OffersDataSource__CollectingTimeoutSeconds=60
+      - Postgres__ConnectionString=Server=postgres;Port=5432;Database=holidays;User Id=holidays;Password=payAlot;
+      - RabbitMq__HostName=rabbit
+      - RabbitMq__Port=5672
+      - RabbitMq__VirtualHost=production
+      - RabbitMq__UserName=holidays
+      - RabbitMq__Password=payAlot
       - Selenium__RemoteWebDriverUrl=http://selenium-1:4444/wd/hub
 
   collecting-app-2:
     build:
-      context: ./..
-      dockerfile: ./infrastructure/collecting-app/Dockerfile
+      context: ./../src/
+      dockerfile: ./Holidays.CollectingApp/Dockerfile
     depends_on:
       - postgres
       - selenium-2
       - rabbit
       - collecting-app-1
     environment:
+      - ENVIRONMENT=Docker
       - OffersDataSource__Provider=Tui
       - OffersDataSource__CollectingTimeoutSeconds=180
+      - Postgres__ConnectionString=Server=postgres;Port=5432;Database=holidays;User Id=holidays;Password=payAlot;
+      - RabbitMq__HostName=rabbit
+      - RabbitMq__Port=5672
+      - RabbitMq__VirtualHost=production
+      - RabbitMq__UserName=holidays
+      - RabbitMq__Password=payAlot
       - Selenium__RemoteWebDriverUrl=http://selenium-2:4444/wd/hub
+
+  webapi-app:
+    build:
+      context: ./../src/
+      dockerfile: ./Holidays.WebAPI/Dockerfile
+    ports:
+      - "5000:80"
+      - "5001:443"
+    depends_on:
+      - postgres
+      - rabbit
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTPS_PORT=5001
+      - Postgres__ConnectionString=Server=postgres;Port=5432;Database=holidays;User Id=holidays;Password=payAlot;
+      - RabbitMq__HostName=rabbit
+      - RabbitMq__Port=5672
+      - RabbitMq__VirtualHost=production
+      - RabbitMq__UserName=holidays
+      - RabbitMq__Password=payAlot
 
 volumes:
   pgdata: { }
