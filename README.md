@@ -1,3 +1,6 @@
+- Add Serilog to WebAPI project
+- Add WebAPI tests
+- Create dockerfiles for WebAPI and BlazorUI projects
 - Move docker ignore files
 - Add Itaka web scraper
 - Add Blazor UI

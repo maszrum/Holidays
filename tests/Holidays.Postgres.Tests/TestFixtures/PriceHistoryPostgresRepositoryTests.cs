@@ -16,7 +16,7 @@ public class PriceHistoryPostgresRepositoryTests : DatabaseTestsBase
             return priceHistory;
         });
 
-        Assert.That(getPriceHistory.Prices, Has.Count.EqualTo(0));
+        Assert.That(getPriceHistory.IsNone, Is.True);
     }
 
     [Test]
@@ -39,10 +39,12 @@ public class PriceHistoryPostgresRepositoryTests : DatabaseTestsBase
             return priceHistory;
         });
 
-        Assert.That(getPriceHistory.Prices, Has.Count.EqualTo(3));
+        Assert.That(getPriceHistory.IsNone, Is.False);
+
+        Assert.That(getPriceHistory.Data.Prices, Has.Count.EqualTo(3));
 
         CollectionAssert.AreEqual(
             new[] { 1300, 1200, 1400 },
-            getPriceHistory.Prices.Values);
+            getPriceHistory.Data.Prices.Values);
     }
 }

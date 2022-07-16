@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Holidays.Core.Eventing;
 
 namespace Holidays.Eventing;
@@ -10,12 +11,15 @@ public sealed class EventBus : IEventBus
     private readonly IReadOnlyDictionary<Type, List<EventHandlerDescriptor>> _handlerFactories;
     private readonly ImmutableDictionary<Type, MethodInfo> _methodInfos;
 
+    private bool _isInitialized;
+
     internal EventBus(
         IReadOnlyDictionary<Type, List<EventHandlerDescriptor>> handlerFactories,
         IReadOnlyList<IExternalProvider> externalProviders)
     {
         _handlerFactories = handlerFactories;
         _externalProviders = externalProviders;
+        _isInitialized = _externalProviders.Count == 0;
 
         foreach (var (_, handlerFactory) in handlerFactories)
         {
@@ -27,10 +31,43 @@ public sealed class EventBus : IEventBus
         _methodInfos = GetMethodInfos(factories);
     }
 
+    public bool RequiresInitialization => _externalProviders.Count > 0 && !_isInitialized;
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public Task<IEventBus> Initialize()
+    {
+        if (_isInitialized)
+        {
+            return Task.FromException<IEventBus>(
+                new InvalidOperationException($"{nameof(EventBus)} has been initialized already."));
+        }
+
+        return _externalProviders.Count == 0
+            ? Task.FromResult((IEventBus) this)
+            : Init();
+
+        async Task<IEventBus> Init()
+        {
+            foreach (var externalProvider in _externalProviders)
+            {
+                await externalProvider.Initialize(this);
+            }
+
+            _isInitialized = true;
+            return this;
+        }
+    }
+
     public Task Publish(
         IEvent @event,
         CancellationToken cancellationToken = default)
     {
+        if (!_isInitialized)
+        {
+            return Task.FromException(new InvalidOperationException(
+                $"{nameof(EventBus)} has not been initialized, call {nameof(Initialize)} method before."));
+        }
+
         return PublishEvent(
             @event,
             asExternalProvider: false,

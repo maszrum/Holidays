@@ -27,7 +27,9 @@ internal static class Create
 
         builderAction(eventBusBuilder);
 
-        var eventBus = await eventBusBuilder.Build();
+        var eventBus = await eventBusBuilder
+            .Build()
+            .Initialize();
 
         return eventBus;
     }

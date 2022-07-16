@@ -4,5 +4,5 @@ namespace Holidays.Core.InfrastructureInterfaces;
 
 public interface IPriceHistoryRepository
 {
-    Task<PriceHistory> Get(Guid offerId);
+    Task<Maybe<PriceHistory>> Get(Guid offerId);
 }

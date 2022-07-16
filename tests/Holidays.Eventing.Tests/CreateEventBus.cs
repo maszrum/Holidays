@@ -2,7 +2,7 @@
 
 internal static class CreateEventBus
 {
-    public static async Task<IEventBus> WithRegisteredTestEventHandler(ICollection<TestEvent> eventList)
+    public static IEventBus WithRegisteredTestEventHandler(ICollection<TestEvent> eventList)
     {
         var eventBusBuilder = new EventBusBuilder();
 
@@ -10,12 +10,12 @@ internal static class CreateEventBus
             .ForEventType<TestEvent>()
             .RegisterHandlerForLocalEvents(() => new TestEventFirstHandler(eventList.Add));
 
-        var eventBus = await eventBusBuilder.Build();
+        var eventBus = eventBusBuilder.Build();
 
         return eventBus;
     }
 
-    public static async Task<IEventBus> WithTwoRegisteredTestEventHandlers(ICollection<TestEvent> eventList)
+    public static IEventBus WithTwoRegisteredTestEventHandlers(ICollection<TestEvent> eventList)
     {
         var eventBusBuilder = new EventBusBuilder();
 
@@ -24,7 +24,7 @@ internal static class CreateEventBus
             .RegisterHandlerForLocalEvents(() => new TestEventFirstHandler(eventList.Add))
             .RegisterHandlerForLocalEvents(() => new TestEventSecondHandler(eventList.Add));
 
-        var eventBus = await eventBusBuilder.Build();
+        var eventBus = eventBusBuilder.Build();
 
         return eventBus;
     }

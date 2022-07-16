@@ -32,12 +32,6 @@ public class OffersInMemoryRepository : IOffersRepository
         return Task.FromResult(new Offers(offers));
     }
 
-    public Task<Offers> GetAllRemovedByWebsiteName(string websiteName)
-    {
-        throw new InvalidOperationException(
-            "In-memory repository does not store information about removed offers.");
-    }
-
     public Task<Maybe<Offer>> Get(Guid offerId)
     {
         var record = _database.Offers.SingleOrDefault(o => o.Id == offerId);

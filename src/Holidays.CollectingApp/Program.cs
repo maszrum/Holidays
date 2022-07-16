@@ -37,7 +37,8 @@ await ApplicationBootstrapper.Run(async app =>
     var eventBus = await new EventBusBuilder()
         .ConfigureRabbitMqIfTurnedOn(app)
         .RegisterEventHandlers(inMemoryStore, postgresConnectionFactory)
-        .Build();
+        .Build()
+        .Initialize();
 
     var job = new ChangesDetectionJob(
         offersDataSourceSettings,

@@ -12,7 +12,7 @@ public class EventBusTests
     {
         var handledEvents = new List<TestEvent>();
 
-        var eventBus = await CreateEventBus.WithRegisteredTestEventHandler(handledEvents);
+        var eventBus = CreateEventBus.WithRegisteredTestEventHandler(handledEvents);
 
         var @event = new TestEvent();
         await eventBus.Publish(@event);
@@ -26,7 +26,7 @@ public class EventBusTests
     {
         var handledEvents = new List<TestEvent>();
 
-        var eventBus = await CreateEventBus.WithRegisteredTestEventHandler(handledEvents);
+        var eventBus = CreateEventBus.WithRegisteredTestEventHandler(handledEvents);
 
         var events = Enumerable
             .Repeat(0, 20)
@@ -48,7 +48,7 @@ public class EventBusTests
     {
         var handledEvents = new List<TestEvent>();
 
-        var eventBus = await CreateEventBus.WithTwoRegisteredTestEventHandlers(handledEvents);
+        var eventBus = CreateEventBus.WithTwoRegisteredTestEventHandlers(handledEvents);
 
         var @event = new TestEvent();
         await eventBus.Publish(@event);
@@ -59,16 +59,16 @@ public class EventBusTests
     }
 
     [Test]
-    public async Task sending_event_that_was_not_registered_should_throw_exception()
+    public void sending_event_that_was_not_registered_should_throw_exception()
     {
-        var eventBus = await new EventBusBuilder().Build();
+        var eventBus = new EventBusBuilder().Build();
 
         Assert.ThrowsAsync<InvalidOperationException>(
             () => eventBus.Publish(new TestEvent()));
     }
 
     [Test]
-    public async Task second_handler_should_throw_so_first_one_should_roll_back()
+    public void second_handler_should_throw_so_first_one_should_roll_back()
     {
         var eventBusBuilder = new EventBusBuilder();
 
@@ -80,7 +80,7 @@ public class EventBusTests
             .RegisterHandlerForLocalEvents(() => firstHandler)
             .RegisterHandlerForLocalEvents(() => secondHandler);
 
-        var eventBus = await eventBusBuilder.Build();
+        var eventBus = eventBusBuilder.Build();
 
         Assert.ThrowsAsync<InvalidOperationException>(
             () => eventBus.Publish(new TestEvent()));
@@ -104,7 +104,7 @@ public class EventBusTests
             .RegisterHandlerForLocalEvents(() => firstHandler)
             .RegisterHandlerForLocalEvents(() => secondHandler);
 
-        var eventBus = await eventBusBuilder.Build();
+        var eventBus = eventBusBuilder.Build();
 
         await eventBus.Publish(new TestEvent());
 
@@ -122,7 +122,7 @@ public class EventBusTests
 
         eventSink
             .Setup(m => m.Publish(It.IsAny<IEvent>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.FromException(new Exception()));
+            .Returns(Task.FromException(new ArithmeticException()));
 
         externalProvider
             .SetupGet(m => m.Sink)
@@ -143,7 +143,7 @@ public class EventBusTests
             .RegisterHandlerForAllEvents(() => firstHandler)
             .RegisterHandlerForLocalEvents(() => secondHandler);
 
-        var eventBus = await eventBusBuilder.Build();
+        var eventBus = await eventBusBuilder.Build().Initialize();
 
         var @event = new TestEvent();
 
@@ -151,7 +151,7 @@ public class EventBusTests
         {
             await eventBus.Publish(@event, CancellationToken.None);
         }
-        catch
+        catch (ArithmeticException)
         {
             // ignored
         }

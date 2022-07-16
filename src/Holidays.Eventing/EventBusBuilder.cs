@@ -30,26 +30,5 @@ public class EventBusBuilder
         return this;
     }
 
-    public Task<IEventBus> Build()
-    {
-        if (_externalProviders.Count == 0)
-        {
-            var eventBus = new EventBus(_handlerFactories, _externalProviders);
-            return Task.FromResult((IEventBus) eventBus);
-        }
-
-        return InitializeAndBuild();
-
-        async Task<IEventBus> InitializeAndBuild()
-        {
-            var eventBus = new EventBus(_handlerFactories, _externalProviders);
-
-            foreach (var externalProvider in _externalProviders)
-            {
-                await externalProvider.Initialize(eventBus);
-            }
-
-            return eventBus;
-        }
-    }
+    public IEventBus Build() => new EventBus(_handlerFactories, _externalProviders);
 }

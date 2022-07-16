@@ -172,21 +172,6 @@ public class OffersInMemoryRepositoryTests : DatabaseTestsBase
     }
 
     [Test]
-    public void get_all_removed_offers_should_throw_exception()
-    {
-        Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        {
-            _ = await DoWithTransactionAndRollback(async database =>
-            {
-                var repository = new OffersInMemoryRepository(database);
-
-                var offers = await repository.GetAllRemovedByWebsiteName("website");
-                return offers;
-            });
-        });
-    }
-
-    [Test]
     public void add_remove_add_offer_should_work_correctly()
     {
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(4), 7, "city", 1300, "url", "website");

@@ -8,34 +8,77 @@ namespace Holidays.InMemoryStore;
 
 public class InMemoryDatabase : Database
 {
+    private readonly ITable<OfferDbRecord> _offers;
+    private readonly Func<Task<Offers>>? _initializationOffersFactory;
+
     private InMemoryDatabase()
     {
-        Offers = Tables.Create<OfferDbRecord, Guid>(offer => offer.Id);
+        _offers = Tables.Create<OfferDbRecord, Guid>(offer => offer.Id);
     }
 
-    internal ITable<OfferDbRecord> Offers { get; }
-
-    private void InsertInitialState(IEnumerable<OfferDbRecord> initialState)
+    private InMemoryDatabase(Func<Task<Offers>> initializationOffersFactory) : this()
     {
-        foreach (var offerRecord in initialState)
+        _initializationOffersFactory = initializationOffersFactory;
+    }
+
+    internal ITable<OfferDbRecord> Offers => IsInitialized
+        ? _offers
+        : throw new InvalidOperationException("Database is not initialized.");
+
+    private bool IsInitialized { get; set; }
+
+    public async Task Initialize()
+    {
+        ThrowIfAlreadyInitialized();
+
+        if (_initializationOffersFactory is null)
         {
-            Offers.Insert(offerRecord);
+            throw new InvalidOperationException(
+                "Initialization factory was not provided.");
+        }
+
+        var offers = await _initializationOffersFactory();
+
+        InsertInitialState(offers);
+    }
+
+    private void InsertInitialState(Offers offersInitialState)
+    {
+        ThrowIfAlreadyInitialized();
+
+        var converter = new OfferDbRecordConverter();
+
+        var records = offersInitialState
+            .Select(o => converter.ConvertToRecord(o));
+
+        foreach (var offerRecord in records)
+        {
+            _offers.Insert(offerRecord);
+        }
+
+        IsInitialized = true;
+    }
+
+    private void ThrowIfAlreadyInitialized()
+    {
+        if (IsInitialized)
+        {
+            throw new InvalidOperationException(
+                "Database has been initialized already.");
         }
     }
 
     public static InMemoryDatabase CreateWithInitialState(Offers offers)
     {
-        var converter = new OfferDbRecordConverter();
-
-        var records = offers
-            .Select(o => converter.ConvertToRecord(o));
-
         var database = new InMemoryDatabase();
-
-        database.InsertInitialState(records);
+        database.InsertInitialState(offers);
 
         return database;
     }
 
-    public static InMemoryDatabase CreateEmpty() => new();
+    public static InMemoryDatabase CreateWithInitialStateFactory(Func<Task<Offers>> offersFactory) =>
+        new(offersFactory);
+
+    public static InMemoryDatabase CreateEmpty() =>
+        new() { IsInitialized = true };
 }

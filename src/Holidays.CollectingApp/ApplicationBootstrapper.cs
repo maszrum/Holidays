@@ -65,7 +65,7 @@ internal class ApplicationBootstrapper
         AppDomain.CurrentDomain.ProcessExit += (_, _) =>
         {
             GetLogger<ApplicationBootstrapper>().Information(
-            "Closing application due to process exit event");
+                "Closing application due to process exit event");
 
             _applicationCts.Cancel();
         };
