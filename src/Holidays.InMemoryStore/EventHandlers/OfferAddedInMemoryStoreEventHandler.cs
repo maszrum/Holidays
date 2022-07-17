@@ -1,5 +1,6 @@
-﻿using Holidays.Core.Eventing;
+﻿using Holidays.Core.Events.OfferModel;
 using Holidays.Core.OfferModel;
+using Holidays.Eventing.Core;
 using NMemory.Transactions;
 
 namespace Holidays.InMemoryStore.EventHandlers;
@@ -15,16 +16,18 @@ public class OfferAddedInMemoryStoreEventHandler : IEventHandler<OfferAdded>
 
     public async Task Handle(OfferAdded @event, Func<Task> next, CancellationToken cancellationToken)
     {
-        if (@event.Offer is null)
+        if (@event.OfferData is null)
         {
             throw new InvalidOperationException(
-                "Received event without data.");
+                "Received event without offer data.");
         }
 
-        using var transaction = new TransactionContext();
+        var offer = @event.ToOffer();
 
+        using var transaction = new TransactionContext();
         var repository = new OffersInMemoryRepository(_database);
-        repository.Add(@event.Offer);
+
+        repository.Add(offer);
 
         await next();
 

@@ -1,4 +1,4 @@
-﻿using Holidays.Core.OfferModel;
+﻿using Holidays.Core.Events.OfferModel;
 using Holidays.Eventing;
 using Holidays.Eventing.RabbitMq;
 using Holidays.InMemoryStore;

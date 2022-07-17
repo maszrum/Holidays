@@ -1,5 +1,5 @@
-﻿using Holidays.Core.Eventing;
-using Holidays.Core.OfferModel;
+﻿using Holidays.Core.Events.OfferModel;
+using Holidays.Eventing.Core;
 
 namespace Holidays.Postgres.EventHandlers;
 
@@ -14,11 +14,13 @@ public class OfferAddedPostgresEventHandler : IEventHandler<OfferAdded>
 
     public async Task Handle(OfferAdded @event, Func<Task> next, CancellationToken cancellationToken)
     {
-        if (@event.Offer is null)
+        if (@event.OfferData is null)
         {
             throw new InvalidOperationException(
                 "Received event without offer data.");
         }
+
+        var offer = @event.ToOffer();
 
         await using var connection = await _connectionFactory.CreateConnection(cancellationToken);
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
@@ -29,9 +31,9 @@ public class OfferAddedPostgresEventHandler : IEventHandler<OfferAdded>
 
         try
         {
-            await offersRepository.Add(@event.Offer);
+            await offersRepository.Add(offer);
             await offerChangesRepository.Add(@event);
-            await priceHistoryRepository.Add(@event.Offer.Id, @event.Timestamp, @event.Offer.Price);
+            await priceHistoryRepository.Add(offer.Id, @event.Timestamp, offer.Price);
 
             await next();
 

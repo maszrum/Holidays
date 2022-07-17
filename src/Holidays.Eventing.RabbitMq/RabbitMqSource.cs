@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Holidays.Core.Eventing;
+using Holidays.Eventing.Core;
 using RabbitMQ.Client.Events;
 
 namespace Holidays.Eventing.RabbitMq;

@@ -8,18 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="11.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
+    <ProjectReference Include="..\Holidays.Core.Events\Holidays.Core.Events.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing.RabbitMq\Holidays.Eventing.RabbitMq.csproj" />
+    <ProjectReference Include="..\Holidays.InMemoryStore\Holidays.InMemoryStore.csproj" />
+    <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />
+    <ProjectReference Include="..\Holidays.DataTransferObjects\Holidays.DataTransferObjects.csproj" />
+    <ProjectReference Include="..\Holidays.BlazorUI\Holidays.BlazorUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
-    <ProjectReference Include="..\Holidays.DataTransferObjects\Holidays.DataTransferObjects.csproj" />
-    <ProjectReference Include="..\Holidays.Eventing.RabbitMq\Holidays.Eventing.RabbitMq.csproj" />
-    <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
-    <ProjectReference Include="..\Holidays.InMemoryStore\Holidays.InMemoryStore.csproj" />
-    <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>

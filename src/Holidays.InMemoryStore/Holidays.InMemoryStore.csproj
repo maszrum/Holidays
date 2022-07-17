@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
+    <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
+    <ProjectReference Include="..\Holidays.Core.Events\Holidays.Core.Events.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing.Core\Holidays.Eventing.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

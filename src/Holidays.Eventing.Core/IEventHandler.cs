@@ -1,4 +1,4 @@
-﻿namespace Holidays.Core.Eventing;
+﻿namespace Holidays.Eventing.Core;
 
 public interface IEventHandler<in TEvent>
     where TEvent : IEvent

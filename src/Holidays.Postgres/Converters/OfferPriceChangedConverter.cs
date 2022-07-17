@@ -1,4 +1,4 @@
-﻿using Holidays.Core.OfferModel;
+﻿using Holidays.Core.Events.OfferModel;
 using Holidays.Postgres.DbRecords;
 
 namespace Holidays.Postgres.Converters;

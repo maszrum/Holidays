@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Holidays.Eventing.Core\Holidays.Eventing.Core.csproj" />
-  </ItemGroup>
-
 </Project>

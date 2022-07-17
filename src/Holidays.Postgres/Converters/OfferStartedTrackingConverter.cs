@@ -1,4 +1,4 @@
-﻿using Holidays.Core.OfferModel;
+﻿using Holidays.Core.Events.OfferModel;
 using Holidays.Postgres.DbRecords;
 
 namespace Holidays.Postgres.Converters;
@@ -10,5 +10,5 @@ internal class OfferStartedTrackingConverter : EventConverterBase<OfferStartedTr
     protected override string GetEventParams(OfferStartedTracking @event) => string.Empty;
 
     protected override OfferStartedTracking ToObject(OfferEventLogRecord record) =>
-        new(default, record.OfferId, record.EventTimestamp);
+        OfferStartedTracking.WithoutOfferData(record.OfferId, record.EventTimestamp);
 }

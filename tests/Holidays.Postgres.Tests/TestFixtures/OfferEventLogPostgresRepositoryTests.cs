@@ -1,4 +1,5 @@
-﻿using Holidays.Core.OfferModel;
+﻿using Holidays.Core.Events.OfferModel;
+using Holidays.Core.OfferModel;
 using NUnit.Framework;
 
 namespace Holidays.Postgres.Tests.TestFixtures;
@@ -22,7 +23,8 @@ public class OfferEventLogPostgresRepositoryTests : DatabaseTestsBase
     public async Task count_offer_event_logs_should_return_three()
     {
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(3), 6, "city", 1800, "url", "website");
-        var eventOne = new OfferAdded(offer, offer.Id, DateTime.UtcNow);
+        var offerData = new OfferData(offer.Hotel, offer.Destination, offer.DepartureDate, offer.Days, offer.CityOfDeparture, offer.Price, offer.DetailsUrl, offer.WebsiteName);
+        var eventOne = OfferAdded.WithOfferData(offer.Id, offerData, DateTime.UtcNow);
         var eventTwo = new OfferPriceChanged(offer.Id, offer.Price, 1400, DateTime.UtcNow);
         var eventThree = new OfferRemoved(offer.Id, DateTime.UtcNow);
 
@@ -50,7 +52,8 @@ public class OfferEventLogPostgresRepositoryTests : DatabaseTestsBase
         var dateTime = new DateTime(2022, 7, 11, 17, 37, 10);
 
         var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(3), 6, "city", 1800, "url", "website");
-        var eventOne = new OfferAdded(offer, offer.Id, dateTime.AddSeconds(1));
+        var offerData = new OfferData(offer.Hotel, offer.Destination, offer.DepartureDate, offer.Days, offer.CityOfDeparture, offer.Price, offer.DetailsUrl, offer.WebsiteName);
+        var eventOne = OfferAdded.WithOfferData(offer.Id, offerData, dateTime.AddSeconds(1));
         var eventTwo = new OfferPriceChanged(offer.Id, offer.Price, 1400, dateTime.AddSeconds(2));
         var eventThree = new OfferRemoved(offer.Id, dateTime.AddSeconds(3));
 
@@ -82,9 +85,11 @@ public class OfferEventLogPostgresRepositoryTests : DatabaseTestsBase
     {
         var offerOne = new Offer("hotel-1", "destination", DateOnly.FromDayNumber(3), 6, "city", 1800, "url", "website");
         var offerTwo = new Offer("hotel-2", "destination", DateOnly.FromDayNumber(3), 6, "city", 1800, "url", "website");
-        var eventOne = new OfferAdded(offerOne, offerOne.Id, DateTime.UtcNow);
+        var offerOneData = new OfferData(offerOne.Hotel, offerOne.Destination, offerOne.DepartureDate, offerOne.Days, offerOne.CityOfDeparture, offerOne.Price, offerOne.DetailsUrl, offerOne.WebsiteName);
+        var offerTwoData = new OfferData(offerTwo.Hotel, offerTwo.Destination, offerTwo.DepartureDate, offerTwo.Days, offerTwo.CityOfDeparture, offerTwo.Price, offerTwo.DetailsUrl, offerTwo.WebsiteName);
+        var eventOne = OfferAdded.WithOfferData(offerOne.Id, offerOneData, DateTime.UtcNow);
         var eventTwo = new OfferPriceChanged(offerOne.Id, offerOne.Price, 1400, DateTime.UtcNow);
-        var eventThree = new OfferAdded(offerTwo, offerTwo.Id, DateTime.UtcNow);
+        var eventThree = OfferAdded.WithOfferData(offerTwo.Id, offerTwoData, DateTime.UtcNow);
 
         var (eventCountOne, eventCountTwo) = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {
@@ -111,7 +116,8 @@ public class OfferEventLogPostgresRepositoryTests : DatabaseTestsBase
     public async Task add_event_and_check_if_timestamp_is_correct()
     {
         var offer = new Offer("hotel-1", "destination", DateOnly.FromDayNumber(3), 6, "city", 1800, "url", "website");
-        var @event = new OfferAdded(offer, offer.Id, new DateTime(2022, 7, 11, 18, 31, 12));
+        var offerData = new OfferData(offer.Hotel, offer.Destination, offer.DepartureDate, offer.Days, offer.CityOfDeparture, offer.Price, offer.DetailsUrl, offer.WebsiteName);
+        var @event = OfferAdded.WithOfferData(offer.Id, offerData, new DateTime(2022, 7, 11, 18, 31, 12));
 
         var readEvents = await DoWithTransactionAndRollback(async (connection, transaction) =>
         {

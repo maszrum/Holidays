@@ -1,8 +1,9 @@
 ﻿using Holidays.Core.Algorithms.ChangesDetection;
-using Holidays.Core.Eventing;
+using Holidays.Core.Events.OfferModel;
 using Holidays.Core.InfrastructureInterfaces;
 using Holidays.Core.OfferModel;
 using Holidays.Eventing;
+using Holidays.Eventing.Core;
 using Holidays.Selenium;
 using Serilog;
 
@@ -76,8 +77,8 @@ internal class ChangesDetectionJob
 
         return (change.ChangeType, startedTracking) switch
         {
-            (OfferChangeType.OfferAdded, true) => new OfferStartedTracking(offer, offer.Id, DateTime.UtcNow),
-            (OfferChangeType.OfferAdded, false) => new OfferAdded(offer, offer.Id, DateTime.UtcNow),
+            (OfferChangeType.OfferAdded, true) => offer.ToStartedTrackingEvent(DateTime.UtcNow),
+            (OfferChangeType.OfferAdded, false) => offer.ToOfferAddedEvent(DateTime.UtcNow),
             (OfferChangeType.PriceChanged, _) => new OfferPriceChanged(offer.Id, offer.Price, change.OfferBeforeChange.Price, DateTime.UtcNow),
             (OfferChangeType.OfferRemoved, _) => new OfferRemoved(offer.Id, DateTime.UtcNow),
             _ => throw new ArgumentOutOfRangeException(nameof(change.ChangeType), change.ChangeType.ToString())

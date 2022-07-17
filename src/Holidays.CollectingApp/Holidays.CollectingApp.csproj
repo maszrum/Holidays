@@ -5,24 +5,26 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
+    <ProjectReference Include="..\Holidays.Core.Events\Holidays.Core.Events.csproj" />
+    <ProjectReference Include="..\Holidays.Configuration\Holidays.Configuration.csproj" />
+    <ProjectReference Include="..\Holidays.DataSource.Rainbow\Holidays.DataSource.Rainbow.csproj" />
+    <ProjectReference Include="..\Holidays.DataSource.Tui\Holidays.DataSource.Tui.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing.RabbitMq\Holidays.Eventing.RabbitMq.csproj" />
+    <ProjectReference Include="..\Holidays.InMemoryStore\Holidays.InMemoryStore.csproj" />
+    <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.11.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="103.0.5060.5300" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
-    <ProjectReference Include="..\Holidays.Configuration\Holidays.Configuration.csproj" />
-    <ProjectReference Include="..\Holidays.DataSource.Rainbow\Holidays.DataSource.Rainbow.csproj" />
-    <ProjectReference Include="..\Holidays.DataSource.Tui\Holidays.DataSource.Tui.csproj" />
-    <ProjectReference Include="..\Holidays.Eventing.RabbitMq\Holidays.Eventing.RabbitMq.csproj" />
-    <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
-    <ProjectReference Include="..\Holidays.InMemoryStore\Holidays.InMemoryStore.csproj" />
-    <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />
   </ItemGroup>
 
   <ItemGroup>

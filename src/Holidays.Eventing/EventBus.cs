@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Holidays.Core.Eventing;
+using Holidays.Eventing.Core;
 
 namespace Holidays.Eventing;
 

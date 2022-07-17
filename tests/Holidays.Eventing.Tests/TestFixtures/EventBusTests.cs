@@ -1,4 +1,4 @@
-﻿using Holidays.Core.Eventing;
+﻿using Holidays.Eventing.Core;
 using Moq;
 using NUnit.Framework;
 

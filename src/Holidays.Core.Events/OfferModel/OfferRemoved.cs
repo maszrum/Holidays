@@ -1,6 +1,6 @@
-﻿using Holidays.Core.Eventing;
+﻿using Holidays.Eventing.Core;
 
-namespace Holidays.Core.OfferModel;
+namespace Holidays.Core.Events.OfferModel;
 
 public record OfferRemoved(
     Guid OfferId,

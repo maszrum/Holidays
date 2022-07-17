@@ -1,7 +1,7 @@
 ﻿using Dapper;
-using Holidays.Core.Eventing;
+using Holidays.Core.Events.OfferModel;
 using Holidays.Core.InfrastructureInterfaces;
-using Holidays.Core.OfferModel;
+using Holidays.Eventing.Core;
 using Holidays.Postgres.Converters;
 using Holidays.Postgres.DbRecords;
 using Npgsql;

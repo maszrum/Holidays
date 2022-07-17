@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Holidays.Configuration\Holidays.Configuration.csproj" />
     <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
+    <ProjectReference Include="..\Holidays.Core.Events\Holidays.Core.Events.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing.Core\Holidays.Eventing.Core.csproj" />
+    <ProjectReference Include="..\Holidays.Configuration\Holidays.Configuration.csproj" />
   </ItemGroup>
 
   <ItemGroup>

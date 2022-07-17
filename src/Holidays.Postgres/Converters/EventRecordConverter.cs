@@ -1,5 +1,5 @@
-﻿using Holidays.Core.Eventing;
-using Holidays.Core.OfferModel;
+﻿using Holidays.Core.Events.OfferModel;
+using Holidays.Eventing.Core;
 using Holidays.Postgres.DbRecords;
 
 namespace Holidays.Postgres.Converters;

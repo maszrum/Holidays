@@ -1,7 +1,4 @@
-- Add context (DI) for EventBus
 - Add Serilog to WebAPI project
 - Add WebAPI tests
-- Create dockerfile for BlazorUI project
-- Move docker ignore files
 - Add Itaka web scraper
 - Add Blazor UI

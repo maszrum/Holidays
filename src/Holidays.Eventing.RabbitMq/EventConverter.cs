@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
-using Holidays.Core.Eventing;
+using Holidays.Eventing.Core;
 using Newtonsoft.Json;
 
 namespace Holidays.Eventing.RabbitMq;
