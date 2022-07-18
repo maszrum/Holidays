@@ -1,12 +1,43 @@
 ﻿namespace Holidays.DataTransferObjects;
 
-public class OfferDto
+public record OfferDto
 {
+    public OfferDto(
+        Guid id,
+        string hotel,
+        string destinationCountry,
+        string detailedDestination,
+        DateOnly departureDate,
+        int days,
+        string cityOfDeparture,
+        int price,
+        string detailsUrl,
+        string websiteName)
+    {
+        Id = id;
+        Hotel = hotel;
+        DestinationCountry = destinationCountry;
+        DetailedDestination = detailedDestination;
+        DepartureDate = departureDate;
+        Days = days;
+        CityOfDeparture = cityOfDeparture;
+        Price = price;
+        DetailsUrl = detailsUrl;
+        WebsiteName = websiteName;
+    }
+
+    // ReSharper disable once UnusedMember.Local
+    private OfferDto()
+    {
+    }
+
     public Guid Id { get; init; }
 
     public string Hotel { get; init; } = null!;
 
-    public string Destination { get; init; } = null!;
+    public string DestinationCountry { get; init; } = null!;
+
+    public string DetailedDestination { get; init; } = null!;
 
     public DateOnly DepartureDate { get; init; }
 

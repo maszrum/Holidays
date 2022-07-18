@@ -2,7 +2,7 @@
 
 namespace Holidays.Core.OfferModel;
 
-[DebuggerDisplay("{Destination}, {DepartureDate}, {Price}")]
+[DebuggerDisplay("{DestinationCountry}, {DepartureDate}, {Price}")]
 public class Offer
 {
     private static readonly OfferIdGenerator IdGenerator = new();
@@ -11,7 +11,8 @@ public class Offer
 
     public Offer(
         string hotel,
-        string destination,
+        string destinationCountry,
+        string detailedDestination,
         DateOnly departureDate,
         int days,
         string cityOfDeparture,
@@ -20,7 +21,8 @@ public class Offer
         string websiteName)
     {
         Hotel = hotel;
-        Destination = destination;
+        DestinationCountry = destinationCountry;
+        DetailedDestination = detailedDestination;
         DepartureDate = departureDate;
         Days = days;
         CityOfDeparture = cityOfDeparture;
@@ -35,7 +37,9 @@ public class Offer
 
     public string Hotel { get; init; }
 
-    public string Destination { get; init; }
+    public string DestinationCountry { get; init; }
+
+    public string DetailedDestination { get; init; }
 
     public DateOnly DepartureDate { get; init; }
 

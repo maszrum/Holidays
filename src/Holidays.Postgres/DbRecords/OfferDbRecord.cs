@@ -10,7 +10,8 @@ internal class OfferDbRecord
     public OfferDbRecord(
         Guid id,
         string hotel,
-        string destination,
+        string destinationCountry,
+        string detailedDestination,
         int departureDate,
         int days,
         string cityOfDeparture,
@@ -21,7 +22,8 @@ internal class OfferDbRecord
     {
         Id = id;
         Hotel = hotel;
-        Destination = destination;
+        DestinationCountry = destinationCountry;
+        DetailedDestination = detailedDestination;
         DepartureDate = departureDate;
         Days = days;
         CityOfDeparture = cityOfDeparture;
@@ -35,7 +37,9 @@ internal class OfferDbRecord
 
     public string Hotel { get; init; } = null!;
 
-    public string Destination { get; init; } = null!;
+    public string DestinationCountry { get; init; } = null!;
+
+    public string DetailedDestination { get; init; } = null!;
 
     public int DepartureDate { get; init; }
 

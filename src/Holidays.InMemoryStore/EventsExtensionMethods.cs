@@ -11,7 +11,8 @@ internal static class EventsExtensionMethods
 
         return new Offer(
             offerData.Hotel,
-            offerData.Destination,
+            offerData.DestinationCountry,
+            offerData.DetailedDestination,
             offerData.DepartureDate,
             offerData.Days,
             offerData.CityOfDeparture,
@@ -26,7 +27,8 @@ internal static class EventsExtensionMethods
 
         return new Offer(
             offerData.Hotel,
-            offerData.Destination,
+            offerData.DestinationCountry,
+            offerData.DetailedDestination,
             offerData.DepartureDate,
             offerData.Days,
             offerData.CityOfDeparture,

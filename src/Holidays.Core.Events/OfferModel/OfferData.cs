@@ -2,7 +2,8 @@
 
 public record OfferData(
     string Hotel,
-    string Destination,
+    string DestinationCountry,
+    string DetailedDestination,
     DateOnly DepartureDate,
     int Days,
     string CityOfDeparture,

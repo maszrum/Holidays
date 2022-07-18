@@ -9,7 +9,7 @@ internal class OfferDataExtractor
     {
         var hotelElement = element.FindElement(By.ClassName("offer-tile-body__hotel-name"));
 
-        var destination = GetDestination(element);
+        var (destinationCountry, detailedDestination) = ExtractDestinationCountryAndDetailedDestination(element);
 
         var (departureDate, days) = GetDepartureDateAndDays(element);
 
@@ -21,7 +21,8 @@ internal class OfferDataExtractor
 
         var offer = new Offer(
             hotel: hotelElement.Text,
-            destination: destination,
+            destinationCountry: destinationCountry,
+            detailedDestination: detailedDestination,
             departureDate: departureDate,
             days: days,
             cityOfDeparture: cityOfDepartureElement.Text,
@@ -32,7 +33,7 @@ internal class OfferDataExtractor
         return offer;
     }
 
-    private static string GetDestination(IWebElement offerElement)
+    private static (string, string) ExtractDestinationCountryAndDetailedDestination(IWebElement offerElement)
     {
         var elements = offerElement.FindElements(By.CssSelector("li.breadcrumbs__item a"));
 
@@ -40,7 +41,10 @@ internal class OfferDataExtractor
             .Select(e => e.Text)
             .ToArray();
 
-        return string.Join(" / ", texts);
+        var destinationCountry = ToFirstWordLettersCapitals(texts[0]);
+        var detailedDestination = ToFirstWordLettersCapitals(texts[1]);
+
+        return (destinationCountry, detailedDestination);
     }
 
     private static (DateOnly, int) GetDepartureDateAndDays(IWebElement offerElement)
@@ -66,5 +70,28 @@ internal class OfferDataExtractor
         return (
             DateOnly.ParseExact(departureDateText, "dd.MM.yyyy"),
             int.Parse(daysText));
+    }
+
+    private static string ToFirstWordLettersCapitals(string input)
+    {
+        var result = input.ToCharArray();
+        var previousSpace = false;
+
+        for (var i = 0; i < result.Length; i++)
+        {
+            if (!char.IsLetter(result[i]))
+            {
+                previousSpace = result[i] == ' ';
+                continue;
+            }
+
+            result[i] = i == 0 || previousSpace ?
+                char.ToUpperInvariant(result[i])
+                : char.ToLowerInvariant(result[i]);
+
+            previousSpace = false;
+        }
+
+        return new string(result);
     }
 }

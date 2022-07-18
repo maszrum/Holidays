@@ -22,7 +22,7 @@ public class PriceHistoryPostgresRepositoryTests : DatabaseTestsBase
     [Test]
     public async Task get_price_history_should_return_correct_values_correctly_ordered()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(3), 4, "city", 2200, "url", "website");
+        var offer = new Offer("hotel", "destination", "detailed", DateOnly.FromDayNumber(3), 4, "city", 2200, "url", "website");
         var dateTime = new DateTime(2022, 7, 11, 18, 52, 12);
 
         var getPriceHistory = await DoWithTransactionAndRollback(async (connection, transaction) =>

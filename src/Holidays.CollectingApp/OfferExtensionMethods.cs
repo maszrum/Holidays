@@ -25,7 +25,8 @@ internal static class OfferExtensionMethods
     {
         return new OfferData(
             offer.Hotel,
-            offer.Destination,
+            offer.DestinationCountry,
+            offer.DetailedDestination,
             offer.DepartureDate,
             offer.Days,
             offer.CityOfDeparture,

@@ -11,7 +11,8 @@ public class OfferIdGeneratorTests
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -23,7 +24,8 @@ public class OfferIdGeneratorTests
 
         var sameOffer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -41,7 +43,8 @@ public class OfferIdGeneratorTests
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -53,7 +56,8 @@ public class OfferIdGeneratorTests
 
         var offerWithDifferentPrice = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -71,7 +75,8 @@ public class OfferIdGeneratorTests
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -83,7 +88,8 @@ public class OfferIdGeneratorTests
 
         var offerWithDifferentHotel = new Offer(
             hotel: "different hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -97,11 +103,12 @@ public class OfferIdGeneratorTests
     }
 
     [Test]
-    public void same_offers_with_different_destination_should_have_different_id()
+    public void same_offers_with_different_destination_country_should_have_different_id()
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -113,7 +120,40 @@ public class OfferIdGeneratorTests
 
         var offerWithDifferentDestination = new Offer(
             hotel: "hotel",
-            destination: "different destination",
+            destinationCountry: "different-destination",
+            detailedDestination: "detailed",
+            departureDate: DateOnly.FromDayNumber(2),
+            days: 3,
+            cityOfDeparture: "city",
+            price: 1200,
+            detailsUrl: "url",
+            websiteName: "website");
+
+        var offerIdWithDifferentDestination = offerWithDifferentDestination.Id;
+
+        Assert.That(offerIdWithDifferentDestination, Is.Not.EqualTo(offerId));
+    }
+
+    [Test]
+    public void same_offers_with_different_detailed_destination_should_have_different_id()
+    {
+        var offer = new Offer(
+            hotel: "hotel",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
+            departureDate: DateOnly.FromDayNumber(2),
+            days: 3,
+            cityOfDeparture: "city",
+            price: 1200,
+            detailsUrl: "url",
+            websiteName: "website");
+
+        var offerId = offer.Id;
+
+        var offerWithDifferentDestination = new Offer(
+            hotel: "hotel",
+            destinationCountry: "destination",
+            detailedDestination: "different-detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -131,7 +171,8 @@ public class OfferIdGeneratorTests
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -143,7 +184,8 @@ public class OfferIdGeneratorTests
 
         var offerWithDifferentDepartureDate = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(3),
             days: 3,
             cityOfDeparture: "city",
@@ -161,7 +203,8 @@ public class OfferIdGeneratorTests
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -173,7 +216,8 @@ public class OfferIdGeneratorTests
 
         var offerWithDifferentDays = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 4,
             cityOfDeparture: "city",
@@ -191,7 +235,8 @@ public class OfferIdGeneratorTests
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -203,7 +248,8 @@ public class OfferIdGeneratorTests
 
         var offerWithDifferentCityOfDeparture = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "different city",
@@ -221,7 +267,8 @@ public class OfferIdGeneratorTests
     {
         var offer = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",
@@ -233,7 +280,8 @@ public class OfferIdGeneratorTests
 
         var offerWithDifferentCityOfDeparture = new Offer(
             hotel: "hotel",
-            destination: "destination",
+            destinationCountry: "destination",
+            detailedDestination: "detailed",
             departureDate: DateOnly.FromDayNumber(2),
             days: 3,
             cityOfDeparture: "city",

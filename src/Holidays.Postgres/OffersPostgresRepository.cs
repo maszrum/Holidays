@@ -91,9 +91,9 @@ public sealed class OffersPostgresRepository : PostgresRepositoryBase, IOffersRe
 
             sql =
                 "INSERT INTO holidays.offer " +
-                "(id, hotel, destination, departure_date, days, city_of_departure, price, details_url, website_name, is_removed) " +
+                "(id, hotel, destination_country, detailed_destination, departure_date, days, city_of_departure, price, details_url, website_name, is_removed) " +
                 "VALUES " +
-                "(@Id, @Hotel, @Destination, @DepartureDate, @Days, @CityOfDeparture, @Price, @DetailsUrl, @WebsiteName, @IsRemoved)";
+                "(@Id, @Hotel, @DestinationCountry, @DetailedDestination, @DepartureDate, @Days, @CityOfDeparture, @Price, @DetailsUrl, @WebsiteName, @IsRemoved)";
 
             param = record;
         }

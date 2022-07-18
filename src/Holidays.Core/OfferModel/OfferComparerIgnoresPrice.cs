@@ -12,7 +12,8 @@ internal class OfferComparerIgnoresPrice : IEqualityComparer<Offer>
         if (x.GetType() != y.GetType()) return false;
 
         return x.Hotel == y.Hotel &&
-               x.Destination == y.Destination &&
+               x.DestinationCountry == y.DestinationCountry &&
+               x.DetailedDestination == y.DetailedDestination &&
                x.DepartureDate.Equals(y.DepartureDate) &&
                x.Days == y.Days &&
                x.CityOfDeparture == y.CityOfDeparture &&
@@ -23,7 +24,8 @@ internal class OfferComparerIgnoresPrice : IEqualityComparer<Offer>
     {
         return HashCode.Combine(
             obj.Hotel,
-            obj.Destination,
+            obj.DestinationCountry,
+            obj.DetailedDestination,
             obj.DepartureDate,
             obj.Days,
             obj.CityOfDeparture,

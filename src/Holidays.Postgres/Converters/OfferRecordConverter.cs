@@ -10,7 +10,8 @@ internal class OfferRecordConverter
         return new OfferDbRecord(
             offer.Id,
             offer.Hotel,
-            offer.Destination,
+            offer.DestinationCountry,
+            offer.DetailedDestination,
             offer.DepartureDate.DayNumber,
             offer.Days,
             offer.CityOfDeparture,
@@ -24,7 +25,8 @@ internal class OfferRecordConverter
     {
         var offer = new Offer(
             record.Hotel,
-            record.Destination,
+            record.DestinationCountry,
+            record.DetailedDestination,
             DateOnly.FromDayNumber(record.DepartureDate),
             record.Days,
             record.CityOfDeparture,

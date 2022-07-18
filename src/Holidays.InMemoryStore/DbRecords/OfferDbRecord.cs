@@ -9,7 +9,8 @@ internal record OfferDbRecord
 
     public OfferDbRecord(Guid id,
         string hotel,
-        string destination,
+        string destinationCountry,
+        string detailedDestination,
         DateOnly departureDate,
         int days,
         string cityOfDeparture,
@@ -19,7 +20,8 @@ internal record OfferDbRecord
     {
         Id = id;
         Hotel = hotel;
-        Destination = destination;
+        DestinationCountry = destinationCountry;
+        DetailedDestination = detailedDestination;
         DepartureDate = departureDate;
         Days = days;
         CityOfDeparture = cityOfDeparture;
@@ -32,7 +34,9 @@ internal record OfferDbRecord
 
     public string Hotel { get; init; } = null!;
 
-    public string Destination { get; init; } = null!;
+    public string DestinationCountry { get; init; } = null!;
+
+    public string DetailedDestination { get; init; } = null!;
 
     public DateOnly DepartureDate { get; init; }
 

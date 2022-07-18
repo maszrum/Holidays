@@ -11,7 +11,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_forcefully_should_remove_offer_table_and_create_again()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
+        var offer = new Offer("hotel", "destination", "detailed", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
 
         int offersCountBeforeInitialization, offersCountAfterInitialization;
 
@@ -41,7 +41,7 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_if_need_should_not_remove_offer_table()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
+        var offer = new Offer("hotel", "destination", "detailed", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
 
         int offersCountBeforeInitialization, offersCountAfterInitialization;
 
@@ -73,8 +73,8 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_forcefully_should_remove_offer_event_log_table_and_create_again()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
-        var offerData = new OfferData(offer.Hotel, offer.Destination, offer.DepartureDate, offer.Days, offer.CityOfDeparture, offer.Price, offer.DetailsUrl, offer.WebsiteName);
+        var offer = new Offer("hotel", "destination", "detailed", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
+        var offerData = new OfferData(offer.Hotel, offer.DestinationCountry, offer.DetailedDestination, offer.DepartureDate, offer.Days, offer.CityOfDeparture, offer.Price, offer.DetailsUrl, offer.WebsiteName);
         var @event = OfferAdded.WithOfferData(offer.Id, offerData, DateTime.UtcNow);
 
         int offerEventLogCountBeforeInitialization, offerEventLogCountAfterInitialization;
@@ -108,8 +108,8 @@ public class DatabaseInitializerTests : DatabaseTestsBase
     [Test]
     public async Task initialize_if_need_should_not_remove_offer_event_log_table()
     {
-        var offer = new Offer("hotel", "destination", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
-        var offerData = new OfferData(offer.Hotel, offer.Destination, offer.DepartureDate, offer.Days, offer.CityOfDeparture, offer.Price, offer.DetailsUrl, offer.WebsiteName);
+        var offer = new Offer("hotel", "destination", "detailed", DateOnly.FromDayNumber(12), 8, "city", 1200, "url", "website");
+        var offerData = new OfferData(offer.Hotel, offer.DestinationCountry, offer.DetailedDestination, offer.DepartureDate, offer.Days, offer.CityOfDeparture, offer.Price, offer.DetailsUrl, offer.WebsiteName);
         var @event = OfferAdded.WithOfferData(offer.Id, offerData, DateTime.UtcNow);
 
         int offerEventLogCountBeforeInitialization, offerEventLogCountAfterInitialization;
