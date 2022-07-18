@@ -2,24 +2,11 @@
 
 namespace Holidays.Core.Events.OfferModel;
 
-public record OfferAdded : IEvent
+public record OfferAdded(
+    Guid OfferId,
+    OfferData? OfferData,
+    DateTime Timestamp) : IEvent
 {
-    private OfferAdded(
-        Guid offerId,
-        OfferData? offerData,
-        DateTime timestamp)
-    {
-        OfferId = offerId;
-        OfferData = offerData;
-        Timestamp = timestamp;
-    }
-
-    public Guid OfferId { get; init; }
-
-    public OfferData? OfferData { get; init; }
-
-    public DateTime Timestamp { get; init; }
-
     public static OfferAdded WithOfferData(Guid offerId, OfferData offerData, DateTime timestamp) =>
         new(offerId, offerData, timestamp);
 

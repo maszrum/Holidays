@@ -2,24 +2,11 @@
 
 namespace Holidays.Core.Events.OfferModel;
 
-public record OfferStartedTracking : IEvent
+public record OfferStartedTracking(
+    Guid OfferId,
+    OfferData? OfferData,
+    DateTime Timestamp) : IEvent
 {
-    private OfferStartedTracking(
-        Guid offerId,
-        OfferData? offerData,
-        DateTime timestamp)
-    {
-        OfferId = offerId;
-        OfferData = offerData;
-        Timestamp = timestamp;
-    }
-
-    public Guid OfferId { get; init; }
-
-    public OfferData? OfferData { get; init; }
-
-    public DateTime Timestamp { get; init; }
-
     public static OfferStartedTracking WithOfferData(Guid offerId, OfferData offerData, DateTime timestamp) =>
         new(offerId, offerData, timestamp);
 

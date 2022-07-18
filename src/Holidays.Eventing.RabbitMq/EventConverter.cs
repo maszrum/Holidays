@@ -1,13 +1,21 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
+using System.Text.Json;
 using Holidays.Eventing.Core;
-using Newtonsoft.Json;
 
 namespace Holidays.Eventing.RabbitMq;
 
 internal class EventConverter
 {
+    private static readonly JsonSerializerOptions JsonOptions;
+
     private readonly ImmutableDictionary<string, Type> _eventTypes;
+
+    static EventConverter()
+    {
+        JsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        JsonOptions.Converters.Add(new DateOnlyJsonConverter());
+    }
 
     public EventConverter(IEnumerable<Type> eventTypes)
     {
@@ -28,7 +36,7 @@ internal class EventConverter
 
         var json = Encoding.UTF8.GetString(bytes);
 
-        var @event = JsonConvert.DeserializeObject(json, eventType);
+        var @event = JsonSerializer.Deserialize(json, eventType, JsonOptions);
 
         if (@event is not IEvent eventTyped)
         {
@@ -41,7 +49,7 @@ internal class EventConverter
 
     public ReadOnlyMemory<byte> ConvertToBytes(IEvent @event)
     {
-        var json = JsonConvert.SerializeObject(@event);
+        var json = JsonSerializer.Serialize(@event, @event.GetType(), JsonOptions);
 
         var bytes = Encoding.UTF8.GetBytes(json);
 

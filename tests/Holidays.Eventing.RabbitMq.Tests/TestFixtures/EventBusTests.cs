@@ -30,11 +30,11 @@ public class EventBusTests
                 .NoLocalHandlers());
 
         await producerEventBus.Publish(
-            new TestEvent(new DateTime(2022, 7, 13, 18, 38, 22), 2202, "qqq"),
+            new TestEvent(new DateTime(2022, 7, 13, 18, 38, 22), 2202, "qqq", DateOnly.FromDayNumber(14)),
             CancellationToken.None);
 
         await producerEventBus.Publish(
-            new TestEvent(new DateTime(2022, 7, 13, 18, 39, 23), 212, "taa"),
+            new TestEvent(new DateTime(2022, 7, 13, 18, 39, 23), 212, "taa", DateOnly.FromDayNumber(25)),
             CancellationToken.None);
 
         await Wait.Until(
@@ -57,6 +57,10 @@ public class EventBusTests
             Is.EqualTo("qqq"));
 
         Assert.That(
+            allEvents[0].DateOnlyValue,
+            Is.EqualTo(DateOnly.FromDayNumber(14)));
+
+        Assert.That(
             allEvents[1].Timestamp,
             Is.EqualTo(new DateTime(2022, 7, 13, 18, 39, 23)));
 
@@ -67,6 +71,10 @@ public class EventBusTests
         Assert.That(
             allEvents[1].StringValue,
             Is.EqualTo("taa"));
+
+        Assert.That(
+            allEvents[1].DateOnlyValue,
+            Is.EqualTo(DateOnly.FromDayNumber(25)));
     }
 
     [Test]
@@ -102,7 +110,7 @@ public class EventBusTests
                 .RegisterHandlerForAllEvents(() => busTwoAllEventsHandler));
 
         await eventBusOne.Publish(
-            new TestEvent(new DateTime(2022, 7, 13, 19, 2, 22), 111, "abc"),
+            new TestEvent(new DateTime(2022, 7, 13, 19, 2, 22), 111, "abc", DateOnly.FromDayNumber(11)),
             CancellationToken.None);
 
         await Wait.Until(
@@ -127,6 +135,10 @@ public class EventBusTests
             Is.EqualTo("abc"));
 
         Assert.That(
+            busOneLocalEvents[0].DateOnlyValue,
+            Is.EqualTo(DateOnly.FromDayNumber(11)));
+
+        Assert.That(
             busOneAllEvents[0].Timestamp,
             Is.EqualTo(new DateTime(2022, 7, 13, 19, 2, 22)));
 
@@ -139,6 +151,10 @@ public class EventBusTests
             Is.EqualTo("abc"));
 
         Assert.That(
+            busOneAllEvents[0].DateOnlyValue,
+            Is.EqualTo(DateOnly.FromDayNumber(11)));
+
+        Assert.That(
             busTwoAllEvents[0].Timestamp,
             Is.EqualTo(new DateTime(2022, 7, 13, 19, 2, 22)));
 
@@ -149,6 +165,10 @@ public class EventBusTests
         Assert.That(
             busTwoAllEvents[0].StringValue,
             Is.EqualTo("abc"));
+
+        Assert.That(
+            busTwoAllEvents[0].DateOnlyValue,
+            Is.EqualTo(DateOnly.FromDayNumber(11)));
     }
 
     [Test]
@@ -184,11 +204,11 @@ public class EventBusTests
                 .RegisterHandlerForAllEvents(() => busTwoAllEventsHandler));
 
         await eventBusOne.Publish(
-            new TestEvent(new DateTime(2022, 7, 13, 18, 38, 22), 2202, "qqq"),
+            new TestEvent(new DateTime(2022, 7, 13, 18, 38, 22), 2202, "qqq", DateOnly.FromDayNumber(111)),
             CancellationToken.None);
 
         await eventBusOne.Publish(
-            new TestEvent(new DateTime(2022, 7, 13, 18, 39, 23), 212, "taa"),
+            new TestEvent(new DateTime(2022, 7, 13, 18, 39, 23), 212, "taa", DateOnly.FromDayNumber(47)),
             CancellationToken.None);
 
         await Wait.Until(
@@ -235,7 +255,7 @@ public class EventBusTests
 
         var events = Enumerable
             .Range(1, 20000)
-            .Select(i => new TestEvent(new DateTime(), i, $"event-{i}"))
+            .Select(i => new TestEvent(new DateTime(), i, $"event-{i}", DateOnly.FromDayNumber(i)))
             .ToArray();
 
         var eventsFirstPart = events.Take(10000);
@@ -327,7 +347,7 @@ public class EventBusTests
                 .RegisterHandlerForAllEvents(() => busThreeAllEventsHandler));
 
         await eventBusOne.Publish(
-            new TestEvent(new DateTime(2022, 7, 13, 20, 20, 22), 111, "bbb"),
+            new TestEvent(new DateTime(2022, 7, 13, 20, 20, 22), 111, "bbb", DateOnly.FromDayNumber(43)),
             CancellationToken.None);
 
         await Wait.Until(
@@ -357,7 +377,7 @@ public class EventBusTests
                 .NoLocalHandlers());
 
         await producerEventBus.Publish(
-            new TestEvent(new DateTime(2022, 7, 13, 18, 38, 22), 2202, "qqq"),
+            new TestEvent(new DateTime(2022, 7, 13, 18, 38, 22), 2202, "qqq", DateOnly.FromDayNumber(77)),
             CancellationToken.None);
 
         await Wait.Until(
