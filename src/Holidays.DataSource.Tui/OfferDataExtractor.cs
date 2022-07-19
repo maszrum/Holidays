@@ -41,8 +41,13 @@ internal class OfferDataExtractor
             .Select(e => e.Text)
             .ToArray();
 
-        var destinationCountry = ToFirstWordLettersCapitals(texts[0]);
-        var detailedDestination = ToFirstWordLettersCapitals(texts[1]);
+        var destinationCountry = texts.Length == 0
+            ? string.Empty
+            : ToFirstWordLettersCapitals(texts[0]);
+
+        var detailedDestination = texts.Length < 2
+            ? string.Empty
+            : ToFirstWordLettersCapitals(texts[1]);
 
         return (destinationCountry, detailedDestination);
     }

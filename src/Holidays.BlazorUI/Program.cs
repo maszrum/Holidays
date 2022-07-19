@@ -1,11 +1,37 @@
 using Holidays.BlazorUI;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Holidays.BlazorUI.ServiceCollectionExtensions;
+using Holidays.BlazorUI.Services;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 
-await builder.Build().RunAsync();
+builder.Services
+    .AddApplicationConfiguration(builder.Configuration)
+    .AddEventBus()
+    .AddPostgres()
+    .AddInMemoryStore();
+
+builder.Services.AddSingleton<OffersService>();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.MapBlazorHub();
+app.MapFallbackToPage("/_Host");
+
+await app.Services.InitializeServices();
+
+await app.RunAsync();

@@ -77,8 +77,8 @@ public class EventBusTests
 
         eventBusBuilder
             .ForEventType<TestEvent>()
-            .RegisterHandlerForLocalEvents(() => firstHandler)
-            .RegisterHandlerForLocalEvents(() => secondHandler);
+            .RegisterHandlerForLocalEventsOnly(() => firstHandler)
+            .RegisterHandlerForLocalEventsOnly(() => secondHandler);
 
         var eventBus = eventBusBuilder.Build();
 
@@ -101,8 +101,8 @@ public class EventBusTests
 
         eventBusBuilder
             .ForEventType<TestEvent>()
-            .RegisterHandlerForLocalEvents(() => firstHandler)
-            .RegisterHandlerForLocalEvents(() => secondHandler);
+            .RegisterHandlerForLocalEventsOnly(() => firstHandler)
+            .RegisterHandlerForLocalEventsOnly(() => secondHandler);
 
         var eventBus = eventBusBuilder.Build();
 
@@ -140,8 +140,8 @@ public class EventBusTests
 
         eventBusBuilder
             .ForEventType<TestEvent>()
-            .RegisterHandlerForAllEvents(() => firstHandler)
-            .RegisterHandlerForLocalEvents(() => secondHandler);
+            .RegisterHandler(() => firstHandler)
+            .RegisterHandlerForLocalEventsOnly(() => secondHandler);
 
         var eventBus = await eventBusBuilder.Build().Initialize();
 

@@ -1,0 +1,23 @@
+﻿::deep div.offer-title {
+    min-height: 72px;
+    color: #da0074;
+    background-color: rgba(255, 41, 155, .1);
+}
+
+::deep div.offer-title p.destination-country {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+}
+
+::deep .offer-changed-badge, ::deep .price-badge {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 8px;
+}
+
+::deep .old-price-badge {
+    text-decoration: line-through;
+}

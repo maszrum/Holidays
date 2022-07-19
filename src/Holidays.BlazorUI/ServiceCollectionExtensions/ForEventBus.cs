@@ -4,10 +4,10 @@ using Holidays.Eventing;
 using Holidays.Eventing.RabbitMq;
 using Holidays.InMemoryStore;
 using Holidays.InMemoryStore.EventHandlers;
-using Holidays.WebAPI.Eventing;
-using Microsoft.AspNetCore.SignalR;
+using Holidays.BlazorUI.Eventing;
+using Holidays.BlazorUI.Services;
 
-namespace Holidays.WebAPI.ServiceCollectionExtensions;
+namespace Holidays.BlazorUI.ServiceCollectionExtensions;
 
 internal static class ForEventBus
 {
@@ -27,27 +27,27 @@ internal static class ForEventBus
     private static EventBusBuilder RegisterEventHandlers(this EventBusBuilder builder, IServiceProvider serviceProvider)
     {
         var inMemoryDatabase = serviceProvider.GetRequiredService<InMemoryDatabase>();
-        var hubContext = serviceProvider.GetRequiredService<IHubContext<EventsHub>>();
+        var offersService = serviceProvider.GetRequiredService<OffersService>();
 
         builder
             .ForEventType<OfferAdded>()
             .RegisterHandler(() => new OfferAddedInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandler(() => new OfferAddedSignalrEventHandler(hubContext));
+            .RegisterHandler(() => new OfferAddedEventHandler(offersService));
 
         builder
             .ForEventType<OfferRemoved>()
             .RegisterHandler(() => new OfferRemovedInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandler(() => new OfferRemovedSignalrEventHandler(hubContext));
+            .RegisterHandler(() => new OfferRemovedEventHandler(offersService));
 
         builder
             .ForEventType<OfferPriceChanged>()
             .RegisterHandler(() => new OfferPriceChangedInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandler(() => new OfferPriceChangedSignalrEventHandler(hubContext));
+            .RegisterHandler(() => new OfferPriceChangedEventHandler(offersService));
 
         builder
             .ForEventType<OfferStartedTracking>()
             .RegisterHandler(() => new OfferStartedTrackingInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandler(() => new OfferStartedTrackingSignalrEventHandler(hubContext));
+            .RegisterHandler(() => new OfferStartedTrackingEventHandler(offersService));
 
         return builder;
     }

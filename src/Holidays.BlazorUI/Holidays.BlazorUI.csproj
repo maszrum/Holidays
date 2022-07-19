@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,15 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
     <ProjectReference Include="..\Holidays.Core.Events\Holidays.Core.Events.csproj" />
-    <ProjectReference Include="..\Holidays.DataTransferObjects\Holidays.DataTransferObjects.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />
+    <ProjectReference Include="..\Holidays.Eventing.RabbitMq\Holidays.Eventing.RabbitMq.csproj" />
+    <ProjectReference Include="..\Holidays.InMemoryStore\Holidays.InMemoryStore.csproj" />
+    <ProjectReference Include="..\Holidays.Postgres\Holidays.Postgres.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.5" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Radzen.Blazor" Version="3.19.6" />
   </ItemGroup>
-
+  
 </Project>

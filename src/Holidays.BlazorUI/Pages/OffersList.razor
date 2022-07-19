@@ -1,0 +1,23 @@
+﻿@page "/offers-list"
+
+<PageTitle>Offers list</PageTitle>
+
+<h1>Offers list</h1>
+
+@if (Offers is null)
+{
+    <h3>No offers</h3>
+}
+
+<RadzenDataList
+    WrapItems="true"
+    AllowPaging="false"
+    Data="@Offers"
+    TItem="OfferViewModel"
+    PagerHorizontalAlign="HorizontalAlign.Left">
+
+    <Template Context="offer">
+        <OfferView Offer="@offer" AcknowledgeRequested="Acknowledge" RemoveRequested="Remove" />
+    </Template>
+
+</RadzenDataList>

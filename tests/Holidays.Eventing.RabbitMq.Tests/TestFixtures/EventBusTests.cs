@@ -21,8 +21,8 @@ public class EventBusTests
         await using var consumerEventBus = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => localEventsHandler)
-                .RegisterHandlerForAllEvents(() => allEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => localEventsHandler)
+                .RegisterHandler(() => allEventsHandler));
 
         await using var producerEventBus = await Create.EventBus(
             builder => builder
@@ -100,14 +100,14 @@ public class EventBusTests
         await using var eventBusOne = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busOneLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busOneAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busOneLocalEventsHandler)
+                .RegisterHandler(() => busOneAllEventsHandler));
 
         await using var eventBusTwo = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busTwoLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busTwoAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busTwoLocalEventsHandler)
+                .RegisterHandler(() => busTwoAllEventsHandler));
 
         await eventBusOne.Publish(
             new TestEvent(new DateTime(2022, 7, 13, 19, 2, 22), 111, "abc", DateOnly.FromDayNumber(11)),
@@ -194,14 +194,14 @@ public class EventBusTests
         await using var eventBusOne = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busOneLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busOneAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busOneLocalEventsHandler)
+                .RegisterHandler(() => busOneAllEventsHandler));
 
         await using var eventBusTwo = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busTwoLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busTwoAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busTwoLocalEventsHandler)
+                .RegisterHandler(() => busTwoAllEventsHandler));
 
         await eventBusOne.Publish(
             new TestEvent(new DateTime(2022, 7, 13, 18, 38, 22), 2202, "qqq", DateOnly.FromDayNumber(111)),
@@ -244,14 +244,14 @@ public class EventBusTests
         await using var eventBusOne = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busOneLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busOneAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busOneLocalEventsHandler)
+                .RegisterHandler(() => busOneAllEventsHandler));
 
         await using var eventBusTwo = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busTwoLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busTwoAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busTwoLocalEventsHandler)
+                .RegisterHandler(() => busTwoAllEventsHandler));
 
         var events = Enumerable
             .Range(1, 20000)
@@ -331,20 +331,20 @@ public class EventBusTests
         await using var eventBusOne = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busOneLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busOneAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busOneLocalEventsHandler)
+                .RegisterHandler(() => busOneAllEventsHandler));
 
         await using var eventBusTwo = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busTwoLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busTwoAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busTwoLocalEventsHandler)
+                .RegisterHandler(() => busTwoAllEventsHandler));
 
         await using var eventBusThree = await Create.EventBus(
             builder => builder
                 .ForEventType<TestEvent>()
-                .RegisterHandlerForLocalEvents(() => busThreeLocalEventsHandler)
-                .RegisterHandlerForAllEvents(() => busThreeAllEventsHandler));
+                .RegisterHandlerForLocalEventsOnly(() => busThreeLocalEventsHandler)
+                .RegisterHandler(() => busThreeAllEventsHandler));
 
         await eventBusOne.Publish(
             new TestEvent(new DateTime(2022, 7, 13, 20, 20, 22), 111, "bbb", DateOnly.FromDayNumber(43)),

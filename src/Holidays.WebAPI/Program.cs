@@ -1,5 +1,6 @@
 using Holidays.Eventing;
 using Holidays.InMemoryStore;
+using Holidays.WebAPI.Eventing;
 using Holidays.WebAPI.Json;
 using Holidays.WebAPI.Mapping;
 using Holidays.WebAPI.ServiceCollectionExtensions;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -38,18 +40,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.MapGet(
-    "/offers",
+    "/api/offers",
     (OffersService service) => service.GetOffers());
 
 app.MapGet(
-    "/price-history/{id:guid}",
+    "/api/price-history/{id:guid}",
     async (Guid id, PriceHistoryService service) => (await service.GetPriceHistory(id))
         .Match(
             () => Results.NotFound(),
             Results.Ok));
 
+app.MapHub<EventsHub>("/api/events");
+
 await app.Services.GetRequiredService<IEventBus>().Initialize();
 await app.Services.GetRequiredService<InMemoryDatabase>().Initialize();
 
-app.Run();
+await app.RunAsync();

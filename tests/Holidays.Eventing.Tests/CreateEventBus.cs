@@ -8,7 +8,7 @@ internal static class CreateEventBus
 
         eventBusBuilder
             .ForEventType<TestEvent>()
-            .RegisterHandlerForLocalEvents(() => new TestEventFirstHandler(eventList.Add));
+            .RegisterHandlerForLocalEventsOnly(() => new TestEventFirstHandler(eventList.Add));
 
         var eventBus = eventBusBuilder.Build();
 
@@ -21,8 +21,8 @@ internal static class CreateEventBus
 
         eventBusBuilder
             .ForEventType<TestEvent>()
-            .RegisterHandlerForLocalEvents(() => new TestEventFirstHandler(eventList.Add))
-            .RegisterHandlerForLocalEvents(() => new TestEventSecondHandler(eventList.Add));
+            .RegisterHandlerForLocalEventsOnly(() => new TestEventFirstHandler(eventList.Add))
+            .RegisterHandlerForLocalEventsOnly(() => new TestEventSecondHandler(eventList.Add));
 
         var eventBus = eventBusBuilder.Build();
 

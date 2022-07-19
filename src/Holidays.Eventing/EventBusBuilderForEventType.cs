@@ -12,7 +12,7 @@ public class EventBusBuilderForEventType<TEvent>
         _onRegister = onRegister;
     }
 
-    public EventBusBuilderForEventType<TEvent> RegisterHandlerForAllEvents<TEventHandler>(Func<TEventHandler> handlerFactory)
+    public EventBusBuilderForEventType<TEvent> RegisterHandler<TEventHandler>(Func<TEventHandler> handlerFactory)
         where TEventHandler : class, IEventHandler<TEvent>
     {
         var descriptor = new EventHandlerDescriptor(handlerFactory, onlyForLocalEvents: false);
@@ -21,7 +21,7 @@ public class EventBusBuilderForEventType<TEvent>
         return this;
     }
 
-    public EventBusBuilderForEventType<TEvent> RegisterHandlerForLocalEvents<TEventHandler>(Func<TEventHandler> handlerFactory)
+    public EventBusBuilderForEventType<TEvent> RegisterHandlerForLocalEventsOnly<TEventHandler>(Func<TEventHandler> handlerFactory)
         where TEventHandler : class, IEventHandler<TEvent>
     {
         var descriptor = new EventHandlerDescriptor(handlerFactory, onlyForLocalEvents: true);

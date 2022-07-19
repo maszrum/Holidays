@@ -17,23 +17,23 @@ internal static class EventBusBuilderExtensions
     {
         builder
             .ForEventType<OfferAdded>()
-            .RegisterHandlerForAllEvents(() => new OfferAddedInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandlerForLocalEvents(() => new OfferAddedPostgresEventHandler(postgresConnectionFactory));
+            .RegisterHandler(() => new OfferAddedInMemoryStoreEventHandler(inMemoryDatabase))
+            .RegisterHandlerForLocalEventsOnly(() => new OfferAddedPostgresEventHandler(postgresConnectionFactory));
 
         builder
             .ForEventType<OfferRemoved>()
-            .RegisterHandlerForAllEvents(() => new OfferRemovedInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandlerForLocalEvents(() => new OfferRemovedPostgresEventHandler(postgresConnectionFactory));
+            .RegisterHandler(() => new OfferRemovedInMemoryStoreEventHandler(inMemoryDatabase))
+            .RegisterHandlerForLocalEventsOnly(() => new OfferRemovedPostgresEventHandler(postgresConnectionFactory));
 
         builder
             .ForEventType<OfferPriceChanged>()
-            .RegisterHandlerForAllEvents(() => new OfferPriceChangedInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandlerForLocalEvents(() => new OfferPriceChangedPostgresEventHandler(postgresConnectionFactory));
+            .RegisterHandler(() => new OfferPriceChangedInMemoryStoreEventHandler(inMemoryDatabase))
+            .RegisterHandlerForLocalEventsOnly(() => new OfferPriceChangedPostgresEventHandler(postgresConnectionFactory));
 
         builder
             .ForEventType<OfferStartedTracking>()
-            .RegisterHandlerForAllEvents(() => new OfferStartedTrackingInMemoryStoreEventHandler(inMemoryDatabase))
-            .RegisterHandlerForLocalEvents(() => new OfferStartedTrackingPostgresEventHandler(postgresConnectionFactory));
+            .RegisterHandler(() => new OfferStartedTrackingInMemoryStoreEventHandler(inMemoryDatabase))
+            .RegisterHandlerForLocalEventsOnly(() => new OfferStartedTrackingPostgresEventHandler(postgresConnectionFactory));
 
         return builder;
     }

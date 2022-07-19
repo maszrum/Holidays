@@ -1,0 +1,70 @@
+﻿<RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 p-3 offer-title">
+                <p class="mb-sm-2 mb-lg-0 destination-country">@Offer.DestinationCountry</p>
+                <p class="mb-sm-2 mb-lg-0">@Offer.DetailedDestination</p>
+            </div>
+            <div class="col-lg-7 p-3">
+                <div class="row d-flex">
+                    <div class="col-md-6 col-lg-3">
+                        <p class="mb-sm-2 mb-lg-0">@(Offer.Hotel)</p>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <p class="mb-sm-2 mb-lg-0">@Offer.DepartureDate.ToString()</p>
+                        <p class="mb-sm-2 mb-lg-0">@Offer.Days days</p>
+                    </div>
+                    <div class="col-md-6 col-lg-2">
+                        <p class="mb-sm-2 mb-lg-0">@Offer.WebsiteName</p>
+                    </div>
+                    <div class="col-md-3 order-first order-lg-last col-lg-2 text-sm-left text-lg-right mb-3 mb-lg-0">
+                        <RadzenBadge
+                            IsPill="true"
+                            BadgeStyle="BadgeStyle.Secondary"
+                            Text="@($"{Offer.Price} zł")"
+                            class="price-badge" />
+                    </div>
+                    <div class="col-md-3 order-first order-lg-last col-lg-2 text-sm-left text-lg-right mb-3 mb-lg-0">
+                        @if (Offer.PreviousPrice.HasValue)
+                        {
+                            <RadzenBadge
+                                IsPill="true"
+                                BadgeStyle="BadgeStyle.Info"
+                                Text="@($"{Offer.PreviousPrice} zł")"
+                                class="offer-changed-badge old-price-badge" />
+                        }
+                        else if (Offer.IsNew)
+                        {
+                            <RadzenBadge
+                                IsPill="true"
+                                BadgeStyle="BadgeStyle.Success"
+                                Text="New"
+                                class="offer-changed-badge" />
+                        }
+                        else if (Offer.IsRemoved)
+                        {
+                            <RadzenBadge
+                                IsPill="true"
+                                BadgeStyle="BadgeStyle.Warning"
+                                Text="Removed"
+                                class="offer-changed-badge" />
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-1 p-3">
+                @if (Offer.IsNew || Offer.PreviousPrice.HasValue)
+                {
+                    <RadzenButton Text="Ack" class="w-100" Click="Acknowledge" ButtonStyle="ButtonStyle.Secondary" />
+                }
+                else if (Offer.IsRemoved)
+                {
+                    <RadzenButton Text="Remove" class="w-100" Click="Remove" ButtonStyle="ButtonStyle.Secondary" />
+                }
+            </div>
+            <div class="col-lg-1 p-3">
+                <RadzenButton Text="Go to" class="w-100" Click="GoToDetails" ButtonStyle="ButtonStyle.Primary" />
+            </div>
+        </div>
+    </div>
+</RadzenCard>
