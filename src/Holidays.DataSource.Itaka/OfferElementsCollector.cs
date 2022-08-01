@@ -1,18 +1,17 @@
 ﻿using System.Collections.ObjectModel;
 using Holidays.Selenium;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
 
-namespace Holidays.DataSource.Rainbow;
+namespace Holidays.DataSource.Itaka;
 
 internal class OfferElementsCollector
 {
     private readonly IWebDriver _driver;
     private int _collectedElementsCount;
 
-    public OfferElementsCollector(IWebDriver driver)
+    public OfferElementsCollector(IWebDriver webDriver)
     {
-        _driver = driver;
+        _driver = webDriver;
     }
 
     public Task<IReadOnlyList<IWebElement>> Collect(TimeSpan timeout)
@@ -40,20 +39,12 @@ internal class OfferElementsCollector
         while (result is null && !cancellationToken.IsCancellationRequested)
         {
             ClickShowMoreIconIfExists();
-
-            var actions = new Actions(_driver);
-            actions.ScrollByAmount(0, 100);
-            actions.Perform();
+            ClickCloseAdButtonIfExists();
 
             var loadedOffers = GetLoadedOffers();
 
             if (loadedOffers.Count != _collectedElementsCount)
             {
-                var lastOffer = loadedOffers.Last();
-                actions.Reset();
-                actions.MoveToElement(lastOffer);
-                actions.Perform();
-
                 result = loadedOffers
                     .Skip(_collectedElementsCount)
                     .ToArray();
@@ -69,12 +60,29 @@ internal class OfferElementsCollector
 
     private void ClickShowMoreIconIfExists()
     {
-        if (_driver.TryFindElement(By.ClassName("pokaz-wiecej__icon"), out var showMoreElement))
+        if (_driver.TryFindElement(By.ClassName("offer-list_more-offers"), out var closeElement))
         {
-            showMoreElement.Click();
+            closeElement.Click();
+        }
+    }
+
+    private void ClickCloseAdButtonIfExists()
+    {
+        if (!_driver.TryFindElement(By.Id("pushAd_disagree_button"), out var closeElement))
+        {
+            return;
+        }
+
+        try
+        {
+            closeElement.Click();
+        }
+        catch (ElementNotInteractableException)
+        {
+            // ignore
         }
     }
 
     private ReadOnlyCollection<IWebElement> GetLoadedOffers() =>
-        _driver.FindElements(By.ClassName("bloczek__container"));
+        _driver.FindElements(By.ClassName("offer_column-second"));
 }

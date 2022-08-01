@@ -37,8 +37,8 @@ internal class ChangesDetectionJob
                 .WithDefaultValue(DateOnly.FromDayNumber(0));
 
             _logger.Debug(
-                "Starting scraping with data source: {ScraperType}",
-                dataSource.GetType().Name);
+                "Starting scraping from website: {WebsiteName}",
+                dataSource.WebsiteName);
 
             var currentState = await GetOffers(dataSource);
 

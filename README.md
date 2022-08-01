@@ -1,4 +1,2 @@
 - Add Serilog to WebAPI project
 - Add WebAPI tests
-- Add Itaka web scraper
-- Add Blazor UI

@@ -12,6 +12,7 @@
     <ProjectReference Include="..\Holidays.Core\Holidays.Core.csproj" />
     <ProjectReference Include="..\Holidays.Core.Events\Holidays.Core.Events.csproj" />
     <ProjectReference Include="..\Holidays.Configuration\Holidays.Configuration.csproj" />
+    <ProjectReference Include="..\Holidays.DataSource.Itaka\Holidays.DataSource.Itaka.csproj" />
     <ProjectReference Include="..\Holidays.DataSource.Rainbow\Holidays.DataSource.Rainbow.csproj" />
     <ProjectReference Include="..\Holidays.DataSource.Tui\Holidays.DataSource.Tui.csproj" />
     <ProjectReference Include="..\Holidays.Eventing\Holidays.Eventing.csproj" />

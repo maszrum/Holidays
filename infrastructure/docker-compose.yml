@@ -31,6 +31,14 @@ services:
       - "4445:4444"
     shm_size: '2gb'
 
+  selenium-3:
+    build:
+      context: ./selenium/
+      dockerfile: ./Dockerfile
+    ports:
+      - "4446:4444"
+    shm_size: '2gb'
+
   rabbit:
     build:
       context: ./rabbitmq/
@@ -82,6 +90,27 @@ services:
       - RabbitMq__UserName=holidays
       - RabbitMq__Password=payAlot
       - Selenium__RemoteWebDriverUrl=http://selenium-2:4444/wd/hub
+
+  collecting-app-3:
+    build:
+      context: ./../src/
+      dockerfile: ./Holidays.CollectingApp/Dockerfile
+    depends_on:
+      - postgres
+      - selenium-3
+      - rabbit
+      - collecting-app-2
+    environment:
+      - ENVIRONMENT=Docker
+      - OffersDataSource__Provider=Itaka
+      - OffersDataSource__CollectingTimeoutSeconds=60
+      - Postgres__ConnectionString=Server=postgres;Port=5432;Database=holidays;User Id=holidays;Password=payAlot;
+      - RabbitMq__HostName=rabbit
+      - RabbitMq__Port=5672
+      - RabbitMq__VirtualHost=production
+      - RabbitMq__UserName=holidays
+      - RabbitMq__Password=payAlot
+      - Selenium__RemoteWebDriverUrl=http://selenium-3:4444/wd/hub
 
   webapi-app:
     build:

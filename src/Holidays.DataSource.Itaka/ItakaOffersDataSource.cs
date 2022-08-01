@@ -5,16 +5,16 @@ using Holidays.Core.OfferModel;
 using Holidays.Selenium;
 using OpenQA.Selenium;
 
-namespace Holidays.DataSource.Rainbow;
+namespace Holidays.DataSource.Itaka;
 
 // ReSharper disable once UnusedType.Global
 
-public class RainbowOffersDataSource : IOffersDataSource
+public class ItakaOffersDataSource : IOffersDataSource
 {
     private readonly OffersDataSourceSettings _settings;
     private readonly WebDriverFactory _webDriverFactory;
 
-    public RainbowOffersDataSource(
+    public ItakaOffersDataSource(
         OffersDataSourceSettings settings,
         WebDriverFactory webDriverFactory)
     {
@@ -81,7 +81,7 @@ public class RainbowOffersDataSource : IOffersDataSource
 
         await Task.Delay(1_000);
 
-        if (webDriver.TryFindElement(By.ClassName("rodo-alert__close"), out var closeCookiesElement))
+        if (webDriver.TryFindElement(By.CssSelector(".cookie-info button"), out var closeCookiesElement))
         {
             closeCookiesElement.Click();
         }
@@ -89,19 +89,20 @@ public class RainbowOffersDataSource : IOffersDataSource
 
     private static string GetUrl()
     {
-        var departureDateFrom = DateTime.Now.ToString("yyyy-MM-dd");
+        var dateFrom = DateTime.Now.ToString("yyyy-MM-dd");
 
         return new StringBuilder()
-            .Append("https://r.pl/all-inclusive")
-            .Append("?liczbaPokoi=1")
-            .Append("&sortowanie=termin-asc")
-            .Append("&widok=bloczki")
-            .Append("&cena[]=avg")
-            .Append("&dlugoscPobytu[]=7-9")
-            .Append("&terminWyjazdu[]=").Append(departureDateFrom)
-            .Append("&typTransportu[]=AIR")
-            .Append("&typTransportu[]=dreamliner")
-            .Append("&wyzywienia[]=all-inclusive")
+            .Append("https://www.itaka.pl/all-inclusive/")
+            .Append("?view=offerList")
+            .Append("&package-type=wczasy")
+            .Append("&adults=2")
+            .Append("&date-from=").Append(dateFrom)
+            .Append("&food=allInclusive")
+            .Append("&order=dateFromAsc")
+            .Append("&total-price=0")
+            .Append("&page=1")
+            .Append("&transport=flight")
+            .Append("&currency=PLN")
             .ToString();
     }
 }

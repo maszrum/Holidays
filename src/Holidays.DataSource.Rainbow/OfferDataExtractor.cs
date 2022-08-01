@@ -27,7 +27,7 @@ internal class OfferDataExtractor
             cityOfDeparture: cityOfDepartureElement.Text,
             price: int.Parse(priceElement.Text.Replace(" ", string.Empty)),
             detailsUrl: detailsLinkElement.GetAttribute("href"),
-            Constants.WebsiteName);
+            websiteName: Constants.WebsiteName);
     }
 
     private static (DateOnly, int) ExtractDepartureDateAndDays(string input)
@@ -47,6 +47,11 @@ internal class OfferDataExtractor
         if (indexOfBull == -1)
         {
             return (destination, string.Empty);
+        }
+
+        if (indexOfBull + 2 >= destination.Length)
+        {
+            return ("Unknown", string.Empty);
         }
 
         destination = destination.Substring(indexOfBull + 2);
