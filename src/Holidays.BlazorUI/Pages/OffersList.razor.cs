@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 namespace Holidays.BlazorUI.Pages;
 
 // ReSharper disable once ClassNeverInstantiated.Global
+
 public sealed partial class OffersList : IDisposable
 {
     private IDisposable? _onChangedSubscription;
