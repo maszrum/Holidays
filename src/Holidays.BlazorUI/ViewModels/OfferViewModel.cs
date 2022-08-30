@@ -69,11 +69,15 @@ public class OfferViewModel
 
     public void MarkAsRemoved()
     {
+        PreviousPrice = default;
+        IsNew = false;
         IsRemoved = true;
     }
 
-    private void MarkAsNew()
+    public void MarkAsNew()
     {
+        PreviousPrice = default;
+        IsRemoved = false;
         IsNew = true;
     }
 

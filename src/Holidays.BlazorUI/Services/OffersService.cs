@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using Holidays.BlazorUI.ViewModels;
 using Holidays.Core.InfrastructureInterfaces;
 
@@ -6,13 +7,14 @@ namespace Holidays.BlazorUI.Services;
 
 internal sealed class OffersService
 {
+    private static readonly OfferViewModelComparer ViewModelComparer = new();
+
     private readonly List<Func<Task>> _onChangedActions = new();
-    private SortedSet<OfferViewModel>? _viewModels;
+    private ConcurrentDictionary<Guid, OfferViewModel>? _viewModels;
 
     public bool IsInitialized => _viewModels is not null;
 
-    public IReadOnlyCollection<OfferViewModel> Offers => _viewModels ?? throw new InvalidOperationException(
-            $"{nameof(OffersService)} is not initialized. Call {nameof(Initialize)} method before.");
+    public IReadOnlyList<OfferViewModel> Offers => GetOffersOrdered();
 
     public async Task Initialize(IOffersRepository repository)
     {
@@ -24,16 +26,20 @@ internal sealed class OffersService
 
         var offers = await repository.GetAll();
 
-        _viewModels = new SortedSet<OfferViewModel>(
-            offers.Select(OfferViewModel.FromOffer),
-            new OfferViewModelComparer());
+        _viewModels = new ConcurrentDictionary<Guid, OfferViewModel>(
+            offers.Select(offer => KeyValuePair.Create(offer.Id, OfferViewModel.FromOffer(offer))));
     }
 
     public Task Add(OfferViewModel offer)
     {
         ThrowIfUninitialized(_viewModels);
 
-        _viewModels.Add(offer);
+        var addedOrExistingOffer = _viewModels.GetOrAdd(offer.Id, offer);
+
+        if (addedOrExistingOffer.IsRemoved)
+        {
+            addedOrExistingOffer.MarkAsNew();
+        }
 
         return InvokeOnChangedActions();
     }
@@ -42,7 +48,7 @@ internal sealed class OffersService
     {
         ThrowIfUninitialized(_viewModels);
 
-        var viewModel = _viewModels.Single(o => o.Id == offerId);
+        var viewModel = _viewModels[offerId];
 
         return Invoke(viewModel, action);
     }
@@ -51,9 +57,7 @@ internal sealed class OffersService
     {
         ThrowIfUninitialized(_viewModels);
 
-        _viewModels.Remove(viewModel);
         action(viewModel);
-        _viewModels.Add(viewModel);
 
         return InvokeOnChangedActions();
     }
@@ -68,7 +72,13 @@ internal sealed class OffersService
                 "Cannot remove offer from collection.");
         }
 
-        _viewModels.Remove(viewModel);
+        var removed = _viewModels.Remove(viewModel.Id, out _);
+
+        if (!removed)
+        {
+            throw new InvalidOperationException(
+                "Cannot remove offer from collection.");
+        }
 
         return InvokeOnChangedActions();
     }
@@ -80,6 +90,19 @@ internal sealed class OffersService
         var subscription = new Subscription(() => _onChangedActions.Remove(action));
 
         return subscription;
+    }
+
+    private IReadOnlyList<OfferViewModel> GetOffersOrdered()
+    {
+        if (_viewModels is null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(OffersService)} is not initialized. Call {nameof(Initialize)} method before.");
+        }
+
+        return _viewModels.Values
+            .OrderBy(vm => vm, ViewModelComparer)
+            .ToArray();
     }
 
     private Task InvokeOnChangedActions()
@@ -100,7 +123,7 @@ internal sealed class OffersService
         }
     }
 
-    private static void ThrowIfUninitialized([NotNull] SortedSet<OfferViewModel>? viewModels)
+    private static void ThrowIfUninitialized([NotNull] ConcurrentDictionary<Guid, OfferViewModel>? viewModels)
     {
         if (viewModels is null)
         {

@@ -1,2 +1,6 @@
-- Add Serilog to WebAPI project
-- Add WebAPI tests
+## Holidays offers scraper
+
+Supported websites:
+ - Rainbow
+ - TUI
+ - Itaka

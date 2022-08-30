@@ -1,6 +1,4 @@
-﻿using Holidays.BlazorUI.ViewModels;
-
-namespace Holidays.BlazorUI.Services;
+﻿namespace Holidays.BlazorUI.ViewModels;
 
 // ReSharper disable EnforceIfStatementBraces
 

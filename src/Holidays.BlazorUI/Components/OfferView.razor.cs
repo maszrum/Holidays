@@ -1,13 +1,14 @@
 ﻿using Holidays.BlazorUI.Services;
 using Holidays.BlazorUI.ViewModels;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace Holidays.BlazorUI.Components;
 
 public partial class OfferView
 {
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
+    public IJSRuntime Js { get; set; } = null!;
 
     [Parameter]
     [EditorRequired]
@@ -21,9 +22,9 @@ public partial class OfferView
     [EditorRequired]
     public EventCallback<OfferViewModel> RemoveRequested { get; set; }
 
-    private void GoToDetails()
+    private async Task GoToDetails()
     {
-        NavigationManager.NavigateTo(Offer.DetailsUrl);
+        await Js.InvokeVoidAsync("open", Offer.DetailsUrl, "_blank");
     }
 
     private async Task Acknowledge()
