@@ -231,7 +231,7 @@ public class OfferIdGeneratorTests
     }
 
     [Test]
-    public void same_offers_with_different_city_of_departure_should_have_different_id()
+    public void same_offers_with_different_city_of_departure_should_have_same_id()
     {
         var offer = new Offer(
             hotel: "hotel",
@@ -259,7 +259,7 @@ public class OfferIdGeneratorTests
 
         var offerIdWithDifferentCityOfDeparture = offerWithDifferentCityOfDeparture.Id;
 
-        Assert.That(offerIdWithDifferentCityOfDeparture, Is.Not.EqualTo(offerId));
+        Assert.That(offerIdWithDifferentCityOfDeparture, Is.EqualTo(offerId));
     }
 
     [Test]

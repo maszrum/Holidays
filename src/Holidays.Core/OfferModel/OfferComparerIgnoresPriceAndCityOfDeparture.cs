@@ -2,7 +2,7 @@
 
 // ReSharper disable EnforceIfStatementBraces
 
-internal class OfferComparerIgnoresPrice : IEqualityComparer<Offer>
+internal class OfferComparerIgnoresPriceAndCityOfDeparture : IEqualityComparer<Offer>
 {
     public bool Equals(Offer? x, Offer? y)
     {
@@ -16,7 +16,6 @@ internal class OfferComparerIgnoresPrice : IEqualityComparer<Offer>
                x.DetailedDestination == y.DetailedDestination &&
                x.DepartureDate.Equals(y.DepartureDate) &&
                x.Days == y.Days &&
-               x.CityOfDeparture == y.CityOfDeparture &&
                x.WebsiteName == y.WebsiteName;
     }
 
@@ -28,7 +27,6 @@ internal class OfferComparerIgnoresPrice : IEqualityComparer<Offer>
             obj.DetailedDestination,
             obj.DepartureDate,
             obj.Days,
-            obj.CityOfDeparture,
             obj.WebsiteName);
     }
 }

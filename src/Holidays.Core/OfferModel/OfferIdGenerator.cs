@@ -21,7 +21,6 @@ internal class OfferIdGenerator
         var hotelLength = Encoding.UTF8.GetByteCount(offer.Hotel);
         var destinationCountryLength = Encoding.UTF8.GetByteCount(offer.DestinationCountry);
         var detailedDestination = Encoding.UTF8.GetByteCount(offer.DetailedDestination);
-        var cityOfDepartureLength = Encoding.UTF8.GetByteCount(offer.CityOfDeparture);
         var websiteNameLength = Encoding.UTF8.GetByteCount(offer.WebsiteName);
 
         var bytesCount =
@@ -30,7 +29,6 @@ internal class OfferIdGenerator
             detailedDestination +
             sizeof(int) +
             sizeof(int) +
-            cityOfDepartureLength +
             websiteNameLength;
 
         var bytes = new byte[bytesCount];
@@ -48,8 +46,6 @@ internal class OfferIdGenerator
 
         Unsafe.As<byte, int>(ref bytes[offset]) = offer.Days;
         offset += sizeof(int);
-
-        offset += Encoding.UTF8.GetBytes(offer.CityOfDeparture, 0, offer.CityOfDeparture.Length, bytes, offset);
 
         Encoding.UTF8.GetBytes(offer.WebsiteName, 0, offer.WebsiteName.Length, bytes, offset);
 

@@ -7,7 +7,7 @@ public class Offers : IEnumerable<Offer>
 {
     public Offers(IEnumerable<Offer> elements)
     {
-        Elements = ImmutableHashSet.CreateRange(new OfferComparerIgnoresPrice(), elements);
+        Elements = ImmutableHashSet.CreateRange(new OfferComparerIgnoresPriceAndCityOfDeparture(), elements);
     }
 
     public ImmutableHashSet<Offer> Elements { get; }
